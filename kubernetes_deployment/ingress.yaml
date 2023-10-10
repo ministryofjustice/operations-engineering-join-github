@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: operations-engineering-landing-page-poc-ingress
   annotations:
-    external-dns.alpha.kubernetes.io/set-identifier: operations-engineering-landing-page-poc-service-ingress-operations-engineering-landing-page-poc-service-green
+    external-dns.alpha.kubernetes.io/set-identifier: operations-engineering-landing-page-poc-ingress-operations-engineering-landing-page-poc-green
     external-dns.alpha.kubernetes.io/aws-weight: "100"
 spec:
   ingressClassName: default
