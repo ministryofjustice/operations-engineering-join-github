@@ -8,3 +8,6 @@ env/
 *.code-workspace
 *.sha256
 terraform.tfstate
+.mypy_cache
+docker
+secrets.yaml

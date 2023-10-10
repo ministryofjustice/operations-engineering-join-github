@@ -1,0 +1,50 @@
+{% extends 'govuk_frontend_jinja/template.html' %}
+
+{% block pageTitle %}
+Operations Engineering Landing Page PoC
+{% endblock %}
+
+{% block head %}
+<title>Operations Engineering Landing Page PoC</title>
+<!-- Manually set the govuk frontend version in line below and bottom of this file -->
+<link rel="stylesheet" type="text/css"
+  href="{{ url_for('static', filename='stylesheets/govuk-frontend-4.3.0.min.css') }}" />
+<link rel="canonical" href="https://operations-engineering-landing-page-poc.cloud-platform.service.justice.gov.uk/">
+<meta property="og:site_name" content="Operations-Engineering Landing Page PoC" />
+<meta property="og:title" content="Operations-Engineering Landing Page PoC" />
+<meta property="og:type" content="object" />
+<meta property="og:url" content="https://operations-engineering-landing-page-poc.cloud-platform.service.justice.gov.uk/" />
+{% endblock head %}
+
+{% block header %}
+<div class="app-pane__header toc-open-disabled">
+  <header class="govuk-header app-header" role="banner" data-module="govuk-header">
+    <div class="govuk-header__container govuk-header__container--full-width">
+      <div class="govuk-header__logo">
+        <a class="govuk-header__link govuk-header__link--homepage" href="/home">
+          <span class="govuk-header__product-name">
+            Operations-Engineering Landing Page PoC
+          </span>
+        </a>
+      </div>
+      <div class="govuk-header__content">
+        <nav class="govuk-header__navigation govuk-header__navigation--end">
+          <ul class="govuk-header__navigation-list">
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://github.com/ministryofjustice/operations-engineering-landing-page-poc">
+                GitHub
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+</div>
+{% endblock %}
+
+{% block bodyEnd %}
+<!-- Manually set the govuk frontend version in the line below -->
+<script src="{{ url_for('static', filename='javascript/govuk-frontend-4.3.0.min.js') }}"> </script>
+<script>window.GOVUKFrontend.initAll()</script>
+{% endblock bodyEnd %}

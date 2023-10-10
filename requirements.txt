@@ -1,0 +1,9 @@
+authlib~=1.2.1
+flask~=2.3.3
+flask-cors
+govuk-frontend-jinja
+gunicorn
+python-dotenv~=1.0.0
+requests~=2.31.0
+pytest~=7.4.2
+setuptools~=68.0.0
