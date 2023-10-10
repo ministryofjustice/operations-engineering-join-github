@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: operations-engineering-landing-pages-poc-service
+  name: operations-engineering-landing-page-poc-service
   labels:
-    app: operations-engineering-landing-pages-poc-service
+    app: operations-engineering-landing-page-poc-service
 spec:
   ports:
   - name: http
     port: 4567
     targetPort: 4567
   selector:
-    app: operations-engineering-landing-pages-poc-app
+    app: operations-engineering-landing-page-poc-app

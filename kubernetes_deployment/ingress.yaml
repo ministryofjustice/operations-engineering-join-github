@@ -1,9 +1,9 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: operations-engineering-landing-pages-poc-ingress
+  name: operations-engineering-landing-page-poc-ingress
   annotations:
-    external-dns.alpha.kubernetes.io/set-identifier: operations-engineering-landing-pages-poc-service-ingress-${NAMESPACE}-green
+    external-dns.alpha.kubernetes.io/set-identifier: operations-engineering-landing-page-poc-service-ingress-${NAMESPACE}-green
     external-dns.alpha.kubernetes.io/aws-weight: "100"
 spec:
   ingressClassName: default
@@ -16,7 +16,7 @@ spec:
         paths:
           - backend:
               service:
-                name: operations-engineering-landing-pages-poc-service
+                name: operations-engineering-landing-page-poc-service
                 port:
                   number: 4567
             path: /
