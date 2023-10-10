@@ -2,9 +2,6 @@ name: Deploy to Dev
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - "main"
 
 env:
   KUBE_CLUSTER: ${{ secrets.DEV_KUBE_CLUSTER }}
