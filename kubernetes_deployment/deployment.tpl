@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: operations-engineering-landing-pages-poc
-          image: 754256621582.dkr.ecr.eu-west-2.amazonaws.com/${ECR_NAME}:${IMAGE_TAG}
+          image: ${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}
           env:
             - name: FLASK_DEBUG
               value: "true"   

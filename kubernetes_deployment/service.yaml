@@ -6,8 +6,8 @@ metadata:
     app: operations-engineering-landing-pages-poc-service
 spec:
   ports:
-  - port: 4567
-    name: http
+  - name: http
+    port: 4567
     targetPort: 4567
   selector:
     app: operations-engineering-landing-pages-poc-app
