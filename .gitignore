@@ -11,3 +11,5 @@ terraform.tfstate
 .mypy_cache
 docker
 secrets.yaml
+__pycache__
+.pytest_cache
