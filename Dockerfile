@@ -20,7 +20,5 @@ USER 1017
 
 EXPOSE 4567
 
-ENTRYPOINT gunicorn operations_engineering_landing_page:app \
---bind 0.0.0.0:4567 \
---timeout 120
+ENTRYPOINT gunicorn --bind 0.0.0.0:4567 operations_engineering_landing_page:app
 

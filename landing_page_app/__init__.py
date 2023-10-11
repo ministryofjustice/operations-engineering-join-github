@@ -20,10 +20,9 @@ config = {
 }
 
 # Set config file and logging level
-if os.getenv("FLASK_CONFIGURATION", "production") == "development":
-    app.config.from_object(config["development"])
-    app.logger.setLevel(logging.DEBUG)
-    logging.info("Running in Development mode.")
+app.config.from_object(config["development"])
+app.logger.setLevel(logging.DEBUG)
+logging.info("Running in Development mode.")
 
 # Load sensitive settings from instance/config.py
 app.config.from_pyfile("config.py", silent=True)
@@ -50,3 +49,5 @@ app.register_error_handler(500, unknown_server_error)
 
 # Security and Protection extenstions
 CORS(app, resources={r"/*": {"origins": "*", "send_wildcard": "False"}})
+
+logging.info("App Setup complete, running App...")
