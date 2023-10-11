@@ -20,4 +20,4 @@ spec:
               service:
                 name: operations-engineering-landing-page-poc-service
                 port:
-                  number: 4567
+                  number: 8080
