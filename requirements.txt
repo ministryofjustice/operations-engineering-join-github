@@ -3,7 +3,8 @@ flask
 flask-cors
 govuk-frontend-jinja
 gunicorn
+PyGithub
+pytest
 python-dotenv
 requests
-pytest
 setuptools

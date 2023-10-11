@@ -1,5 +1,6 @@
 import logging
 from flask import Blueprint, render_template, request, redirect
+from landing_page_app.main.scripts.github import add_new_user_to_github_org
 
 main = Blueprint("main", __name__)
 
@@ -36,6 +37,11 @@ def form_error():
     return render_template("form-error.html")
 
 
+@main.route("/internal-error")
+def internal_error(error_message):
+    return render_template("internal-error.html", error_message=error_message)
+
+
 @main.route("/completed-join-github-form-handler", methods=['POST'])
 def completed_join_github_form():
     gh_username = request.form.get("githubUsername")
@@ -44,12 +50,14 @@ def completed_join_github_form():
     access_moj_org = request.form.get("mojOrgAccess")
     access_as_org = request.form.get("asOrgAccess")
 
-    if gh_username is None or name is None or email_address is None:
-        return redirect("/form-error")
+    if gh_username == "" or gh_username is None or name == "" or name is None or email_address == "" or email_address is None:
+        return redirect("form-error")
     elif access_moj_org is None and access_as_org is None:
-        return redirect("/form-error")
+        return redirect("form-error")
 
-    # Add class or code here to do something with the data
+    added_user, error_message = add_new_user_to_github_org(gh_username, email_address, [access_moj_org, access_as_org])
+    if added_user is False:
+        return render_template("internal-error.html", error_message=error_message)
 
     return redirect("thank-you")
 
