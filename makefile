@@ -40,7 +40,7 @@ clean-test:
 	rm -fr .mypy_cache
 	rm -fr .coverage
 	rm -fr htmlcov/
-	rm -fr .pytest_cache
+
 
 local: venv
 	venv/bin/python3 operations_engineering_landing_page.py
