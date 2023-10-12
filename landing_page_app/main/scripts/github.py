@@ -46,11 +46,12 @@ def add_new_user_to_github_org(username: str, email_address: str, organisations:
         print("Function argument error")
     else:
         github_token = environ.get("GH_TOKEN")
-        github_service = GithubService(github_token)
-        for organisation in organisations:
-            if organisation == MINISTRY_OF_JUSTICE or organisation == MOJ_ANALYTICAL_SERVICES:
-                if _is_email_address_pre_approved(organisation, email_address):
-                    added_user, error_message = _add_pre_appoved_email_user_to_github_org(github_service, username, organisation)
-                else:
-                    added_user = _add_non_pre_appoved_email_user_to_github_org(username, email_address, organisation)
+        if github_token:
+            github_service = GithubService(github_token)
+            for organisation in organisations:
+                if organisation == MINISTRY_OF_JUSTICE or organisation == MOJ_ANALYTICAL_SERVICES:
+                    if _is_email_address_pre_approved(organisation, email_address):
+                        added_user, error_message = _add_pre_appoved_email_user_to_github_org(github_service, username, organisation)
+                    else:
+                        added_user = _add_non_pre_appoved_email_user_to_github_org(username, email_address, organisation)
     return added_user, error_message

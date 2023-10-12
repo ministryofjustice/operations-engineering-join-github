@@ -1,6 +1,4 @@
 """ Config values to be used during development """
-import os
-
 from os import environ
 
 APP_SECRET_KEY = environ.get("APP_SECRET_KEY")
@@ -13,5 +11,5 @@ SSL_REDIRECT = False
 TESTING = True
 
 if not APP_SECRET_KEY:
-    os.environ["APP_SECRET_KEY"] = "dev"
+    environ["APP_SECRET_KEY"] = "dev"
     APP_SECRET_KEY = environ.get("APP_SECRET_KEY")

@@ -3,7 +3,6 @@ from flask import Blueprint, render_template, request, redirect
 from landing_page_app.main.scripts.github import add_new_user_to_github_org
 
 main = Blueprint("main", __name__)
-
 logger = logging.getLogger(__name__)
 
 AUTHLIB_CLIENT = "authlib.integrations.flask_client"
@@ -62,7 +61,7 @@ def completed_join_github_form():
     return redirect("thank-you")
 
 
-main.errorhandler(404)
+@main.errorhandler(404)
 def page_not_found(err):
     """Load 404.html when page not found error occurs
 
