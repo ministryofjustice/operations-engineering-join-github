@@ -43,7 +43,7 @@ clean-test:
 
 
 local: venv
-	venv/bin/python3 operations_engineering_landing_page.py
+	venv/bin/python3 -m operations_engineering_landing_page
 
 all:
 

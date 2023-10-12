@@ -1,9 +1,7 @@
-import logging
-from flask import Blueprint, render_template, request, redirect
-from landing_page_app.main.scripts.github import add_new_user_to_github_org
+from flask import Blueprint, render_template, request, redirect, current_app
+from landing_page_app.main.scripts.github_script import GitHubScript
 
 main = Blueprint("main", __name__)
-logger = logging.getLogger(__name__)
 
 AUTHLIB_CLIENT = "authlib.integrations.flask_client"
 
@@ -36,11 +34,6 @@ def form_error():
     return render_template("form-error.html")
 
 
-@main.route("/internal-error")
-def internal_error(error_message):
-    return render_template("internal-error.html", error_message=error_message)
-
-
 @main.route("/completed-join-github-form-handler", methods=['POST'])
 def completed_join_github_form():
     gh_username = request.form.get("githubUsername")
@@ -54,8 +47,9 @@ def completed_join_github_form():
     elif access_moj_org is None and access_as_org is None:
         return redirect("form-error")
 
-    added_user, error_message = add_new_user_to_github_org(gh_username, email_address, [access_moj_org, access_as_org])
+    added_user, error_message = GitHubScript(current_app.github_service, current_app.logger).add_new_user_to_github_org(gh_username, email_address, [access_moj_org, access_as_org])
     if added_user is False:
+        current_app.logger.error(f"error_message is: {error_message}")
         return render_template("internal-error.html", error_message=error_message)
 
     return redirect("thank-you")
@@ -71,7 +65,7 @@ def page_not_found(err):
     Returns:
         Load the templates/404.html page
     """
-    logger.debug("A request was made to a page that doesn't exist %s", err)
+    current_app.logger.debug("A request was made to a page that doesn't exist %s", err)
     return render_template("404.html"), 404
 
 
@@ -85,7 +79,7 @@ def server_forbidden(err):
     Returns:
         Load the templates/403.html page
     """
-    logger.debug("server_forbidden()")
+    current_app.logger.debug("server_forbidden()")
     return render_template("403.html"), 403
 
 
@@ -99,7 +93,7 @@ def unknown_server_error(err):
     Returns:
         Load the templates/500.html page
     """
-    logger.error("An unknown server error occurred: %s", err)
+    current_app.logger.error("An unknown server error occurred: %s", err)
     return render_template("500.html"), 500
 
 
@@ -113,5 +107,5 @@ def gateway_timeout(err):
     Returns:
         Load the templates/504.html page
     """
-    logger.error("A gateway timeout error occurred: %s", err)
+    current_app.logger.error("A gateway timeout error occurred: %s", err)
     return render_template("504.html"), 504

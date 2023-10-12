@@ -1,33 +1,27 @@
 """Flask App"""
+from dotenv import dotenv_values
+
 import logging
 
 from flask import Flask
 from flask_cors import CORS
+
 from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
 
+from landing_page_app.main.services.github_service import GithubService
 from landing_page_app.main.views import (main, page_not_found, server_forbidden, unknown_server_error)
 
+
 def create_app() -> Flask:
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s %(levelname)s : %(message)s',
-    )
     app = Flask(__name__, instance_relative_config=True)
 
-    # Config folder file mapping
-    config = {
-        "development": "landing_page_app.config.development"
-    }
+    app.logger.setLevel(logging.DEBUG)
+    app.logger.info("Start App Setup")
 
     # Set config file and logging level
-    app.config.from_object(config["development"])
-    app.logger.setLevel(logging.DEBUG)
-    logging.info("Running in Development mode.")
+    app.config.from_object("landing_page_app.config.development")
 
-    # Load sensitive settings from instance/config.py
-    app.config.from_pyfile("config.py", silent=True)
-
-    logging.info("App Setup")
+    app.logger.info("Running in Development mode.")
 
     app.secret_key = app.config.get("APP_SECRET_KEY")
 
@@ -50,6 +44,13 @@ def create_app() -> Flask:
     # Security and Protection extenstions
     CORS(app, resources={r"/*": {"origins": "*", "send_wildcard": "False"}})
 
-    logging.info("App Setup complete, running App...")
+    app.config.update(GITHUB_TOKEN=dotenv_values(".env").get("GITHUB_TOKEN"))
+    github_token = app.config.get("GITHUB_TOKEN")
+    if not github_token:
+        logging.error("Get the GitHub Token error")
+        exit(1)
+    app.github_service = GithubService(github_token)
+
+    app.logger.info("App Setup complete, running App...")
 
     return app
