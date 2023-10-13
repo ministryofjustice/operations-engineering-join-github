@@ -30,6 +30,7 @@ test: venv
 	export FLASK_CONFIGURATION=development; venv/bin/coverage run -m unittest discover
 
 test_and_report: venv
+	venv/bin/coverage run -m unittest discover
 	venv/bin/coverage html && open htmlcov/index.html
 
 clean-test:

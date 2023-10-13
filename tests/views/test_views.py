@@ -4,6 +4,14 @@ from unittest.mock import MagicMock
 from landing_page_app.main.scripts.github_script import GithubScript
 import landing_page_app
 
+from landing_page_app.main.views import (
+    handle_github_exception,
+    page_not_found,
+    server_forbidden,
+    unknown_server_error,
+    gateway_timeout,
+)
+
 
 class TestViews(unittest.TestCase):
     def setUp(self):
@@ -44,6 +52,34 @@ class TestViews(unittest.TestCase):
         response = self.app.test_client().get("/form-error")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/form-error")
+
+    def test_handle_github_exception(self):
+        with self.app.test_request_context():
+            response = handle_github_exception("12345678")
+            if "There was an intenal error: 12345678" in response:
+                self.assertTrue(1)
+            else:
+                self.assertTrue(0)
+
+    def test_page_not_found(self):
+        with self.app.test_request_context():
+            response = page_not_found("some-error")
+            self.assertEqual(response[1], 404)
+
+    def test_server_forbidden(self):
+        with self.app.test_request_context():
+            response = server_forbidden("some-error")
+            self.assertEqual(response[1], 403)
+
+    def test_unknown_server_error(self):
+        with self.app.test_request_context():
+            response = unknown_server_error("some-error")
+            self.assertEqual(response[1], 500)
+
+    def test_gateway_timeout(self):
+        with self.app.test_request_context():
+            response = gateway_timeout("some-error")
+            self.assertEqual(response[1], 504)
 
 
 class TestCompletedJoinGithubForm(unittest.TestCase):

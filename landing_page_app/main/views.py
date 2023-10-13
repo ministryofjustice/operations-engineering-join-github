@@ -57,7 +57,7 @@ def completed_join_github_form():
 
 
 @main.errorhandler(GithubException)
-def handle_github_exception(error_message=None):
+def handle_github_exception(error_message):
     logger.error("GitHub exception occurred: %s", error_message)
     return render_template("internal-error.html", error_message=error_message)
 
