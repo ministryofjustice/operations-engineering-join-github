@@ -13,9 +13,15 @@ from landing_page_app.main.views import (main, page_not_found, server_forbidden,
 
 
 def create_app() -> Flask:
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)s %(levelname)s in %(module)s: %(message)s',
+    )
+
     app = Flask(__name__, instance_relative_config=True)
 
-    app.logger.setLevel(logging.DEBUG)
+    # app.logger.setLevel(logging.DEBUG)
+    # app.logger.formatter('%(asctime)s %(levelname)s in %(module)s: %(message)s')
     app.logger.info("Start App Setup")
 
     # Set config file and logging level

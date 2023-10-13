@@ -1,4 +1,4 @@
-# import logging
+import logging
 import re
 from github import GithubException
 from landing_page_app.main.services.github_service import GithubService
@@ -10,11 +10,12 @@ from landing_page_app.main.config.constants import (
     AS_ORG_ALLOWED_EMAIL_DOMAINS
 )
 
+logger = logging.getLogger(__name__)
+
 
 class GitHubScript:
-    def __init__(self, github_service: GithubService, logger):
+    def __init__(self, github_service: GithubService):
         self.github_service = github_service
-        self.logger = logger
 
     def _add_non_pre_appoved_email_user_to_github_org(self, username, email_address, organization):
         pass
@@ -25,10 +26,10 @@ class GitHubScript:
         try:
             # TODO: replace Org in below function to use function argument
             self.github_service.add_new_user_to_org(user, MOJ_TEST_ORG)
-            self.logger.debug(f"{user.login} has been invited to {organisation} with the role 'member'.")
+            logger.debug(f"{user.login} has been invited to {organisation} with the role 'member'.")
             added_user = True
         except GithubException as err:
-            self.logger.error(f"Add user to GH Error: {err}")
+            logger.error(f"Add user to GH Error: {err}")
             if err.status == 422:
                 error_message = "User already a GitHub Org member"
             else:
@@ -41,7 +42,7 @@ class GitHubScript:
         try:
             user = self.github_service.get_user(username)
         except GithubException as err:
-            self.logger.error(f"Add user to GH Error: {err}")
+            logger.error(f"Add user to GH Error: {err}")
             if err.status == 404:
                 error_message = "User not found on GitHub."
             else:
@@ -63,7 +64,7 @@ class GitHubScript:
         added_user = False
         error_message = None
         if username == "" or username is None or email_address == "" or email_address is None or len(organisations) == 0:
-            self.logger.debug("add_new_user_to_github_org: incorrect function argument")
+            logger.debug("add_new_user_to_github_org: incorrect function argument")
         else:
             user, error_message = self._get_github_user(username)
             if error_message is None:
