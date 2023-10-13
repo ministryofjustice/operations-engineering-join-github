@@ -1,6 +1,6 @@
 .ONESHELL:
 
-PYTHON_SOURCE_FILES = ./instance ./tests operations_engineering_landing_page.py ./landing_page_app
+PYTHON_SOURCE_FILES = ./tests operations_engineering_landing_page.py ./landing_page_app
 
 help:
 	@echo "Available commands:"
@@ -18,8 +18,8 @@ lint: venv
 	venv/bin/pip3 install mypy
 	venv/bin/pip3 install pylint
 	venv/bin/flake8 --ignore=E501,W503,E302 $(PYTHON_SOURCE_FILES)
-	venv/bin/mypy --ignore-missing-imports $(PYTHON_SOURCE_FILES)
 	venv/bin/pylint --recursive=y $(PYTHON_SOURCE_FILES)
+	venv/bin/mypy --ignore-missing-imports $(PYTHON_SOURCE_FILES)
 
 format: venv
 	venv/bin/pip3 install black

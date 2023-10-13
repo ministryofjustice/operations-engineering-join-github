@@ -1,4 +1,5 @@
 """operations-engineering-landing-page"""
+import sys
 import logging
 from os import environ
 from dotenv import dotenv_values
@@ -14,7 +15,7 @@ def run_app():
         github_token = dotenv_values(".env").get("GITHUB_TOKEN")
         if not github_token:
             logging.error("Failed to find a GitHub Token")
-            exit(1)
+            sys.exit(1)
     github_service = GithubService(github_token)
     github_script = GithubScript(github_service)
     app = create_app(github_script)

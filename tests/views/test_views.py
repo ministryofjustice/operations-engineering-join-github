@@ -1,15 +1,8 @@
 import unittest
 from unittest.mock import MagicMock
 
-from flask import Blueprint
-
-from github import GithubException
-
 from landing_page_app.main.scripts.github_script import GithubScript
-
 import landing_page_app
-
-main = Blueprint("main", __name__)
 
 
 class TestViews(unittest.TestCase):

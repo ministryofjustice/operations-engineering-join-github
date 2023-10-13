@@ -47,7 +47,8 @@ def completed_join_github_form():
 
     if gh_username == "" or gh_username is None or name == "" or name is None or email_address == "" or email_address is None:
         return redirect("form-error")
-    elif access_moj_org is None and access_as_org is None:
+
+    if access_moj_org is None and access_as_org is None:
         return redirect("form-error")
 
     current_app.github_script.add_new_user_to_github_org(gh_username, email_address, [access_moj_org, access_as_org])
@@ -85,7 +86,7 @@ def server_forbidden(err):
     Returns:
         Load the templates/403.html page
     """
-    logger.debug("server_forbidden()")
+    logger.debug("server_forbidden(): %s", err)
     return render_template("403.html"), 403
 
 
