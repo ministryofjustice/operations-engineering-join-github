@@ -1,6 +1,6 @@
 import logging
 from flask import Blueprint, render_template, request, redirect, current_app
-from landing_page_app.main.scripts.github_script import GitHubScript
+from github import GithubException
 
 logger = logging.getLogger(__name__)
 
@@ -50,12 +50,15 @@ def completed_join_github_form():
     elif access_moj_org is None and access_as_org is None:
         return redirect("form-error")
 
-    added_user, error_message = GitHubScript(current_app.github_service).add_new_user_to_github_org(gh_username, email_address, [access_moj_org, access_as_org])
-    if added_user is False:
-        logger.debug(f"{error_message}")
-        return render_template("internal-error.html", error_message=error_message)
+    current_app.github_script.add_new_user_to_github_org(gh_username, email_address, [access_moj_org, access_as_org])
 
     return redirect("thank-you")
+
+
+@main.errorhandler(GithubException)
+def handle_github_exception(error_message=None):
+    logger.error("GitHub exception occurred: %s", error_message)
+    return render_template("internal-error.html", error_message=error_message)
 
 
 @main.errorhandler(404)
