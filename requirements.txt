@@ -1,4 +1,5 @@
 authlib
+email-validator
 flask
 flask-cors
 govuk-frontend-jinja
@@ -7,3 +8,4 @@ PyGithub
 python-dotenv
 requests
 setuptools
+WTForms

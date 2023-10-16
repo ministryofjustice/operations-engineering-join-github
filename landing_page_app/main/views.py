@@ -2,6 +2,8 @@ import logging
 from flask import Blueprint, render_template, request, redirect, current_app
 from github import GithubException
 
+from landing_page_app.main.scripts.join_github_form import JoinGithubForm
+
 logger = logging.getLogger(__name__)
 
 main = Blueprint("main", __name__)
@@ -22,38 +24,24 @@ def join_github_info_page():
     return render_template("join-github.html")
 
 
-@main.route("/join-github-form.html")
-def join_github_form():
-    return render_template("/join-github-form.html")
-
-
 @main.route("/thank-you")
 def thank_you():
     return render_template("thank-you.html")
 
 
-@main.route("/form-error")
-def form_error():
-    return render_template("form-error.html")
-
-
-@main.route("/completed-join-github-form-handler", methods=['POST'])
+@main.route("/join-github-form.html", methods=["GET", "POST"])
+@main.route("/join-github-form", methods=["GET", "POST"])
 def completed_join_github_form():
-    gh_username = request.form.get("githubUsername")
-    name = request.form.get("userName")
-    email_address = request.form.get("userEmailAddress")
-    access_moj_org = request.form.get("mojOrgAccess")
-    access_as_org = request.form.get("asOrgAccess")
-
-    if gh_username == "" or gh_username is None or name == "" or name is None or email_address == "" or email_address is None:
-        return redirect("form-error")
-
-    if access_moj_org is None and access_as_org is None:
-        return redirect("form-error")
-
-    current_app.github_script.add_new_user_to_github_org(gh_username, email_address, [access_moj_org, access_as_org])
-
-    return redirect("thank-you")
+    form = JoinGithubForm(request.form)
+    if request.method == 'POST' and form.validate() and form.validate_org():
+        selected_orgs = current_app.github_script.get_selected_organisations(form.access_moj_org.data, form.access_as_org.data)
+        current_app.github_script.add_new_user_to_github_org(form.gh_username.data, form.email_address.data, selected_orgs)
+        return redirect("thank-you")
+    return render_template(
+        "join-github-form.html",
+        form=form,
+        template="join-github-form.html"
+    )
 
 
 @main.errorhandler(GithubException)

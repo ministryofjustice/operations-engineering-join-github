@@ -43,3 +43,11 @@ class GithubScript:
                         logger.debug(f"{user.login.lower()} has been invited to {organisation.lower()} with the role 'member'.")
                     else:
                         self._add_non_pre_appoved_email_user_to_github_org(username.lower(), email_address.lower(), organisation.lower())
+
+    def get_selected_organisations(self, moj_org: bool, as_org: bool) -> list:
+        organisations = []
+        if moj_org:
+            organisations.append(MINISTRY_OF_JUSTICE)
+        if as_org:
+            organisations.append(MOJ_ANALYTICAL_SERVICES)
+        return organisations

@@ -3,52 +3,73 @@
 {% block content %}
 <h1 class="govuk-heading-xl">Join GitHub Form</h1>
 
+{% if form.errors %}
+  <div class="govuk-error-summary" data-module="govuk-error-summary">
+    <div role="alert">
+      <h2 class="govuk-error-summary__title">
+        There is a problem
+      </h2>
+      <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+          {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+            {% for error in field_errors %}
+                <li>{{ form[field_name].label }}: {{ error }}</li>
+            {% endfor %}
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
 <div class="govuk-width-container">
   <main class="govuk-main-wrapper " id="main-content" role="main">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        <form action="/completed-join-github-form-handler" method="post" novalidate>
+        <form action="/join-github-form" method="POST">
           <div class="govuk-form-group">
-            <label class="govuk-label govuk-label--m" for="user-github-username">
-              GitHub Username
+            <label class="govuk-label govuk-label--m" for="gh_username">
+              {{ form.gh_username.label }}
             </label>
-            <input class="govuk-input govuk-input--width-40" id="user-github-username" name="githubUsername" spellcheck="false" type="text" aria-describedby="github-username-hint">
+            {{ form.gh_username(class="govuk-input govuk-input--width-40") }}
           </div>
           <div class="govuk-form-group">
-            <label class="govuk-label govuk-label--m" for="user-name">
-              Name
+            <label class="govuk-label govuk-label--m" for="name">
+              {{ form.name.label }}
             </label>
-            <input class="govuk-input govuk-input--width-40" id="user-name" name="userName" type="text" spellcheck="false" aria-describedby="user-name-hint" autocomplete="name">
+            {{ form.name(class="govuk-input govuk-input--width-40") }}
           </div>
           <div class="govuk-form-group">
-            <label class="govuk-label govuk-label--m" for="user-email-address">
-              Email Address
+            <label class="govuk-label govuk-label--m" for="email_address">
+              {{ form.email_address.label }}
             </label>
-            <input class="govuk-input govuk-input--width-40" id="user-email-address" name="userEmailAddress" spellcheck="false" type="email" aria-describedby="email-hint" autocomplete="email">
+            {{ form.email_address(class="govuk-input govuk-input--width-40") }}
           </div>
-          <div class="govuk-form-group">            
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-              <label class="govuk-label govuk-label--m">
-                Which GitHub Organisation do you require access to?
-              </label>
-            </legend>
-            <div id="org-hint" class="govuk-hint">
-              Select all that apply.
-            </div>
-            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-              <div class="govuk-checkboxes__item">
-                <input class="govuk-checkboxes__input" id="org-moj-checkbox" name="mojOrgAccess" type="checkbox" value="ministryofjustice">
-                <label class="govuk-label govuk-checkboxes__label" for="org-moj">
-                  Ministry Of Justice
-                </label>
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset" aria-describedby="join-github-hint">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading">
+                  Which GitHub Organisation do you require access to?
+                </h1>
+              </legend>
+              <div id="join-github-hint" class="govuk-hint">
+                Select all that apply.
               </div>
-              <div class="govuk-checkboxes__item">
-                <input class="govuk-checkboxes__input" id="org-as-checkbox" name="asOrgAccess" type="checkbox" value="moj-analytical-services">
-                <label class="govuk-label govuk-checkboxes__label" for="org-as">
-                  Analytical Services
-                </label>
+              <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                <div class="govuk-checkboxes__item">
+                  {{ form.access_moj_org(class="govuk-checkboxes__input") }}
+                  <label class="govuk-label govuk-checkboxes__label" for="access_moj_org">
+                    {{ form.access_moj_org.label }}
+                  </label>
+                </div>
+                <div class="govuk-checkboxes__item">
+                  {{ form.access_as_org(class="govuk-checkboxes__input") }}
+                  <label class="govuk-label govuk-checkboxes__label" for="access_as_org">
+                    {{ form.access_as_org.label }}
+                  </label>
+                </div>
               </div>
-            </div>
+            </fieldset>
           </div>
           <button class="govuk-button" type="submit" data-module="govuk-button">
             Continue
