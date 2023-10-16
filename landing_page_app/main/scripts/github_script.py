@@ -16,7 +16,7 @@ class GithubScript:
     def __init__(self, github_service: GithubService):
         self.github_service = github_service
 
-    def _add_non_pre_appoved_email_user_to_github_org(self, username, email_address, organization):
+    def _add_non_pre_appoved_email_user_to_github_org(self, username: str, email_address: str, organization: str):
         pass
 
     def _is_email_address_pre_approved(self, organisation: str, email_address: str):
