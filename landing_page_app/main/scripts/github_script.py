@@ -19,15 +19,24 @@ class GithubScript:
     def _add_non_pre_appoved_email_user_to_github_org(self, username: str, email_address: str, organization: str):
         pass
 
+    def _check_email_address(self, email_address: str):
+        valid = False
+        if email_address is not None and email_address != "":
+            regex = re.compile('[@]')
+            if regex.search(email_address) is not None:
+                valid = True
+        return valid
+
     def _is_email_address_pre_approved(self, organisation: str, email_address: str):
         pre_approved = False
-        email_domain = re.search(r"@([\w.]+)", email_address).group(1)
-        if organisation.lower() == MOJ_ANALYTICAL_SERVICES:
-            if email_domain in AS_ORG_ALLOWED_EMAIL_DOMAINS:
-                pre_approved = True
-        elif organisation.lower() == MINISTRY_OF_JUSTICE:
-            if email_domain in MOJ_ORG_ALLOWED_EMAIL_DOMAINS:
-                pre_approved = True
+        if self._check_email_address(email_address) and organisation != "" and organisation is not None:
+            email_domain = email_address[email_address.index("@") + 1:]
+            if organisation.lower() == MOJ_ANALYTICAL_SERVICES:
+                if email_domain in AS_ORG_ALLOWED_EMAIL_DOMAINS:
+                    pre_approved = True
+            elif organisation.lower() == MINISTRY_OF_JUSTICE:
+                if email_domain in MOJ_ORG_ALLOWED_EMAIL_DOMAINS:
+                    pre_approved = True
         return pre_approved
 
     def add_new_user_to_github_org(self, username: str, email_address: str, organisations: list):
@@ -38,7 +47,7 @@ class GithubScript:
             for organisation in organisations:
                 if organisation.lower() == MINISTRY_OF_JUSTICE or organisation.lower() == MOJ_ANALYTICAL_SERVICES:
                     if self._is_email_address_pre_approved(organisation, email_address.lower()):
-                        # TODO: replace Org in below function to use function argument
+                        # TODO: change MOJ_TEST_ORG to organisation
                         self.github_service.add_new_user_to_org(user, MOJ_TEST_ORG)
                         logger.debug(f"{user.login.lower()} has been invited to {organisation.lower()} with the role 'member'.")
                     else:

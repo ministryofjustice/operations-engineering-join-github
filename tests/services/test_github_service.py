@@ -36,3 +36,7 @@ class TestGithubServiceAddNewUserToOrg(unittest.TestCase):
             call("some-org"),
             call().invite_user(mock_user)
         ])
+
+
+if __name__ == "__main__":
+    unittest.main(argv=["first-arg-is-ignored"], exit=False)
