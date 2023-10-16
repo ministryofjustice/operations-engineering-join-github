@@ -19,7 +19,7 @@ spec:
           image: ${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}
           ports:
             - containerPort: 4567
-            env:
+          env:
             - name: GH_TOKEN
               valueFrom:
                 secretKeyRef:
