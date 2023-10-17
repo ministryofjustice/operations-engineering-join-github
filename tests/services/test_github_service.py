@@ -20,7 +20,7 @@ class TestGithubServiceGetUser(unittest.TestCase):
         mock_github_client_core_api.return_value.get_user.return_value = "mock_user"
         github_service = GithubService("")
         github_service.get_user("test_user")
-        github_service.github_client_core_api.get_user.assert_has_calls([call('test_user')])
+        github_service.github_client_core_api.get_user.assert_has_calls([call("test_user")])
 
 
 @patch("github.Github.__new__")

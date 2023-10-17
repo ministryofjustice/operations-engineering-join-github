@@ -33,7 +33,7 @@ def thank_you():
 @main.route("/join-github-form", methods=["GET", "POST"])
 def completed_join_github_form():
     form = JoinGithubForm(request.form)
-    if request.method == 'POST' and form.validate() and form.validate_org():
+    if request.method == "POST" and form.validate() and form.validate_org():
         selected_orgs = current_app.github_script.get_selected_organisations(form.access_moj_org.data, form.access_as_org.data)
         current_app.github_script.add_new_user_to_github_org(form.gh_username.data, form.email_address.data, selected_orgs)
         return redirect("thank-you")

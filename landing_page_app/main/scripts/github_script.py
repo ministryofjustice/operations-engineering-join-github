@@ -22,7 +22,7 @@ class GithubScript:
     def _check_email_address(self, email_address: str):
         valid = False
         if email_address is not None and email_address != "":
-            regex = re.compile('[@]')
+            regex = re.compile("[@]")
             if regex.search(email_address) is not None:
                 valid = True
         return valid
