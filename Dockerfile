@@ -20,5 +20,4 @@ USER 1017
 
 EXPOSE 4567
 
-ENTRYPOINT gunicorn --bind 0.0.0.0:4567 operations_engineering_landing_page:app
-
+CMD ["gunicorn", "--bind=0.0.0.0:4567", "operations_engineering_landing_page:app()"]
