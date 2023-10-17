@@ -58,7 +58,7 @@ class TestViews(unittest.TestCase):
     def test_handle_github_exception(self):
         with self.app.test_request_context():
             response = handle_github_exception("12345678")
-            self.assertRegex(response, "There was an intenal error: 12345678")
+            self.assertRegex(response, "There was an intenal application error: 12345678")
 
     def test_page_not_found(self):
         with self.app.test_request_context():
