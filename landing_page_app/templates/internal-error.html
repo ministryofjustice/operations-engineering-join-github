@@ -1,10 +1,14 @@
 {% extends "base.html" %}
 
+{% block pageTitle %}
+Internal Application Error
+{% endblock %}
+
 {% block content %}
-<h1 class="govuk-heading-xl">Internal Error</h1>
+<h1 class="govuk-heading-xl">Internal Application Error</h1>
 
 <p class="govuk-body">
-  There was an intenal error: {{ error_message }}
+  There was an intenal application error: {{ error_message }}
 </p>
 
 <p class="govuk-body">

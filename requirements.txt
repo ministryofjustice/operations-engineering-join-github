@@ -1,4 +1,3 @@
-authlib
 email-validator
 flask
 flask-cors
@@ -8,5 +7,4 @@ PyGithub
 python-dotenv
 requests
 slack_sdk
-setuptools
 WTForms

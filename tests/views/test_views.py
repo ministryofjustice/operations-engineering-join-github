@@ -98,83 +98,111 @@ class TestCompletedJoinGithubForm(unittest.TestCase):
     def test_join_github_form(self):
         self.app.github_script.get_selected_organisations.return_value = "some-org"
         self.app.github_script.add_new_user_to_github_org.return_value = []
-        response = self.app.test_client().post("/join-github-form", data=self.form_data, follow_redirects=True)
+        response = self.app.test_client().post(
+            "/join-github-form", data=self.form_data, follow_redirects=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/thank-you")
 
     def test_join_github_form_with_non_approved_email_address(self):
         self.app.github_script.get_selected_organisations.return_value = "some-org"
         self.app.github_script.add_new_user_to_github_org.return_value = ["some-value"]
-        response = self.app.test_client().post("/join-github-form", data=self.form_data, follow_redirects=True)
+        response = self.app.test_client().post(
+            "/join-github-form", data=self.form_data, follow_redirects=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/use-slack")
-        self.app.slack_service.send_add_new_user_to_github_orgs.assert_called_once_with(["some-value"])
+        self.app.slack_service.send_add_new_user_to_github_orgs.assert_called_once_with(
+            ["some-value"]
+        )
 
     def test_join_github_form_with_incorrect_special_character_inputs(self):
         self.form_data["gh_username"] = "some!username"
-        response = self.app.test_client().post("/join-github-form", data=self.form_data, follow_redirects=True)
+        response = self.app.test_client().post(
+            "/join-github-form", data=self.form_data, follow_redirects=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/join-github-form")
         self.form_data["gh_username"] = "some-username"
 
         self.form_data["email_address"] = "some!email!"
-        response = self.app.test_client().post("/join-github-form", data=self.form_data, follow_redirects=True)
+        response = self.app.test_client().post(
+            "/join-github-form", data=self.form_data, follow_redirects=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/join-github-form")
         self.form_data["email_address"] = "some@email.com"
 
         self.form_data["name"] = "name1!"
-        response = self.app.test_client().post("/join-github-form", data=self.form_data, follow_redirects=True)
+        response = self.app.test_client().post(
+            "/join-github-form", data=self.form_data, follow_redirects=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/join-github-form")
         self.form_data["name"] = "some name"
 
     def test_join_github_form_with_missing_username(self):
         self.form_data["gh_username"] = None
-        response = self.app.test_client().post("/join-github-form", data=self.form_data, follow_redirects=True)
+        response = self.app.test_client().post(
+            "/join-github-form", data=self.form_data, follow_redirects=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/join-github-form")
 
         self.form_data["gh_username"] = ""
-        response = self.app.test_client().post("/join-github-form", data=self.form_data, follow_redirects=True)
+        response = self.app.test_client().post(
+            "/join-github-form", data=self.form_data, follow_redirects=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/join-github-form")
 
     def test_join_github_form_with_missing_email_address(self):
         self.form_data["email_address"] = None
-        response = self.app.test_client().post("/join-github-form", data=self.form_data, follow_redirects=True)
+        response = self.app.test_client().post(
+            "/join-github-form", data=self.form_data, follow_redirects=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/join-github-form")
 
         self.form_data["email_address"] = ""
-        response = self.app.test_client().post("/join-github-form", data=self.form_data, follow_redirects=True)
+        response = self.app.test_client().post(
+            "/join-github-form", data=self.form_data, follow_redirects=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/join-github-form")
 
     def test_join_github_form_with_missing_name(self):
         self.form_data["name"] = None
-        response = self.app.test_client().post("/join-github-form", data=self.form_data, follow_redirects=True)
+        response = self.app.test_client().post(
+            "/join-github-form", data=self.form_data, follow_redirects=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/join-github-form")
 
         self.form_data["name"] = ""
-        response = self.app.test_client().post("/join-github-form", data=self.form_data, follow_redirects=True)
+        response = self.app.test_client().post(
+            "/join-github-form", data=self.form_data, follow_redirects=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/join-github-form")
 
     def test_join_github_form_with_missing_orgs(self):
         self.form_data["access_moj_org"] = None
         self.form_data["access_as_org"] = None
-        response = self.app.test_client().post("/join-github-form", data=self.form_data, follow_redirects=True)
+        response = self.app.test_client().post(
+            "/join-github-form", data=self.form_data, follow_redirects=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/join-github-form")
 
         form_data = {
             "gh_username": "some-username",
             "name": "some name",
-            "email_address": "some@email.com"
+            "email_address": "some@email.com",
         }
-        response = self.app.test_client().post("/join-github-form", data=form_data, follow_redirects=True)
+        response = self.app.test_client().post(
+            "/join-github-form", data=form_data, follow_redirects=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/join-github-form")
 

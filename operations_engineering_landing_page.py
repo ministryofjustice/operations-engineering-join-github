@@ -44,9 +44,9 @@ def app():
 
 # Run Flask locally entry point for makefile and debugger
 def run_app():
-    app = build_app()
-    app.run(port=4567)
-    return app
+    flask_app = build_app()
+    flask_app.run(port=4567)
+    return flask_app
 
 
 if __name__ == "__main__":

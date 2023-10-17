@@ -10,4 +10,6 @@ class GithubService:
         return self.github_client_core_api.get_user(user_name.lower())
 
     def add_new_user_to_org(self, user: NamedUser, organisation: str) -> None:
-        self.github_client_core_api.get_organization(organisation.lower()).invite_user(user)
+        self.github_client_core_api.get_organization(organisation.lower()).invite_user(
+            user
+        )

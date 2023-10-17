@@ -10,12 +10,18 @@ from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
 
 from landing_page_app.main.scripts.github_script import GithubScript
 from landing_page_app.main.services.slack_service import SlackService
-from landing_page_app.main.views import (main, page_not_found, server_forbidden, unknown_server_error, handle_github_exception)
+from landing_page_app.main.views import (
+    main,
+    page_not_found,
+    server_forbidden,
+    unknown_server_error,
+    handle_github_exception,
+)
 
 
 def create_app(github_script: GithubScript, slack_service: SlackService) -> Flask:
     logging.basicConfig(
-        format='%(asctime)s %(levelname)s in %(module)s: %(message)s',
+        format="%(asctime)s %(levelname)s in %(module)s: %(message)s",
     )
 
     app = Flask(__name__, instance_relative_config=True)
@@ -34,7 +40,9 @@ def create_app(github_script: GithubScript, slack_service: SlackService) -> Flas
     app.jinja_loader = ChoiceLoader(
         [
             PackageLoader("landing_page_app"),
-            PrefixLoader({"govuk_frontend_jinja": PackageLoader("govuk_frontend_jinja")}),
+            PrefixLoader(
+                {"govuk_frontend_jinja": PackageLoader("govuk_frontend_jinja")}
+            ),
         ]
     )
 

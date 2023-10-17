@@ -8,14 +8,12 @@ logger = logging.getLogger(__name__)
 
 main = Blueprint("main", __name__)
 
-AUTHLIB_CLIENT = "authlib.integrations.flask_client"
-
 
 @main.route("/home")
 @main.route("/index")
 @main.route("/")
 def index():
-    '''Entrypoint into the application'''
+    """Entrypoint into the application"""
     return render_template("home.html")
 
 
@@ -39,17 +37,20 @@ def use_slack():
 def completed_join_github_form():
     form = JoinGithubForm(request.form)
     if request.method == "POST" and form.validate() and form.validate_org():
-        selected_orgs = current_app.github_script.get_selected_organisations(form.access_moj_org.data, form.access_as_org.data)
-        non_approved_requests = current_app.github_script.add_new_user_to_github_org(form.gh_username.data, form.email_address.data, selected_orgs)
+        selected_orgs = current_app.github_script.get_selected_organisations(
+            form.access_moj_org.data, form.access_as_org.data
+        )
+        non_approved_requests = current_app.github_script.add_new_user_to_github_org(
+            form.gh_username.data, form.email_address.data, selected_orgs
+        )
         if len(non_approved_requests) == 0:
             return redirect("thank-you")
-        else:
-            current_app.slack_service.send_add_new_user_to_github_orgs(non_approved_requests)
-            return redirect("use-slack")
+        current_app.slack_service.send_add_new_user_to_github_orgs(
+            non_approved_requests
+        )
+        return redirect("use-slack")
     return render_template(
-        "join-github-form.html",
-        form=form,
-        template="join-github-form.html"
+        "join-github-form.html", form=form, template="join-github-form.html"
     )
 
 
