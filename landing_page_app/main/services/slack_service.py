@@ -13,13 +13,12 @@ class SlackService:
         self.slack_client = WebClient(slack_token)
 
     def send_add_new_user_to_github_orgs(self, requests: list):
-        messages = []
+        organisations = []
         for request in requests:
             username = request["username"]
-            organisation = request["organisation"]
+            organisations.append(request["organisation"])
             email_address = request["email_address"]
-            messages.append(f"{username} to {organisation} GH Org. (Email address is {email_address})")
-        message = " and ".join(messages)
+        organisations = " and ".join(organisations)
         self.slack_client.chat_postMessage(channel=self.OPERATIONS_ENGINEERING_ALERTS_CHANNEL_ID,
                                            mrkdown=True,
                                            blocks=[
@@ -29,8 +28,7 @@ class SlackService:
                                                        "type": "mrkdwn",
                                                        "text": dedent(f"""
                                                            *Join GitHub Automation*
-                                                           Please review adding the following user/s to GitHub Organisation/s:
-                                                           {message}
+                                                           Please review add user {username} to GitHub Organisation/s: {organisations}. Email address is {email_address}.
                                                        """).strip("\n")
                                                    }
                                                }

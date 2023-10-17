@@ -28,7 +28,7 @@ class SendAddNewUserToGithubOrgs(unittest.TestCase):
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": '*Join GitHub Automation*\nPlease review adding the following user/s to GitHub Organisation/s:\nsome-user to some-org GH Org. (Email address is some-email) and some-user to some-org GH Org. (Email address is some-email)'
+                        "text": '*Join GitHub Automation*\nPlease review add user some-user to GitHub Organisation/s: some-org and some-org. Email address is some-email.'
                     }
                 }
             ]
