@@ -3,6 +3,7 @@ from slack_sdk import WebClient
 
 
 class SlackService:
+    # TODO: Change "C033QBE511V" to the "C01BUKJSZD4" when go into Production
     OPERATIONS_ENGINEERING_ALERTS_CHANNEL_ID = "C033QBE511V"
 
     # Added to stop TypeError on instantiation. See https://github.com/python/cpython/blob/d2340ef25721b6a72d45d4508c672c4be38c67d3/Objects/typeobject.c#L4444

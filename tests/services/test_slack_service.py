@@ -21,6 +21,7 @@ class SendAddNewUserToGithubOrgs(unittest.TestCase):
         test_data_list = [test_data, test_data]
         SlackService("").send_add_new_user_to_github_orgs(test_data_list)
         mock_slack_client.return_value.chat_postMessage.assert_called_with(
+            # TODO: Change "C033QBE511V" to the "C01BUKJSZD4" when go into Production
             channel="C033QBE511V",
             mrkdown=True,
             blocks=[
