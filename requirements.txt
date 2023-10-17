@@ -7,5 +7,6 @@ gunicorn
 PyGithub
 python-dotenv
 requests
+slack_sdk
 setuptools
 WTForms

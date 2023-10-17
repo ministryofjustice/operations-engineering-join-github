@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import MagicMock
 
+from landing_page_app.main.services.slack_service import SlackService
 from landing_page_app.main.scripts.github_script import GithubScript
 import landing_page_app
 
@@ -16,7 +17,8 @@ from landing_page_app.main.views import (
 class TestViews(unittest.TestCase):
     def setUp(self):
         self.github_script = MagicMock(GithubScript)
-        self.app = landing_page_app.create_app(self.github_script)
+        self.slack_service = MagicMock(SlackService)
+        self.app = landing_page_app.create_app(self.github_script, self.slack_service)
 
     def test_index(self):
         response = self.app.test_client().get("index")
@@ -47,6 +49,11 @@ class TestViews(unittest.TestCase):
         response = self.app.test_client().get("/thank-you")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/thank-you")
+
+    def test_use_slack(self):
+        response = self.app.test_client().get("/use-slack")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.request.path, "/use-slack")
 
     def test_handle_github_exception(self):
         with self.app.test_request_context():
@@ -85,13 +92,23 @@ class TestCompletedJoinGithubForm(unittest.TestCase):
         }
 
         self.github_script = MagicMock(GithubScript)
-        self.app = landing_page_app.create_app(self.github_script)
+        self.slack_service = MagicMock(SlackService)
+        self.app = landing_page_app.create_app(self.github_script, self.slack_service)
 
     def test_join_github_form(self):
-        self.github_script.get_selected_organisations.return_value = "some-org"
+        self.app.github_script.get_selected_organisations.return_value = "some-org"
+        self.app.github_script.add_new_user_to_github_org.return_value = []
         response = self.app.test_client().post("/join-github-form", data=self.form_data, follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/thank-you")
+
+    def test_join_github_form_with_non_approved_email_address(self):
+        self.app.github_script.get_selected_organisations.return_value = "some-org"
+        self.app.github_script.add_new_user_to_github_org.return_value = ["some-value"]
+        response = self.app.test_client().post("/join-github-form", data=self.form_data, follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.request.path, "/use-slack")
+        self.app.slack_service.send_add_new_user_to_github_orgs.assert_called_once_with(["some-value"])
 
     def test_join_github_form_with_incorrect_special_character_inputs(self):
         self.form_data["gh_username"] = "some!username"

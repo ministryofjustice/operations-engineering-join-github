@@ -29,14 +29,23 @@ def thank_you():
     return render_template("thank-you.html")
 
 
+@main.route("/use-slack")
+def use_slack():
+    return render_template("use-slack.html")
+
+
 @main.route("/join-github-form.html", methods=["GET", "POST"])
 @main.route("/join-github-form", methods=["GET", "POST"])
 def completed_join_github_form():
     form = JoinGithubForm(request.form)
     if request.method == "POST" and form.validate() and form.validate_org():
         selected_orgs = current_app.github_script.get_selected_organisations(form.access_moj_org.data, form.access_as_org.data)
-        current_app.github_script.add_new_user_to_github_org(form.gh_username.data, form.email_address.data, selected_orgs)
-        return redirect("thank-you")
+        non_approved_requests = current_app.github_script.add_new_user_to_github_org(form.gh_username.data, form.email_address.data, selected_orgs)
+        if len(non_approved_requests) == 0:
+            return redirect("thank-you")
+        else:
+            current_app.slack_service.send_add_new_user_to_github_orgs(non_approved_requests)
+            return redirect("use-slack")
     return render_template(
         "join-github-form.html",
         form=form,

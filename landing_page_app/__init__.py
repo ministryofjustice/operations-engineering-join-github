@@ -9,10 +9,11 @@ from github import GithubException
 from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
 
 from landing_page_app.main.scripts.github_script import GithubScript
+from landing_page_app.main.services.slack_service import SlackService
 from landing_page_app.main.views import (main, page_not_found, server_forbidden, unknown_server_error, handle_github_exception)
 
 
-def create_app(github_script: GithubScript) -> Flask:
+def create_app(github_script: GithubScript, slack_service: SlackService) -> Flask:
     logging.basicConfig(
         format='%(asctime)s %(levelname)s in %(module)s: %(message)s',
     )
@@ -49,6 +50,7 @@ def create_app(github_script: GithubScript) -> Flask:
     CORS(app, resources={r"/*": {"origins": "*", "send_wildcard": "False"}})
 
     app.github_script = github_script
+    app.slack_service = slack_service
 
     app.logger.info("App Setup complete, running App...")
 

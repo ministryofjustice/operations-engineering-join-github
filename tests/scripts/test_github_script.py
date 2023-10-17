@@ -22,11 +22,6 @@ class TestGithubScript(unittest.TestCase):
         self.approved_email_address = "some@justice.gov.uk"
 
     @patch("landing_page_app.main.services.github_service")
-    def test_add_non_pre_appoved_email_user_to_github_org(self, mock_github_service):
-        github_script = GithubScript(mock_github_service)
-        github_script._add_non_pre_appoved_email_user_to_github_org(self.test_user, self.test_email_address, MOJ_TEST_ORG)
-
-    @patch("landing_page_app.main.services.github_service")
     def test_is_email_address_pre_approved_with_as_org_approved_email_addresses(self, mock_github_service):
         github_script = GithubScript(mock_github_service)
         for email_domain in AS_ORG_ALLOWED_EMAIL_DOMAINS:
@@ -73,10 +68,12 @@ class TestGithubScript(unittest.TestCase):
         github_script = GithubScript(mock_github_service)
         github_script._is_email_address_pre_approved = Mock()
         github_script._is_email_address_pre_approved.return_value = True
-        github_script.add_new_user_to_github_org(self.test_user, self.approved_email_address, [MINISTRY_OF_JUSTICE])
+        non_approved_requests = github_script.add_new_user_to_github_org(self.test_user, self.approved_email_address, [MINISTRY_OF_JUSTICE])
+        self.assertEqual(len(non_approved_requests), 0)
         # TODO: change MOJ_TEST_ORG to MINISTRY_OF_JUSTICE
         mock_github_service.add_new_user_to_org.assert_called_with(mock_user, MOJ_TEST_ORG)
-        github_script.add_new_user_to_github_org(self.test_user, self.approved_email_address, [MOJ_ANALYTICAL_SERVICES])
+        non_approved_requests = github_script.add_new_user_to_github_org(self.test_user, self.approved_email_address, [MOJ_ANALYTICAL_SERVICES])
+        self.assertEqual(len(non_approved_requests), 0)
         # TODO: change MOJ_TEST_ORG to MOJ_ANALYTICAL_SERVICES
         mock_github_service.add_new_user_to_org.assert_called_with(mock_user, MOJ_TEST_ORG)
 
@@ -87,17 +84,18 @@ class TestGithubScript(unittest.TestCase):
         github_script._is_email_address_pre_approved = Mock()
         github_script._is_email_address_pre_approved.return_value = False
         github_script._add_non_pre_appoved_email_user_to_github_org = Mock()
-        github_script.add_new_user_to_github_org(self.test_user, self.test_email_address, [MINISTRY_OF_JUSTICE])
-        github_script._add_non_pre_appoved_email_user_to_github_org.assert_called_with(self.test_user, self.test_email_address, MINISTRY_OF_JUSTICE)
-        github_script.add_new_user_to_github_org(self.test_user, self.test_email_address, [MOJ_ANALYTICAL_SERVICES])
-        github_script._add_non_pre_appoved_email_user_to_github_org.assert_called_with(self.test_user, self.test_email_address, MOJ_ANALYTICAL_SERVICES)
+        non_approved_requests = github_script.add_new_user_to_github_org(self.test_user, self.test_email_address, [MINISTRY_OF_JUSTICE])
+        self.assertEqual(len(non_approved_requests), 1)
+        non_approved_requests = github_script.add_new_user_to_github_org(self.test_user, self.test_email_address, [MOJ_ANALYTICAL_SERVICES])
+        self.assertEqual(len(non_approved_requests), 1)
 
     @patch("landing_page_app.main.services.github_service")
     def test_add_new_user_to_github_org_with_incorrect_org_name(self, mock_github_service):
         mock_github_service.get_user.return_value = self._create_user("test_user")
         github_script = GithubScript(mock_github_service)
         github_script._is_email_address_pre_approved = Mock()
-        github_script.add_new_user_to_github_org(self.test_user, self.test_email_address, [MOJ_TEST_ORG])
+        non_approved_requests = github_script.add_new_user_to_github_org(self.test_user, self.test_email_address, [MOJ_TEST_ORG])
+        self.assertEqual(len(non_approved_requests), 0)
         github_script._is_email_address_pre_approved.assert_not_called()
 
     @patch("landing_page_app.main.services.github_service")

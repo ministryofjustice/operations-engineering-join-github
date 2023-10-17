@@ -16,9 +16,6 @@ class GithubScript:
     def __init__(self, github_service: GithubService):
         self.github_service = github_service
 
-    def _add_non_pre_appoved_email_user_to_github_org(self, username: str, email_address: str, organization: str):
-        pass
-
     def _check_email_address(self, email_address: str):
         valid = False
         if email_address is not None and email_address != "":
@@ -40,6 +37,7 @@ class GithubScript:
         return pre_approved
 
     def add_new_user_to_github_org(self, username: str, email_address: str, organisations: list):
+        non_approved_requests = []
         if username == "" or username is None or email_address == "" or email_address is None or len(organisations) == 0:
             logger.debug("add_new_user_to_github_org: incorrect function argument")
         else:
@@ -51,7 +49,8 @@ class GithubScript:
                         self.github_service.add_new_user_to_org(user, MOJ_TEST_ORG)
                         logger.debug(f"{user.login.lower()} has been invited to {organisation.lower()} with the role 'member'.")
                     else:
-                        self._add_non_pre_appoved_email_user_to_github_org(username.lower(), email_address.lower(), organisation.lower())
+                        non_approved_requests.append({"username": username.lower(), "email_address": email_address.lower(), "organisation": organisation.lower()})
+        return non_approved_requests
 
     def get_selected_organisations(self, moj_org: bool, as_org: bool) -> list:
         organisations = []
