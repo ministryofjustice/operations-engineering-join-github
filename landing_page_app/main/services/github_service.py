@@ -15,17 +15,17 @@ class GithubService:
         self.github_client_core_api.get_organization(organisation.lower()).invite_user(
             user
         )
-    
+
     # Needs an access token as PyGithub has no Audit Log functionality TODO: good way to do this
     def return_users_removed_from_audit_log(organization: str, access_token: str) -> list:
         users = set()
-        
+
         # Calculate the date three months ago
         three_months_ago = (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%dT%H:%M:%SZ")
-        
+
         # Set initial call
         url = f"https://api.github.com/orgs/{organization}/audit-log?phrase=action:org.remove_member&created_at=>{three_months_ago}&per_page=100"
-        
+
         while True:
             try:
                 headers = {
@@ -43,7 +43,7 @@ class GithubService:
                     user = event.get("user")
                     if user:
                         # Add to set
-                        users.add(user)  
+                        users.add(user)
 
                 # Pagination
                 if "Link" in response.headers:
