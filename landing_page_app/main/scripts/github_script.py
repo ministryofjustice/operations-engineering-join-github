@@ -63,10 +63,11 @@ class GithubScript:
                         organisation, email_address.lower()
                     ):
                         # TODO: change MOJ_TEST_ORG to organisation
-                        self.github_service.add_new_user_to_org(user, MOJ_TEST_ORG)
-                        logger.debug(
-                            f"{user.login.lower()} has been invited to {organisation.lower()} with the role 'member'."
-                        )
+                        if user is not None:
+                            self.github_service.add_new_user_to_org(email_address.lower(), MOJ_TEST_ORG)
+                            logger.debug(
+                                f"{user.login.lower()} has been invited to {organisation.lower()} with the role 'member'."
+                            )
                     else:
                         non_approved_requests.append(
                             {
