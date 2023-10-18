@@ -27,15 +27,11 @@ class TestGithubServiceGetUser(unittest.TestCase):
 
 @patch("github.Github.__new__")
 class TestGithubServiceAddNewUserToOrg(unittest.TestCase):
-    def _create_user(self, name: str) -> Mock:
-        return Mock(NamedUser, name=name)
-
     def test_calls_downstream_services(self, mock_github_client_core_api):
         github_service = GithubService("")
-        mock_user = self._create_user("test_user")
-        github_service.add_new_user_to_org(mock_user, "some-org")
+        github_service.add_new_user_to_org("approved@email.com", "some-org")
         github_service.github_client_core_api.get_organization.assert_has_calls(
-            [call("some-org"), call().invite_user(mock_user)]
+            [call("some-org"), call().invite_user(email="approved@email.com")]
         )
 
 
