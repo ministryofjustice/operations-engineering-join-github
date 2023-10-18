@@ -31,7 +31,7 @@ class GithubScript:
             and organisation != ""
             and organisation is not None
         ):
-            email_domain = email_address[email_address.index("@") + 1 :]
+            email_domain = email_address[email_address.index("@") + 1:]
             if organisation.lower() == MOJ_ANALYTICAL_SERVICES:
                 if email_domain in AS_ORG_ALLOWED_EMAIL_DOMAINS:
                     pre_approved = True
