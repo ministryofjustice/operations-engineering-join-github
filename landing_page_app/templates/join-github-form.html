@@ -75,6 +75,24 @@ Join GitHub Form
               </div>
             </fieldset>
           </div>
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset" aria-describedby="rejoin-github-hint">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading">
+                  Are you re-joining the GitHub Organisation?
+                </h1>
+              </legend>
+              <div id="rejoin-github-hint" class="govuk-hint">
+                GitHub remembers a users Organisation details for 90 days since being removed.
+              </div>
+              <div class="govuk-checkboxes__item">
+                {{ form.is_user_rejoining_org(class="govuk-checkboxes__input") }}
+                <label class="govuk-label govuk-checkboxes__label" for="is_user_rejoining_org">
+                  {{ form.is_user_rejoining_org.label }}
+                </label>
+              </div>
+            </fieldset>
+          </div>
           <button class="govuk-button" type="submit" data-module="govuk-button">
             Continue
           </button>
