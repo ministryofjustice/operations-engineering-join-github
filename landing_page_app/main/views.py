@@ -32,6 +32,11 @@ def use_slack():
     return render_template("use-slack.html")
 
 
+@main.route("/use-slack-rejoin-org")
+def use_slack_rejoin_org():
+    return render_template("use-slack-rejoin-org.html")
+
+
 @main.route("/join-github-form.html", methods=["GET", "POST"])
 @main.route("/join-github-form", methods=["GET", "POST"])
 def completed_join_github_form():
@@ -40,15 +45,20 @@ def completed_join_github_form():
         selected_orgs = current_app.github_script.get_selected_organisations(
             form.access_moj_org.data, form.access_as_org.data
         )
-        non_approved_requests = current_app.github_script.add_new_user_to_github_org(
+        if form.is_user_rejoining_org.data is False:
+            non_approved_requests = current_app.github_script.add_new_user_to_github_org(
+                form.gh_username.data, form.email_address.data, selected_orgs
+            )
+            if len(non_approved_requests) == 0:
+                return redirect("thank-you")
+            current_app.slack_service.send_add_new_user_to_github_orgs(
+                non_approved_requests
+            )
+            return redirect("use-slack")
+        current_app.slack_service.send_user_wants_to_rejoin_github_orgs(
             form.gh_username.data, form.email_address.data, selected_orgs
         )
-        if len(non_approved_requests) == 0:
-            return redirect("thank-you")
-        current_app.slack_service.send_add_new_user_to_github_orgs(
-            non_approved_requests
-        )
-        return redirect("use-slack")
+        return redirect("use-slack-rejoin-org")
     return render_template(
         "join-github-form.html", form=form, template="join-github-form.html"
     )

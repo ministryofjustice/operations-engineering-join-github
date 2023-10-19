@@ -36,3 +36,22 @@ class SlackService:
                 }
             ],
         )
+
+    def send_user_wants_to_rejoin_github_orgs(self, username: str, email_address: str, organisations: list):
+        organisations = " and ".join(organisations)
+        self.slack_client.chat_postMessage(
+            channel=self.OPERATIONS_ENGINEERING_ALERTS_CHANNEL_ID,
+            mrkdown=True,
+            blocks=[
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": dedent(f"""
+                            *Join GitHub Automation*
+                            The user {username} wants to rejoin the GitHub Organisation/s: {organisations}. Email address is {email_address}.
+                            """).strip("\n"),
+                    },
+                }
+            ],
+        )

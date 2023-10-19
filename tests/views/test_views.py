@@ -55,6 +55,11 @@ class TestViews(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/use-slack")
 
+    def test_use_slack_rejoin_org(self):
+        response = self.app.test_client().get("/use-slack-rejoin-org")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.request.path, "/use-slack-rejoin-org")
+
     def test_handle_github_exception(self):
         with self.app.test_request_context():
             response = handle_github_exception("12345678")
@@ -89,14 +94,17 @@ class TestCompletedJoinGithubForm(unittest.TestCase):
             "email_address": "some@email.com",
             "access_moj_org": True,
             "access_as_org": True,
+            # Uncomment if want the checkbox to be True in the form validator
+            # "is_user_rejoining_org": "some-value"
         }
 
+        self.org = "some-org"
         self.github_script = MagicMock(GithubScript)
         self.slack_service = MagicMock(SlackService)
         self.app = landing_page_app.create_app(self.github_script, self.slack_service)
 
     def test_join_github_form(self):
-        self.app.github_script.get_selected_organisations.return_value = "some-org"
+        self.app.github_script.get_selected_organisations.return_value = [self.org]
         self.app.github_script.add_new_user_to_github_org.return_value = []
         response = self.app.test_client().post(
             "/join-github-form", data=self.form_data, follow_redirects=True
@@ -105,7 +113,7 @@ class TestCompletedJoinGithubForm(unittest.TestCase):
         self.assertEqual(response.request.path, "/thank-you")
 
     def test_join_github_form_with_non_approved_email_address(self):
-        self.app.github_script.get_selected_organisations.return_value = "some-org"
+        self.app.github_script.get_selected_organisations.return_value = [self.org]
         self.app.github_script.add_new_user_to_github_org.return_value = ["some-value"]
         response = self.app.test_client().post(
             "/join-github-form", data=self.form_data, follow_redirects=True
@@ -205,6 +213,19 @@ class TestCompletedJoinGithubForm(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/join-github-form")
+
+    def test_join_github_form_when_user_wants_to_rejoin_org(self):
+        self.app.github_script.get_selected_organisations.return_value = [self.org]
+        # Give the checkbox a value to make it True in the form validator
+        self.form_data["is_user_rejoining_org"] = "some-value"
+        response = self.app.test_client().post(
+            "/join-github-form", data=self.form_data, follow_redirects=True
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.request.path, "/use-slack-rejoin-org")
+        self.app.slack_service.send_user_wants_to_rejoin_github_orgs.assert_called_once_with(
+            "some-username", "some@email.com", [self.org]
+        )
 
 
 if __name__ == "__main__":
