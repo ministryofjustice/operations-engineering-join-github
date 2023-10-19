@@ -1,6 +1,7 @@
 email-validator
 flask
 flask-cors
+freezegun
 govuk-frontend-jinja
 gunicorn
 PyGithub
