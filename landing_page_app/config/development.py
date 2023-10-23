@@ -1,7 +1,6 @@
 """ Config values to be used during development """
 from os import environ
 
-APP_SECRET_KEY = environ.get("APP_SECRET_KEY")
 FLASK_CONFIGURATION = "development"
 DEBUG = True
 FLASK_DEBUG = True
@@ -10,6 +9,8 @@ PORT = 4567
 SSL_REDIRECT = False
 TESTING = True
 
-if not APP_SECRET_KEY:
+if environ.get("APP_SECRET_KEY") is None:
     environ["APP_SECRET_KEY"] = "dev"
+    APP_SECRET_KEY = environ.get("APP_SECRET_KEY")
+else:
     APP_SECRET_KEY = environ.get("APP_SECRET_KEY")

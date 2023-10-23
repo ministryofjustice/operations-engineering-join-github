@@ -1,9 +1,11 @@
-authlib
+email-validator
 flask
 flask-cors
+freezegun
 govuk-frontend-jinja
 gunicorn
 PyGithub
 python-dotenv
 requests
-setuptools
+slack_sdk
+WTForms

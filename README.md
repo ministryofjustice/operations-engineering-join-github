@@ -12,9 +12,12 @@ To develop, deploy or run this app you will need to install:
 
 - [Python 3.11](https://www.python.org/downloads/release/python-3110/)
 - [Docker](https://www.docker.com/)
-- [Helm](https://helm.sh/) and [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) _(Optional, for deploying to Cloud Platform)_
 
 ## Development
+
+### Tokens
+
+The Application requires a GitHub token and Slack token. For local development create a .env file with the tokens. See the .env.example file for an example. To run the Application in Docker these tokens need to be added as environment variables. The live Application gets these tokens via the CP Secret Manager.
 
 ### Run application within Terminal
 

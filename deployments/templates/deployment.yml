@@ -5,7 +5,7 @@ metadata:
   labels:
     app: operations-engineering-landing-page-poc
 spec:
-  replicas: 3
+  replicas: 0
   selector:
     matchLabels:
       app: operations-engineering-landing-page-poc
@@ -19,9 +19,14 @@ spec:
           image: ${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}
           ports:
             - containerPort: 4567
-            env:
+          env:
             - name: GH_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: ops-eng-landing-page-poc-token
                   key: GH_TOKEN
+            - name: SLACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: ops-eng-landing-page-poc-token
+                  key: SLACK_TOKEN

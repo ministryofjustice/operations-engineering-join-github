@@ -1,18 +1,19 @@
 import logging
-from flask import Blueprint, render_template, request, redirect
-from landing_page_app.main.scripts.github import add_new_user_to_github_org
+from flask import Blueprint, render_template, request, redirect, current_app
+from github import GithubException
 
-main = Blueprint("main", __name__)
+from landing_page_app.main.scripts.join_github_form import JoinGithubForm
+
 logger = logging.getLogger(__name__)
 
-AUTHLIB_CLIENT = "authlib.integrations.flask_client"
+main = Blueprint("main", __name__)
 
 
 @main.route("/home")
 @main.route("/index")
 @main.route("/")
 def index():
-    '''Entrypoint into the application'''
+    """Entrypoint into the application"""
     return render_template("home.html")
 
 
@@ -21,44 +22,52 @@ def join_github_info_page():
     return render_template("join-github.html")
 
 
-@main.route("/join-github-form.html")
-def join_github_form():
-    return render_template("/join-github-form.html")
-
-
 @main.route("/thank-you")
 def thank_you():
     return render_template("thank-you.html")
 
 
-@main.route("/form-error")
-def form_error():
-    return render_template("form-error.html")
+@main.route("/use-slack")
+def use_slack():
+    return render_template("use-slack.html")
 
 
-@main.route("/internal-error")
-def internal_error(error_message):
-    return render_template("internal-error.html", error_message=error_message)
+@main.route("/use-slack-rejoin-org")
+def use_slack_rejoin_org():
+    return render_template("use-slack-rejoin-org.html")
 
 
-@main.route("/completed-join-github-form-handler", methods=['POST'])
+@main.route("/join-github-form.html", methods=["GET", "POST"])
+@main.route("/join-github-form", methods=["GET", "POST"])
 def completed_join_github_form():
-    gh_username = request.form.get("githubUsername")
-    name = request.form.get("userName")
-    email_address = request.form.get("userEmailAddress")
-    access_moj_org = request.form.get("mojOrgAccess")
-    access_as_org = request.form.get("asOrgAccess")
+    form = JoinGithubForm(request.form)
+    if request.method == "POST" and form.validate() and form.validate_org():
+        selected_orgs = current_app.github_script.get_selected_organisations(
+            form.access_moj_org.data, form.access_as_org.data
+        )
+        if form.is_user_rejoining_org.data is False:
+            non_approved_requests = current_app.github_script.add_new_user_to_github_org(
+                form.gh_username.data, form.email_address.data, selected_orgs
+            )
+            if len(non_approved_requests) == 0:
+                return redirect("thank-you")
+            current_app.slack_service.send_add_new_user_to_github_orgs(
+                non_approved_requests
+            )
+            return redirect("use-slack")
+        current_app.slack_service.send_user_wants_to_rejoin_github_orgs(
+            form.gh_username.data, form.email_address.data, selected_orgs
+        )
+        return redirect("use-slack-rejoin-org")
+    return render_template(
+        "join-github-form.html", form=form, template="join-github-form.html"
+    )
 
-    if gh_username == "" or gh_username is None or name == "" or name is None or email_address == "" or email_address is None:
-        return redirect("form-error")
-    elif access_moj_org is None and access_as_org is None:
-        return redirect("form-error")
 
-    added_user, error_message = add_new_user_to_github_org(gh_username, email_address, [access_moj_org, access_as_org])
-    if added_user is False:
-        return render_template("internal-error.html", error_message=error_message)
-
-    return redirect("thank-you")
+@main.errorhandler(GithubException)
+def handle_github_exception(error_message):
+    logger.error("GitHub exception occurred: %s", error_message)
+    return render_template("internal-error.html", error_message=error_message)
 
 
 @main.errorhandler(404)
@@ -85,7 +94,7 @@ def server_forbidden(err):
     Returns:
         Load the templates/403.html page
     """
-    logger.debug("server_forbidden()")
+    logger.debug("server_forbidden(): %s", err)
     return render_template("403.html"), 403
 
 
