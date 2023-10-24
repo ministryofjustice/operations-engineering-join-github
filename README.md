@@ -1,5 +1,7 @@
 # Operations Engineering Landing Page PoC
 
+> ⚠️ **Please do not deploy this application** - read the [Web Application Security Assessment](./docs/web-application-security-assessment.md) for more information.
+
 This is a PoC repository to test out adding users to the operations-engineering tools.
 
 1. [Prerequisites](#prerequisites)
