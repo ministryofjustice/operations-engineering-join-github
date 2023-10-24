@@ -19,7 +19,7 @@ class TestViews(unittest.TestCase):
         self.github_script = MagicMock(GithubScript)
         self.slack_service = MagicMock(SlackService)
         self.app = landing_page_app.create_app(self.github_script, self.slack_service)
-        self.app.config["LIMITER_ENABLED"] = False
+        self.app.config["RATELIMIT_ENABLED"] = False
 
     def test_index(self):
         response = self.app.test_client().get("index")
@@ -103,7 +103,7 @@ class TestCompletedJoinGithubForm(unittest.TestCase):
         self.github_script = MagicMock(GithubScript)
         self.slack_service = MagicMock(SlackService)
         self.app = landing_page_app.create_app(self.github_script, self.slack_service)
-        self.app.config["LIMITER_ENABLED"] = False
+        self.app.config["RATELIMIT_ENABLED"] = False
 
     def test_join_github_form(self):
         self.app.github_script.get_selected_organisations.return_value = [self.org]
