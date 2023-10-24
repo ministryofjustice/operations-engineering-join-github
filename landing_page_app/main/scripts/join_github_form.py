@@ -50,8 +50,8 @@ class JoinGithubForm(Form):
             validators.InputRequired(),
         ],
     )
-    access_moj_org = BooleanField("Ministry Of Justice")
-    access_as_org = BooleanField("Analytical Services")
+    access_moj_org = BooleanField("Ministry of Justice")
+    access_as_org = BooleanField("MoJ Analytical Services")
     is_user_rejoining_org = BooleanField("True", default=False)
 
     def validate_org(self):
