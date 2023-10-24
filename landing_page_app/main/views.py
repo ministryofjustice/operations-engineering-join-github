@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 main = Blueprint("main", __name__)
 limiter = Limiter(
     get_remote_address,
-    app=main,
+    app=current_app,
     default_limits=["5 per minute", "1 per second"],
     storage_uri="memory://",
     strategy="moving-window"
