@@ -1,5 +1,7 @@
 import logging
 from flask import Blueprint, render_template, request, redirect, current_app
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from github import GithubException
 
 from landing_page_app.main.scripts.join_github_form import JoinGithubForm
@@ -7,6 +9,13 @@ from landing_page_app.main.scripts.join_github_form import JoinGithubForm
 logger = logging.getLogger(__name__)
 
 main = Blueprint("main", __name__)
+limiter = Limiter(
+    get_remote_address,
+    app=main,
+    default_limits=["5 per minute", "1 per second"],
+    storage_uri="memory://",
+    strategy="moving-window"
+)
 
 
 @main.route("/home")
