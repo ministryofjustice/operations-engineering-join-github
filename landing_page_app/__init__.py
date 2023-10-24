@@ -7,7 +7,8 @@ from flask_cors import CORS
 from github import GithubException
 
 from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
-
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from landing_page_app.main.scripts.github_script import GithubScript
 from landing_page_app.main.services.slack_service import SlackService
 from landing_page_app.main.views import (
@@ -19,12 +20,23 @@ from landing_page_app.main.views import (
 )
 
 
-def create_app(github_script: GithubScript, slack_service: SlackService) -> Flask:
+def create_app(github_script: GithubScript, slack_service: SlackService, rate_limit: bool = True) -> Flask:
     logging.basicConfig(
         format="%(asctime)s %(levelname)s in %(module)s: %(message)s",
     )
 
     app = Flask(__name__, instance_relative_config=True)
+
+    limiter = Limiter(
+        get_remote_address,
+        app=app,
+        default_limits=["5 per minute", "1 per second"],
+        storage_uri="memory://",
+        strategy="moving-window"
+    )
+
+    limiter.init_app(app)
+    limiter.enabled = rate_limit
 
     app.logger.info("Start App Setup")
 

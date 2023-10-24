@@ -18,7 +18,7 @@ class TestViews(unittest.TestCase):
     def setUp(self):
         self.github_script = MagicMock(GithubScript)
         self.slack_service = MagicMock(SlackService)
-        self.app = landing_page_app.create_app(self.github_script, self.slack_service)
+        self.app = landing_page_app.create_app(self.github_script, self.slack_service, False)
 
     def test_index(self):
         response = self.app.test_client().get("index")
@@ -101,7 +101,7 @@ class TestCompletedJoinGithubForm(unittest.TestCase):
         self.org = "some-org"
         self.github_script = MagicMock(GithubScript)
         self.slack_service = MagicMock(SlackService)
-        self.app = landing_page_app.create_app(self.github_script, self.slack_service)
+        self.app = landing_page_app.create_app(self.github_script, self.slack_service, False)
 
     def test_join_github_form(self):
         self.app.github_script.get_selected_organisations.return_value = [self.org]
@@ -226,6 +226,41 @@ class TestCompletedJoinGithubForm(unittest.TestCase):
         self.app.slack_service.send_user_wants_to_rejoin_github_orgs.assert_called_once_with(
             "some-username", "some@email.com", [self.org]
         )
+
+
+class TestCompletedRateLimit(unittest.TestCase):
+    def setUp(self):
+        self.form_data = {
+            "gh_username": "some-username",
+            "name": "some name",
+            "email_address": "some@email.com",
+            "access_moj_org": True,
+            "access_as_org": True,
+            # Uncomment if want the checkbox to be True in the form validator
+            # "is_user_rejoining_org": "some-value"
+        }
+
+        self.org = "some-org"
+        self.github_script = MagicMock(GithubScript)
+        self.slack_service = MagicMock(SlackService)
+        self.app = landing_page_app.create_app(self.github_script, self.slack_service, True)
+
+    def test_rate_limit(self):
+        # Send requests until you receive a 429 response
+        exceeded_rate_limit = False
+        request_count = 0
+
+        while not exceeded_rate_limit:
+            response = self.app.test_client().post(
+                "/join-github-form", data=self.form_data, follow_redirects=True
+            )
+            request_count += 1
+
+            if response.status_code == 429:
+                exceeded_rate_limit = True
+
+        # At this point, you have reached the rate limit
+        self.assertGreaterEqual(request_count, 1)
 
 
 if __name__ == "__main__":
