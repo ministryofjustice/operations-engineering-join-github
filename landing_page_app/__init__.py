@@ -36,6 +36,7 @@ def create_app(github_script: GithubScript, slack_service: SlackService) -> Flas
     )
 
     limiter.init_app(app)
+    app.config["LIMITER_ENABLED"] = True
 
     app.logger.info("Start App Setup")
 
