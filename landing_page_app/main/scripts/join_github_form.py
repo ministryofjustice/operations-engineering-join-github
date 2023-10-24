@@ -1,5 +1,6 @@
 import re
 from wtforms import Form, BooleanField, StringField, validators, ValidationError
+from landing_page_app.main.scripts.github_script import GithubScript
 
 
 class InputCheck:
@@ -15,7 +16,17 @@ class InputCheck:
             raise ValidationError(self.message)
 
 
+# class InviteCheck:
+#     def __init__(self, message=None):
+#         self.message = message
+
+
 class JoinGithubForm(Form):
+
+    def __init__(self, github_script: GithubScript):
+        super(JoinGithubForm, self).__init__()
+        self.github_script = github_script
+
     gh_username = StringField(
         "GitHub Username",
         [

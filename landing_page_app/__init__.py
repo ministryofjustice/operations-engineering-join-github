@@ -47,7 +47,7 @@ def create_app(github_script: GithubScript, slack_service: SlackService, rate_li
 
     app.secret_key = app.config.get("APP_SECRET_KEY")
 
-    app.register_blueprint(main)
+    app.register_blueprint(main, github_script=github_script)
 
     app.jinja_loader = ChoiceLoader(
         [

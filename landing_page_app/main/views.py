@@ -40,7 +40,8 @@ def use_slack_rejoin_org():
 @main.route("/join-github-form.html", methods=["GET", "POST"])
 @main.route("/join-github-form", methods=["GET", "POST"])
 def completed_join_github_form():
-    form = JoinGithubForm(request.form)
+    github_script = request.args.get('github_script')
+    form = JoinGithubForm(request.form, github_script=github_script)
     if request.method == "POST" and form.validate() and form.validate_org():
         selected_orgs = current_app.github_script.get_selected_organisations(
             form.access_moj_org.data, form.access_as_org.data
