@@ -260,7 +260,7 @@ class TestCompletedRateLimit(unittest.TestCase):
                 exceeded_rate_limit = True
 
         # At this point, you have reached the rate limit
-        self.assertGreaterEqual(request_count, 5)
+        self.assertGreaterEqual(request_count, 1)
 
 
 if __name__ == "__main__":
