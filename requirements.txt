@@ -9,3 +9,4 @@ python-dotenv
 requests
 slack_sdk
 WTForms
+Flask-Limiter
