@@ -20,7 +20,7 @@ from landing_page_app.main.views import (
 )
 
 
-def create_app(github_script: GithubScript, slack_service: SlackService) -> Flask:
+def create_app(github_script: GithubScript, slack_service: SlackService, rate_limit: bool = True) -> Flask:
     logging.basicConfig(
         format="%(asctime)s %(levelname)s in %(module)s: %(message)s",
     )
@@ -36,7 +36,7 @@ def create_app(github_script: GithubScript, slack_service: SlackService) -> Flas
     )
 
     limiter.init_app(app)
-    app.config["RATELIMIT_ENABLED"] = True
+    limiter.enabled = rate_limit
 
     app.logger.info("Start App Setup")
 
