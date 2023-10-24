@@ -23,8 +23,8 @@ class InputCheck:
 
 class JoinGithubForm(Form):
 
-    def __init__(self, github_script: GithubScript):
-        super(JoinGithubForm, self).__init__()
+    def __init__(self, github_script: GithubScript, *args, **kwargs):
+        super(JoinGithubForm, self).__init__(*args, **kwargs)
         self.github_script = github_script
 
     gh_username = StringField(
