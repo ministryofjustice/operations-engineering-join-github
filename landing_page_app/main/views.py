@@ -50,16 +50,20 @@ def completed_join_github_form():
                 form.gh_username.data, form.email_address.data, selected_orgs
             )
             if len(non_approved_requests) == 0:
+                # Approved email address. Invite sent to user
                 return redirect("thank-you")
+            # Non approved email address. Slack alert created
             current_app.slack_service.send_add_new_user_to_github_orgs(
                 non_approved_requests
             )
             return redirect("use-slack")
         if form.validate_user_rejoining_org(form.gh_username.data, selected_orgs):
+            # User re-joining. Slack alert created
             current_app.slack_service.send_user_wants_to_rejoin_github_orgs(
                 form.gh_username.data, form.email_address.data, selected_orgs
             )
             return redirect("use-slack-rejoin-org")
+    # Problem in the form
     return render_template(
         "join-github-form.html", form=form, template="join-github-form.html"
     )
