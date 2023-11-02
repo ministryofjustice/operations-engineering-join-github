@@ -1,5 +1,6 @@
 import re
 from wtforms import Form, BooleanField, StringField, validators, ValidationError
+from flask import current_app
 
 
 class InputCheck:
@@ -64,4 +65,11 @@ class JoinGithubForm(Form):
             self.access_moj_org.errors.append("Select an Organisation")
             self.access_as_org.errors.append("Select an Organisation")
             return False
+        return True
+
+    def validate_user_rejoining_org(self, username: str = "", organisations: list[str] = []):
+        for organisation in organisations:
+            if current_app.github_script.is_user_in_audit_log(username, organisation) is False:
+                self.gh_username.errors.append(f"Sorry you have not been part of the {organisation} Organisation in the past 90 days")
+                return False
         return True

@@ -55,10 +55,11 @@ def completed_join_github_form():
                 non_approved_requests
             )
             return redirect("use-slack")
-        current_app.slack_service.send_user_wants_to_rejoin_github_orgs(
-            form.gh_username.data, form.email_address.data, selected_orgs
-        )
-        return redirect("use-slack-rejoin-org")
+        if form.validate_user_rejoining_org(form.gh_username.data, selected_orgs):
+            current_app.slack_service.send_user_wants_to_rejoin_github_orgs(
+                form.gh_username.data, form.email_address.data, selected_orgs
+            )
+            return redirect("use-slack-rejoin-org")
     return render_template(
         "join-github-form.html", form=form, template="join-github-form.html"
     )

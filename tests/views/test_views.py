@@ -227,6 +227,17 @@ class TestCompletedJoinGithubForm(unittest.TestCase):
             "some-username", "some@email.com", [self.org]
         )
 
+    def test_fail_join_github_form_when_user_wants_to_rejoin_org(self):
+        self.app.github_script.get_selected_organisations.return_value = [self.org]
+        self.app.github_script.is_user_in_audit_log.return_value = False
+        # Give the checkbox a value to make it True in the form validator
+        self.form_data["is_user_rejoining_org"] = "some-value"
+        response = self.app.test_client().post(
+            "/join-github-form", data=self.form_data, follow_redirects=True
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.request.path, "/join-github-form")
+
 
 class TestCompletedRateLimit(unittest.TestCase):
     def setUp(self):

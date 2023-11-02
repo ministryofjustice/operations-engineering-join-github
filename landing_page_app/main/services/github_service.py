@@ -42,7 +42,7 @@ class GithubService:
             for event in audit_log_data:
                 user = event.get("user")
                 if user:
-                    users.add(user)
+                    users.add(user.lower())
 
             # Check for next page in Pagination
             if response.links.get("next") is not None:

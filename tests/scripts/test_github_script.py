@@ -21,6 +21,27 @@ class TestGithubScript(unittest.TestCase):
         self.approved_email_address = "some@justice.gov.uk"
 
     @patch("landing_page_app.main.services.github_service")
+    def test_is_user_in_audit_log_when_no_users_in_audit_log(self, mock_github_service):
+        github_script = GithubScript(mock_github_service)
+        mock_github_service.get_removed_users_from_audit_log.return_value = []
+        found_user = github_script.is_user_in_audit_log(self.test_user, MOJ_TEST_ORG)
+        self.assertEqual(found_user, False)
+
+    @patch("landing_page_app.main.services.github_service")
+    def test_is_user_in_audit_log_when_different_users_in_audit_log(self, mock_github_service):
+        github_script = GithubScript(mock_github_service)
+        mock_github_service.get_removed_users_from_audit_log.return_value = ["some-user1", "some-user2"]
+        found_user = github_script.is_user_in_audit_log(self.test_user, MOJ_TEST_ORG)
+        self.assertEqual(found_user, False)
+
+    @patch("landing_page_app.main.services.github_service")
+    def test_is_user_in_audit_log(self, mock_github_service):
+        github_script = GithubScript(mock_github_service)
+        mock_github_service.get_removed_users_from_audit_log.return_value = [self.test_user]
+        found_user = github_script.is_user_in_audit_log(self.test_user, MOJ_TEST_ORG)
+        self.assertEqual(found_user, True)
+
+    @patch("landing_page_app.main.services.github_service")
     def test_is_email_address_pre_approved_with_as_org_approved_email_addresses(
         self, mock_github_service
     ):
