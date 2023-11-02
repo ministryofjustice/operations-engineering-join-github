@@ -85,3 +85,12 @@ class GithubScript:
         if as_org:
             organisations.append(MOJ_ANALYTICAL_SERVICES)
         return organisations
+
+    def is_user_in_audit_log(self, username: str = "", organisation: str = ""):
+        found_user = False
+        # TODO: change MOJ_TEST_ORG to organisation
+        removed_users = self.github_service.get_removed_users_from_audit_log(MOJ_TEST_ORG)
+        username = username.lower()
+        if username in removed_users:
+            found_user = True
+        return found_user
