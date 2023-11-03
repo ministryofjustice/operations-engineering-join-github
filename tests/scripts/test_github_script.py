@@ -8,6 +8,8 @@ from landing_page_app.main.config.constants import (
     MOJ_TEST_ORG,
     MOJ_ORG_ALLOWED_EMAIL_DOMAINS,
     AS_ORG_ALLOWED_EMAIL_DOMAINS,
+    MINIMUM_ORG_SEATS,
+    MAX_ALLOWED_ORG_PENDING_INVITES,
 )
 
 
@@ -19,6 +21,54 @@ class TestGithubScript(unittest.TestCase):
         self.test_email_address = "some-email"
         self.test_user = "some-user"
         self.approved_email_address = "some@justice.gov.uk"
+
+    @patch("landing_page_app.main.services.github_service")
+    def test_is_github_seat_protection_enabled_when_conditions_are_okay(self, mock_github_service):
+        github_script = GithubScript(mock_github_service)
+        mock_github_service.get_org_available_seats.return_value = MINIMUM_ORG_SEATS + 1
+        mock_github_service.get_org_pending_invites.return_value = MAX_ALLOWED_ORG_PENDING_INVITES - 1
+        enabled = github_script.is_github_seat_protection_enabled()
+        self.assertEqual(enabled, False)
+
+    @patch("landing_page_app.main.services.github_service")
+    def test_is_github_seat_protection_enabled_when_minimum_seats(self, mock_github_service):
+        github_script = GithubScript(mock_github_service)
+        mock_github_service.get_org_available_seats.return_value = MINIMUM_ORG_SEATS
+        mock_github_service.get_org_pending_invites.return_value = 0
+        enabled = github_script.is_github_seat_protection_enabled()
+        self.assertEqual(enabled, True)
+
+        mock_github_service.get_org_available_seats.return_value = MINIMUM_ORG_SEATS - 1
+        enabled = github_script.is_github_seat_protection_enabled()
+        self.assertEqual(enabled, True)
+
+    @patch("landing_page_app.main.services.github_service")
+    def test_is_github_seat_protection_enabled_when_more_than_minimum_seats(self, mock_github_service):
+        github_script = GithubScript(mock_github_service)
+        mock_github_service.get_org_available_seats.return_value = MINIMUM_ORG_SEATS + 1
+        mock_github_service.get_org_pending_invites.return_value = 0
+        enabled = github_script.is_github_seat_protection_enabled()
+        self.assertEqual(enabled, False)
+
+    @patch("landing_page_app.main.services.github_service")
+    def test_is_github_seat_protection_enabled_when_more_than_allowed_max_pending_invites(self, mock_github_service):
+        github_script = GithubScript(mock_github_service)
+        mock_github_service.get_org_available_seats.return_value = MINIMUM_ORG_SEATS + 1
+        mock_github_service.get_org_pending_invites.return_value = MAX_ALLOWED_ORG_PENDING_INVITES
+        enabled = github_script.is_github_seat_protection_enabled()
+        self.assertEqual(enabled, True)
+
+        mock_github_service.get_org_pending_invites.return_value = MAX_ALLOWED_ORG_PENDING_INVITES + 1
+        enabled = github_script.is_github_seat_protection_enabled()
+        self.assertEqual(enabled, True)
+
+    @patch("landing_page_app.main.services.github_service")
+    def test_is_github_seat_protection_enabled_when_below_max_pending_invites(self, mock_github_service):
+        github_script = GithubScript(mock_github_service)
+        mock_github_service.get_org_available_seats.return_value = MINIMUM_ORG_SEATS + 1
+        mock_github_service.get_org_pending_invites.return_value = MAX_ALLOWED_ORG_PENDING_INVITES - 1
+        enabled = github_script.is_github_seat_protection_enabled()
+        self.assertEqual(enabled, False)
 
     @patch("landing_page_app.main.services.github_service")
     def test_is_user_in_audit_log_when_no_users_in_audit_log(self, mock_github_service):

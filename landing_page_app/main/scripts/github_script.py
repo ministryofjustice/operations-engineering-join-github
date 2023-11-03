@@ -7,6 +7,9 @@ from landing_page_app.main.config.constants import (
     MOJ_TEST_ORG,
     MOJ_ORG_ALLOWED_EMAIL_DOMAINS,
     AS_ORG_ALLOWED_EMAIL_DOMAINS,
+    MINIMUM_ORG_SEATS,
+    MAX_ALLOWED_ORG_PENDING_INVITES,
+    MOJ_ORGS,
 )
 
 logger = logging.getLogger(__name__)
@@ -55,10 +58,7 @@ class GithubScript:
         else:
             user = self.github_service.get_user(username.lower())
             for organisation in organisations:
-                if (
-                    organisation.lower() == MINISTRY_OF_JUSTICE
-                    or organisation.lower() == MOJ_ANALYTICAL_SERVICES
-                ):
+                if organisation.lower() in MOJ_ORGS:
                     if self._is_email_address_pre_approved(
                         organisation, email_address.lower()
                     ):
@@ -94,3 +94,13 @@ class GithubScript:
         if username in removed_users:
             found_user = True
         return found_user
+
+    def is_github_seat_protection_enabled(self):
+        protection_enabled = False
+        for organisation in MOJ_ORGS:
+            available_seats = self.github_service.get_org_available_seats(organisation)
+            pending_invites = self.github_service.get_org_pending_invites(organisation)
+            if available_seats <= MINIMUM_ORG_SEATS or pending_invites >= MAX_ALLOWED_ORG_PENDING_INVITES:
+                protection_enabled = True
+                break
+        return protection_enabled

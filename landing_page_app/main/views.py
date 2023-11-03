@@ -37,6 +37,11 @@ def use_slack_rejoin_org():
     return render_template("use-slack-rejoin-org.html")
 
 
+def error(error_message):
+    logger.error(error_message)
+    return render_template("internal-error.html", error_message=error_message)
+
+
 @main.route("/join-github-form.html", methods=["GET", "POST"])
 @main.route("/join-github-form", methods=["GET", "POST"])
 def completed_join_github_form():
@@ -45,24 +50,34 @@ def completed_join_github_form():
         selected_orgs = current_app.github_script.get_selected_organisations(
             form.access_moj_org.data, form.access_as_org.data
         )
+
+        if current_app.github_script.is_github_seat_protection_enabled() is True:
+            return error("GitHub Seat protection enabled")
+
         if form.is_user_rejoining_org.data is False:
             non_approved_requests = current_app.github_script.add_new_user_to_github_org(
                 form.gh_username.data, form.email_address.data, selected_orgs
             )
+
             if len(non_approved_requests) == 0:
                 # Approved email address. Invite sent to user
                 return redirect("thank-you")
+
             # Non approved email address. Slack alert created
             current_app.slack_service.send_add_new_user_to_github_orgs(
                 non_approved_requests
             )
+
             return redirect("use-slack")
+
         if form.validate_user_rejoining_org(form.gh_username.data, selected_orgs):
             # User re-joining. Slack alert created
             current_app.slack_service.send_user_wants_to_rejoin_github_orgs(
                 form.gh_username.data, form.email_address.data, selected_orgs
             )
+
             return redirect("use-slack-rejoin-org")
+
     # Problem in the form
     return render_template(
         "join-github-form.html", form=form, template="join-github-form.html"

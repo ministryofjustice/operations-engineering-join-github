@@ -50,3 +50,10 @@ class GithubService:
             else:
                 pagination = False
         return list(users)
+
+    def get_org_available_seats(self, organisation_name: str) -> int:
+        organisation = self.github_client_core_api.get_organization(organisation_name)
+        return organisation.plan.seats - organisation.plan.filled_seats
+
+    def get_org_pending_invites(self, organisation_name: str) -> int:
+        return self.github_client_core_api.get_organization(organisation_name).invitations().totalCount
