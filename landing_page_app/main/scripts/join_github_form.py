@@ -1,6 +1,7 @@
 import re
 from wtforms import Form, BooleanField, StringField, validators, ValidationError
 from flask import current_app
+from flask_wtf import RecaptchaField
 
 
 class InputCheck:
@@ -17,6 +18,7 @@ class InputCheck:
 
 
 class JoinGithubForm(Form):
+    recaptcha = RecaptchaField("reCaptcha")
     gh_username = StringField(
         "GitHub Username",
         [

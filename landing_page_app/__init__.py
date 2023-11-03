@@ -20,7 +20,7 @@ from landing_page_app.main.views import (
 )
 
 
-def create_app(github_script: GithubScript, slack_service: SlackService, rate_limit: bool = True) -> Flask:
+def create_app(github_script: GithubScript, slack_service: SlackService, recaptcha_public_key: str, recaptcha_private_key: str, rate_limit: bool = True) -> Flask:
     logging.basicConfig(
         format="%(asctime)s %(levelname)s in %(module)s: %(message)s",
     )
@@ -44,6 +44,9 @@ def create_app(github_script: GithubScript, slack_service: SlackService, rate_li
     app.logger.setLevel(logging.DEBUG)
     app.config.from_object("landing_page_app.config.development")
     app.logger.info("Running in Development mode.")
+
+    app.config["RECAPTCHA_PUBLIC_KEY"] = recaptcha_public_key
+    app.config["RECAPTCHA_PRIVATE_KEY"] = recaptcha_private_key
 
     app.secret_key = app.config.get("APP_SECRET_KEY")
 

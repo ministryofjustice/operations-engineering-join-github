@@ -26,15 +26,32 @@ def get_tokens():
         if not slack_token:
             logging.error("Failed to find a Slack Token")
             sys.exit(1)
-    return github_token, slack_token
+
+    recaptcha_public_key = environ.get("RECAPTCHA_PUBLIC_KEY")
+    if not recaptcha_public_key:
+        # Look for a local .env file
+        recaptcha_public_key = dotenv_values(".env").get("RECAPTCHA_PUBLIC_KEY")
+        if not recaptcha_public_key:
+            logging.error("Failed to find recaptcha public key")
+            sys.exit(1)
+
+    recaptcha_private_key = environ.get("RECAPTCHA_PRIVATE_KEY")
+    if not recaptcha_private_key:
+        # Look for a local .env file
+        recaptcha_private_key = dotenv_values(".env").get("RECAPTCHA_PRIVATE_KEY")
+        if not recaptcha_private_key:
+            logging.error("Failed to find recaptcha private key")
+            sys.exit(1)
+
+    return github_token, slack_token, recaptcha_public_key, recaptcha_private_key
 
 
 def build_app():
-    github_token, slack_token = get_tokens()
+    github_token, slack_token, recaptcha_public_key, recaptcha_private_key = get_tokens()
     github_service = GithubService(github_token)
     github_script = GithubScript(github_service)
     slack_service = SlackService(slack_token)
-    return create_app(github_script, slack_service)
+    return create_app(github_script, slack_service, recaptcha_public_key, recaptcha_private_key)
 
 
 # Gunicorn entry point, return the object without running it
