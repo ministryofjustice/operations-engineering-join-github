@@ -11,6 +11,7 @@ from landing_page_app.main.views import (
     server_forbidden,
     unknown_server_error,
     gateway_timeout,
+    error
 )
 
 
@@ -84,6 +85,11 @@ class TestViews(unittest.TestCase):
         with self.app.test_request_context():
             response = gateway_timeout("some-error")
             self.assertEqual(response[1], 504)
+
+    def test_error(self):
+        with self.app.test_request_context():
+            response = error("12345678")
+            self.assertRegex(response, "12345678")
 
 
 class TestCompletedJoinGithubForm(unittest.TestCase):
@@ -237,6 +243,15 @@ class TestCompletedJoinGithubForm(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/join-github-form")
+
+    def test_github_seat_protection(self):
+        self.app.github_script.get_selected_organisations.return_value = [self.org]
+        self.app.github_script.is_github_seat_protection_enabled.return_value = True
+        response = self.app.test_client().post(
+            "/join-github-form", data=self.form_data, follow_redirects=True
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertRegex(response.data.decode(), "GitHub Seat protection enabled")
 
 
 class TestCompletedRateLimit(unittest.TestCase):

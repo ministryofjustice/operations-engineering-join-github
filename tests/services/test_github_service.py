@@ -4,6 +4,8 @@ from unittest.mock import patch, call, MagicMock
 from datetime import datetime, timedelta
 from landing_page_app.main.services.github_service import GithubService
 from freezegun import freeze_time
+from github.Organization import Organization
+from github.PaginatedList import PaginatedList
 
 
 @patch("github.Github.__new__")
@@ -17,6 +19,35 @@ class TestGithubServiceInit(unittest.TestCase):
         )
         mock_github_client_rest_api.assert_has_calls([call().headers.update(
             {"Accept": "application/vnd.github+json", "Authorization": "Bearer "})])
+
+
+@patch("github.Github.__new__")
+class TestGithubServiceGetOrgAvailableSeats(unittest.TestCase):
+    def test_calls_downstream_services(self, mock_github_client_core_api):
+        org = MagicMock(Organization)
+        org.plan.seats = 5
+        org.plan.filled_seats = 3
+        mock_github_client_core_api.return_value.get_organization.return_value = org
+        github_service = GithubService("")
+        seats = github_service.get_org_available_seats("test_org")
+        github_service.github_client_core_api.get_organization.assert_has_calls(
+            [call("test_org")]
+        )
+        self.assertEqual(seats, 2)
+
+
+@patch("github.Github.__new__")
+class TestGithubServiceGetOrgPendingInvites(unittest.TestCase):
+    def test_calls_downstream_services(self, mock_github_client_core_api):
+        invites = MagicMock(PaginatedList)
+        invites.totalCount = 5
+        mock_github_client_core_api.return_value.get_organization.return_value.invitations.return_value = invites
+        github_service = GithubService("")
+        pending_invites = github_service.get_org_pending_invites("test_org")
+        github_service.github_client_core_api.get_organization.assert_has_calls(
+            [call('test_org'), call().invitations()]
+        )
+        self.assertEqual(pending_invites, 5)
 
 
 @patch("github.Github.__new__")
