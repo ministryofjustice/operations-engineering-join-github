@@ -30,25 +30,7 @@ Join GitHub Form
   <main class="govuk-main-wrapper " id="main-content" role="main">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        <form action="/join-github-form" method="POST">
-          <div class="govuk-form-group">
-            <label class="govuk-label govuk-label--m" for="gh_username">
-              {{ form.gh_username.label }}
-            </label>
-            {{ form.gh_username(class="govuk-input govuk-input--width-40") }}
-          </div>
-          <div class="govuk-form-group">
-            <label class="govuk-label govuk-label--m" for="name">
-              {{ form.name.label }}
-            </label>
-            {{ form.name(class="govuk-input govuk-input--width-40") }}
-          </div>
-          <div class="govuk-form-group">
-            <label class="govuk-label govuk-label--m" for="email_address">
-              {{ form.email_address.label }}
-            </label>
-            {{ form.email_address(class="govuk-input govuk-input--width-40") }}
-          </div>
+        <form action="/join-github-auth0-user" method="POST">
           <div class="govuk-form-group">
             <fieldset class="govuk-fieldset" aria-describedby="join-github-hint">
               <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -83,13 +65,16 @@ Join GitHub Form
                 </h1>
               </legend>
               <div id="rejoin-github-hint" class="govuk-hint">
-                GitHub remembers a users Organisation details for 90 days since being removed.
+                Please provide your GitHub username if you are rejoining the GitHub Organisation.
               </div>
-              <div class="govuk-checkboxes__item">
-                {{ form.is_user_rejoining_org(class="govuk-checkboxes__input") }}
-                <label class="govuk-label govuk-checkboxes__label" for="is_user_rejoining_org">
-                  {{ form.is_user_rejoining_org.label }}
+              <div id="rejoin-github-hint" class="govuk-hint">
+                GitHub remembers user details for 90 days since being removed.
+              </div>
+              <div class="govuk-form-group">
+                <label class="govuk-label govuk-label--m" for="gh_username">
+                  {{ form.gh_username.label }}
                 </label>
+                {{ form.gh_username(class="govuk-input govuk-input--width-40") }}
               </div>
             </fieldset>
           </div>

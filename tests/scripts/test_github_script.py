@@ -167,7 +167,7 @@ class TestGithubScript(unittest.TestCase):
         )
         self.assertEqual(len(non_approved_requests), 0)
         # TODO: change MOJ_TEST_ORG to MINISTRY_OF_JUSTICE
-        mock_github_service.add_new_user_to_org.assert_called_with(
+        mock_github_service.add_new_user_to_org_via_email_address.assert_called_with(
             self.approved_email_address, MOJ_TEST_ORG
         )
         non_approved_requests = github_script.add_new_user_to_github_org(
@@ -175,7 +175,7 @@ class TestGithubScript(unittest.TestCase):
         )
         self.assertEqual(len(non_approved_requests), 0)
         # TODO: change MOJ_TEST_ORG to MOJ_ANALYTICAL_SERVICES
-        mock_github_service.add_new_user_to_org.assert_called_with(
+        mock_github_service.add_new_user_to_org_via_email_address.assert_called_with(
             self.approved_email_address, MOJ_TEST_ORG
         )
 

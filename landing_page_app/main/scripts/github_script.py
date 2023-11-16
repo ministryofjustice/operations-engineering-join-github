@@ -43,40 +43,39 @@ class GithubScript:
                     pre_approved = True
         return pre_approved
 
-    def add_new_user_to_github_org(
-        self, username: str, email_address: str, organisations: list
-    ):
-        non_approved_requests = []
+    def add_returning_user_to_github_org(self, username: str, organisations: list):
         if (
             username == ""
             or username is None
-            or email_address == ""
+            or len(organisations) == 0
+        ):
+            logger.debug("add_returning_user_to_github_org: incorrect function argument")
+        else:
+            user = self.github_service.get_user(username.lower())
+            if user is not None:
+                for organisation in organisations:
+                    if organisation.lower() in MOJ_ORGS:
+                        # TODO: change MOJ_TEST_ORG to organisation
+                        self.github_service.add_new_user_to_org_via_user(user, MOJ_TEST_ORG)
+                        logger.debug(
+                            f"{user.login.lower()} has been invited to {organisation.lower()} with the role 'member'."
+                        )
+
+    def add_new_user_to_github_org(self, email_address: str, organisations: list):
+        if (
+            email_address == ""
             or email_address is None
             or len(organisations) == 0
         ):
             logger.debug("add_new_user_to_github_org: incorrect function argument")
         else:
-            user = self.github_service.get_user(username.lower())
             for organisation in organisations:
                 if organisation.lower() in MOJ_ORGS:
-                    if self._is_email_address_pre_approved(
-                        organisation, email_address.lower()
-                    ):
-                        # TODO: change MOJ_TEST_ORG to organisation
-                        if user is not None:
-                            self.github_service.add_new_user_to_org(email_address.lower(), MOJ_TEST_ORG)
-                            logger.debug(
-                                f"{user.login.lower()} has been invited to {organisation.lower()} with the role 'member'."
-                            )
-                    else:
-                        non_approved_requests.append(
-                            {
-                                "username": username.lower(),
-                                "email_address": email_address.lower(),
-                                "organisation": organisation.lower(),
-                            }
-                        )
-        return non_approved_requests
+                    # TODO: change MOJ_TEST_ORG to organisation
+                    self.github_service.add_new_user_to_org_via_email_address(email_address.lower(), MOJ_TEST_ORG)
+                    logger.debug(
+                        f"{email_address.lower()} has been invited to {organisation.lower()} with the role 'member'."
+                    )
 
     def get_selected_organisations(self, moj_org: bool, as_org: bool) -> list:
         organisations = []
@@ -85,6 +84,12 @@ class GithubScript:
         if as_org:
             organisations.append(MOJ_ANALYTICAL_SERVICES)
         return organisations
+
+    def validate_user_rejoining_org(self, username: str = "", organisations: list[str] = []):
+        for organisation in organisations:
+            if self.is_user_in_audit_log(username, organisation) is False:
+                return False
+        return True
 
     def is_user_in_audit_log(self, username: str = "", organisation: str = ""):
         found_user = False

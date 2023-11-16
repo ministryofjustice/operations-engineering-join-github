@@ -65,7 +65,7 @@ class TestGithubServiceGetUser(unittest.TestCase):
 class TestGithubServiceAddNewUserToOrg(unittest.TestCase):
     def test_calls_downstream_services(self, mock_github_client_core_api):
         github_service = GithubService("")
-        github_service.add_new_user_to_org("approved@email.com", "some-org")
+        github_service.add_new_user_to_org_via_email_address("approved@email.com", "some-org")
         github_service.github_client_core_api.get_organization.assert_has_calls(
             [call("some-org"), call().invite_user(email="approved@email.com")]
         )

@@ -1,3 +1,4 @@
+authlib
 email-validator
 flask
 flask-cors
