@@ -34,7 +34,7 @@ class GithubScript:
             and organisation != ""
             and organisation is not None
         ):
-            email_domain = email_address[email_address.index("@") + 1 :]
+            email_domain = email_address[email_address.index("@") + 1:]
             if organisation.lower() == MOJ_ANALYTICAL_SERVICES:
                 if email_domain in AS_ORG_ALLOWED_EMAIL_DOMAINS:
                     pre_approved = True
@@ -84,7 +84,7 @@ class GithubScript:
         return organisations
 
     def validate_user_rejoining_org(
-        self, username: str = "", organisations: list[str] = []
+        self, organisations: list[str], username: str = ""
     ):
         for organisation in organisations:
             if self.is_user_in_audit_log(username, organisation) is False:

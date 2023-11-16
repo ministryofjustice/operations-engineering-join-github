@@ -1,5 +1,6 @@
 import os
 import logging
+from functools import wraps
 from flask import (
     Blueprint,
     render_template,
@@ -10,7 +11,6 @@ from flask import (
     url_for,
 )
 from authlib.integrations.flask_client import OAuth
-from functools import wraps
 from github import GithubException
 
 from landing_page_app.main.scripts.join_github_form_auth0_user import (
@@ -198,7 +198,7 @@ def join_github_auth0_users():
         username = form.gh_username.data
         if len(username) > 0:
             if current_app.github_script.validate_user_rejoining_org(
-                username, selected_orgs
+                selected_orgs, username
             ):
                 current_app.github_script.add_returning_user_to_github_org(
                     username, selected_orgs

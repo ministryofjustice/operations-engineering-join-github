@@ -1,7 +1,7 @@
+from datetime import datetime, timedelta
 from github import Github
 from github.NamedUser import NamedUser
 import requests
-from datetime import datetime, timedelta
 
 
 class GithubService:
