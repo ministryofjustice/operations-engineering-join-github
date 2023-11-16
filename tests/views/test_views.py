@@ -11,7 +11,7 @@ from landing_page_app.main.views import (
     server_forbidden,
     unknown_server_error,
     gateway_timeout,
-    error
+    error,
 )
 
 
@@ -19,7 +19,9 @@ class TestViews(unittest.TestCase):
     def setUp(self):
         self.github_script = MagicMock(GithubScript)
         self.slack_service = MagicMock(SlackService)
-        self.app = landing_page_app.create_app(self.github_script, self.slack_service, False)
+        self.app = landing_page_app.create_app(
+            self.github_script, self.slack_service, False
+        )
 
     def test_index(self):
         response = self.app.test_client().get("index")
@@ -107,7 +109,9 @@ class TestCompletedJoinGithubForm(unittest.TestCase):
         self.org = "some-org"
         self.github_script = MagicMock(GithubScript)
         self.slack_service = MagicMock(SlackService)
-        self.app = landing_page_app.create_app(self.github_script, self.slack_service, False)
+        self.app = landing_page_app.create_app(
+            self.github_script, self.slack_service, False
+        )
 
     def test_join_github_form(self):
         self.app.github_script.get_selected_organisations.return_value = [self.org]
@@ -269,7 +273,9 @@ class TestCompletedRateLimit(unittest.TestCase):
         self.org = "some-org"
         self.github_script = MagicMock(GithubScript)
         self.slack_service = MagicMock(SlackService)
-        self.app = landing_page_app.create_app(self.github_script, self.slack_service, True)
+        self.app = landing_page_app.create_app(
+            self.github_script, self.slack_service, True
+        )
 
     def test_rate_limit(self):
         # Send requests until you receive a 429 response

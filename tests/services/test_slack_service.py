@@ -13,7 +13,9 @@ class TestSlackServiceInit(unittest.TestCase):
 
 @patch("slack_sdk.WebClient.__new__")
 class SendAddNewUserToGithubOrgs(unittest.TestCase):
-    def test_send_add_new_user_to_github_orgs_with_single_orgs(self, mock_slack_client: MagicMock):
+    def test_send_add_new_user_to_github_orgs_with_single_orgs(
+        self, mock_slack_client: MagicMock
+    ):
         test_data = {
             "username": "some-user",
             "email_address": "some-email",
@@ -36,7 +38,9 @@ class SendAddNewUserToGithubOrgs(unittest.TestCase):
             ],
         )
 
-    def test_send_add_new_user_to_github_orgs_with_multiple_orgs(self, mock_slack_client: MagicMock):
+    def test_send_add_new_user_to_github_orgs_with_multiple_orgs(
+        self, mock_slack_client: MagicMock
+    ):
         test_data = {
             "username": "some-user",
             "email_address": "some-email",
@@ -59,8 +63,12 @@ class SendAddNewUserToGithubOrgs(unittest.TestCase):
             ],
         )
 
-    def test_send_user_wants_to_rejoin_github_orgs_with_multiple_orgs(self, mock_slack_client: MagicMock):
-        SlackService("").send_user_wants_to_rejoin_github_orgs("some-user", "some-email", ["some-org", "some-org"])
+    def test_send_user_wants_to_rejoin_github_orgs_with_multiple_orgs(
+        self, mock_slack_client: MagicMock
+    ):
+        SlackService("").send_user_wants_to_rejoin_github_orgs(
+            "some-user", "some-email", ["some-org", "some-org"]
+        )
         mock_slack_client.return_value.chat_postMessage.assert_called_with(
             # TODO: Change "C033QBE511V" to the "C01BUKJSZD4" when go into Production
             channel="C033QBE511V",
@@ -76,8 +84,12 @@ class SendAddNewUserToGithubOrgs(unittest.TestCase):
             ],
         )
 
-    def test_send_user_wants_to_rejoin_github_orgs_with_single_orgs(self, mock_slack_client: MagicMock):
-        SlackService("").send_user_wants_to_rejoin_github_orgs("some-user", "some-email", ["some-org"])
+    def test_send_user_wants_to_rejoin_github_orgs_with_single_orgs(
+        self, mock_slack_client: MagicMock
+    ):
+        SlackService("").send_user_wants_to_rejoin_github_orgs(
+            "some-user", "some-email", ["some-org"]
+        )
         mock_slack_client.return_value.chat_postMessage.assert_called_with(
             # TODO: Change "C033QBE511V" to the "C01BUKJSZD4" when go into Production
             channel="C033QBE511V",

@@ -20,7 +20,9 @@ from landing_page_app.main.views import (
 )
 
 
-def create_app(github_script: GithubScript, slack_service: SlackService, rate_limit: bool = True) -> Flask:
+def create_app(
+    github_script: GithubScript, slack_service: SlackService, rate_limit: bool = True
+) -> Flask:
     logging.basicConfig(
         format="%(asctime)s %(levelname)s in %(module)s: %(message)s",
     )
@@ -32,7 +34,7 @@ def create_app(github_script: GithubScript, slack_service: SlackService, rate_li
         app=app,
         default_limits=["5 per minute", "1 per second"],
         storage_uri="memory://",
-        strategy="moving-window"
+        strategy="moving-window",
     )
 
     limiter.init_app(app)

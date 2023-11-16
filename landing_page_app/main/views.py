@@ -1,15 +1,25 @@
 import os
 import logging
-from flask import Blueprint, render_template, request, redirect, current_app, session, url_for
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    redirect,
+    current_app,
+    session,
+    url_for,
+)
 from authlib.integrations.flask_client import OAuth
 from functools import wraps
 from github import GithubException
 
-from landing_page_app.main.scripts.join_github_form_auth0_user import JoinGithubFormAuth0User
+from landing_page_app.main.scripts.join_github_form_auth0_user import (
+    JoinGithubFormAuth0User,
+)
 from landing_page_app.main.config.constants import (
     MINISTRY_OF_JUSTICE,
     MOJ_ANALYTICAL_SERVICES,
-    MOJ_ORGS
+    MOJ_ORGS,
 )
 
 logger = logging.getLogger(__name__)
@@ -124,7 +134,7 @@ def __is_allowed_email_for_moj_org(email_address):
         "@justice.gov.uk",
         "@publicguardian.gov.uk",
         "@cica.gov.uk",
-        "@ima-citizensrights.org.uk"
+        "@ima-citizensrights.org.uk",
     )
     return any(email_address.endswith(domain) for domain in allowed_domains)
 
@@ -139,7 +149,7 @@ def __is_allowed_email_for_as_org(email_address):
         "@cica.gov.uk",
         "@ppo.gov.uk",
         "@sentencingcouncil.gov.uk",
-        "@yjb.gov.uk"
+        "@yjb.gov.uk",
     )
     return any(email_address.endswith(domain) for domain in allowed_domains)
 
@@ -187,13 +197,21 @@ def join_github_auth0_users():
 
         username = form.gh_username.data
         if len(username) > 0:
-            if current_app.github_script.validate_user_rejoining_org(username, selected_orgs):
-                current_app.github_script.add_returning_user_to_github_org(username, selected_orgs)
+            if current_app.github_script.validate_user_rejoining_org(
+                username, selected_orgs
+            ):
+                current_app.github_script.add_returning_user_to_github_org(
+                    username, selected_orgs
+                )
             else:
-                return error("Username not found or has expired. Create a new request and leave the username box empty.")
+                return error(
+                    "Username not found or has expired. Create a new request and leave the username box empty."
+                )
         else:
             user_email = session["user"]["userinfo"]["email"]
-            current_app.github_script.add_new_user_to_github_org(user_email, selected_orgs)
+            current_app.github_script.add_new_user_to_github_org(
+                user_email, selected_orgs
+            )
 
         return redirect("thank-you")
 

@@ -19,9 +19,13 @@ class GithubService:
         return self.github_client_core_api.get_user(user_name.lower())
 
     def add_new_user_to_org_via_user(self, user: NamedUser, organisation: str) -> None:
-        self.github_client_core_api.get_organization(organisation.lower()).invite_user(user)
+        self.github_client_core_api.get_organization(organisation.lower()).invite_user(
+            user
+        )
 
-    def add_new_user_to_org_via_email_address(self, email_address: str, organisation: str) -> None:
+    def add_new_user_to_org_via_email_address(
+        self, email_address: str, organisation: str
+    ) -> None:
         self.github_client_core_api.get_organization(organisation.lower()).invite_user(
             email=email_address
         )
@@ -30,7 +34,9 @@ class GithubService:
         users = set()
 
         # Calculate the date three months ago
-        three_months_ago = (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%dT%H:%M:%SZ")
+        three_months_ago = (datetime.now() - timedelta(days=90)).strftime(
+            "%Y-%m-%dT%H:%M:%SZ"
+        )
 
         pagination = True
         url = f"https://api.github.com/orgs/{organisation_name}/audit-log?phrase=action:org.remove_member&created_at=>{three_months_ago}&per_page=100"
@@ -59,4 +65,8 @@ class GithubService:
         return organisation.plan.seats - organisation.plan.filled_seats
 
     def get_org_pending_invites(self, organisation_name: str) -> int:
-        return self.github_client_core_api.get_organization(organisation_name).invitations().totalCount
+        return (
+            self.github_client_core_api.get_organization(organisation_name)
+            .invitations()
+            .totalCount
+        )
