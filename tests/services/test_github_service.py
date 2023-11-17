@@ -63,6 +63,16 @@ class TestGithubServiceGetOrgPendingInvites(unittest.TestCase):
 
 
 @patch("github.Github.__new__")
+class TestGithubServiceAddNewUserToOrgViaUser(unittest.TestCase):
+    def test_calls_downstream_services(self, mock_github_client_core_api):
+        github_service = GithubService("")
+        github_service.add_new_user_to_org_via_user("some-user", "test_org")
+        github_service.github_client_core_api.get_organization.assert_has_calls(
+            [call("test_org"), call().invite_user('some-user')]
+        )
+
+
+@patch("github.Github.__new__")
 class TestGithubServiceGetUser(unittest.TestCase):
     def test_calls_downstream_services(self, mock_github_client_core_api):
         mock_github_client_core_api.return_value.get_user.return_value = "mock_user"
@@ -74,7 +84,7 @@ class TestGithubServiceGetUser(unittest.TestCase):
 
 
 @patch("github.Github.__new__")
-class TestGithubServiceAddNewUserToOrg(unittest.TestCase):
+class TestGithubServiceAddNewUserToOrgViaEmailAddress(unittest.TestCase):
     def test_calls_downstream_services(self, mock_github_client_core_api):
         github_service = GithubService("")
         github_service.add_new_user_to_org_via_email_address(

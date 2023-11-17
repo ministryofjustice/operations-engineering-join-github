@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from landing_page_app.main.services.slack_service import SlackService
 from landing_page_app.main.scripts.github_script import GithubScript
@@ -98,7 +98,7 @@ class TestJoinGithubAuth0User(unittest.TestCase):
             self.github_script, self.slack_service, False
         )
 
-    def test_join_github_auth0_user(self):
+    def test_join_github_auth0_user_decorator_is_working(self):
         form_data = {
             "gh_username": "",
             "access_moj_org": True,
@@ -110,6 +110,33 @@ class TestJoinGithubAuth0User(unittest.TestCase):
         # Testing a function that has a decorator which redirect to /index
         # The private function in the function will test the logic
         self.assertEqual(response.request.path, "/index")
+        self.app.github_script.add_new_user_to_github_org.assert_not_called()
+        self.app.github_script.add_returning_user_to_github_org.assert_not_called()
+
+    # @patch("session.__new__")
+    # @patch("flask.session.__new__")
+    def test_join_github_auth0_user_new_joiner(self):
+        form_data = {
+            "gh_username": "",
+            "access_moj_org": True,
+            "access_as_org": True,
+        }
+        with self.app.test_request_context(
+            "/join-github-auth0-user", method="POST", data=form_data
+        ) as request_context:
+            request_context.session = MagicMock()
+            request_context.session = {'user': {'userinfo': {'email': "some-email"}}}
+            self.app.github_script.get_selected_organisations.return_value = [self.org]
+            response = wrapper_join_github_auth0_users(request_context.request)
+            self.assertEqual(response.status_code, 302)
+            for item in response.headers:
+                if item[0] == 'Location' and item[1] == 'thank-you':
+                    redirect = True
+            self.assertEqual(redirect, True)
+            self.app.github_script.validate_user_rejoining_org.assert_not_called()
+            self.app.github_script.add_new_user_to_github_org.assert_called_once_with(
+                "some-email", [self.org]
+            )
 
     def test_join_github_auth0_user_rejoining(self):
         form_data = {
@@ -123,12 +150,12 @@ class TestJoinGithubAuth0User(unittest.TestCase):
             self.app.github_script.get_selected_organisations.return_value = [self.org]
             self.app.github_script.validate_user_rejoining_org.return_value = True
             response = wrapper_join_github_auth0_users(request_context.request)
-            self.app.github_script.add_new_user_to_github_org.return_value = ["some-value"]
             self.assertEqual(response.status_code, 302)
             for item in response.headers:
                 if item[0] == 'Location' and item[1] == 'thank-you':
                     redirect = True
             self.assertEqual(redirect, True)
+            self.app.github_script.add_new_user_to_github_org.assert_not_called()
             self.app.github_script.add_returning_user_to_github_org.assert_called_once_with(
                 'some-username', ['some-org']
             )
@@ -145,7 +172,8 @@ class TestJoinGithubAuth0User(unittest.TestCase):
             self.app.github_script.get_selected_organisations.return_value = [self.org]
             self.app.github_script.validate_user_rejoining_org.return_value = False
             response = wrapper_join_github_auth0_users(request_context.request)
-            self.app.github_script.add_new_user_to_github_org.return_value = ["some-value"]
+            self.app.github_script.add_new_user_to_github_org.assert_not_called()
+            self.app.github_script.add_returning_user_to_github_org.assert_not_called()
             self.assertRegex(response, "Username not found or has expired. Create a new request and leave the username box empty.")
 
     def test_join_github_auth0_user_when_github_seat_protection_enabled(self):
@@ -159,6 +187,8 @@ class TestJoinGithubAuth0User(unittest.TestCase):
             self.app.github_script.get_selected_organisations.return_value = [self.org]
             self.app.github_script.is_github_seat_protection_enabled.return_value = True
             response = wrapper_join_github_auth0_users(request_context.request)
+            self.app.github_script.add_new_user_to_github_org.assert_not_called()
+            self.app.github_script.add_returning_user_to_github_org.assert_not_called()
             self.assertRegex(response, "GitHub Seat protection enabled")
 
     def test_join_github_form_with_incorrect_special_character_inputs(self):
@@ -171,6 +201,8 @@ class TestJoinGithubAuth0User(unittest.TestCase):
         ) as request_context:
             response = wrapper_join_github_auth0_users(request_context.request)
             self.assertRegex(response, "There is a problem")
+            self.app.github_script.add_new_user_to_github_org.assert_not_called()
+            self.app.github_script.add_returning_user_to_github_org.assert_not_called()
 
     def test_join_github_form_with_missing_orgs(self):
         form_data1 = {
@@ -181,6 +213,8 @@ class TestJoinGithubAuth0User(unittest.TestCase):
         ) as request_context:
             response = wrapper_join_github_auth0_users(request_context.request)
             self.assertRegex(response, "There is a problem")
+            self.app.github_script.add_new_user_to_github_org.assert_not_called()
+            self.app.github_script.add_returning_user_to_github_org.assert_not_called()
 
 
 class TestCompletedRateLimit(unittest.TestCase):

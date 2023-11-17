@@ -172,11 +172,6 @@ def thank_you():
     return render_template("thank-you.html")
 
 
-@main.route("/use-slack")
-def use_slack():
-    return render_template("use-slack.html")
-
-
 def error(error_message):
     logger.error(error_message)
     return render_template("internal-error.html", error_message=error_message)
