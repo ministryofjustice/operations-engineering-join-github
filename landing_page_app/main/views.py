@@ -182,10 +182,11 @@ def error(error_message):
     return render_template("internal-error.html", error_message=error_message)
 
 
-@main.route("/join-github-auth0-user.html", methods=["GET", "POST"])
-@main.route("/join-github-auth0-user", methods=["GET", "POST"])
-@requires_auth
-def join_github_auth0_users():
+def wrapper_join_github_auth0_users(request):
+    return __join_github_auth0_users(request)
+
+
+def __join_github_auth0_users(request):
     form = JoinGithubFormAuth0User(request.form)
     if request.method == "POST" and form.validate() and form.validate_org():
         selected_orgs = current_app.github_script.get_selected_organisations(
@@ -219,6 +220,13 @@ def join_github_auth0_users():
     return render_template(
         "join-github-auth0-user.html", form=form, template="join-github-auth0-user.html"
     )
+
+
+@main.route("/join-github-auth0-user.html", methods=["GET", "POST"])
+@main.route("/join-github-auth0-user", methods=["GET", "POST"])
+@requires_auth
+def join_github_auth0_users():
+    return __join_github_auth0_users(request)
 
 
 @main.errorhandler(GithubException)
