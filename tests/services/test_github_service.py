@@ -63,7 +63,7 @@ class TestGithubServiceGetOrgPendingInvites(unittest.TestCase):
 
 
 @patch("github.Github.__new__")
-class TestGithubServiceAddNewUserToOrgViaUser(unittest.TestCase):
+class TestGithubServiceInviteUserToOrgUsingNameduser(unittest.TestCase):
     def test_calls_downstream_services(self, mock_github_client_core_api):
         github_service = GithubService("")
         github_service.invite_user_to_org_using_nameduser("some-user", "test_org")
@@ -84,7 +84,7 @@ class TestGithubServiceGetUser(unittest.TestCase):
 
 
 @patch("github.Github.__new__")
-class TestGithubServiceAddNewUserToOrgViaEmailAddress(unittest.TestCase):
+class TestGithubServiceInviteUserToOrgUsingEmailAddress(unittest.TestCase):
     def test_calls_downstream_services(self, mock_github_client_core_api):
         github_service = GithubService("")
         github_service.invite_user_to_org_using_email_address(
