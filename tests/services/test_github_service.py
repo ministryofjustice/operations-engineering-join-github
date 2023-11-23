@@ -68,7 +68,7 @@ class TestGithubServiceAddNewUserToOrgViaUser(unittest.TestCase):
         github_service = GithubService("")
         github_service.add_new_user_to_org_via_user("some-user", "test_org")
         github_service.github_client_core_api.get_organization.assert_has_calls(
-            [call("test_org"), call().invite_user('some-user')]
+            [call("test_org"), call().invite_user("some-user")]
         )
 
 

@@ -226,9 +226,7 @@ class TestGithubScript(unittest.TestCase):
         github_script.add_new_user_to_github_org("", [])
         github_script.github_service.get_user.assert_not_called()
 
-        github_script.add_new_user_to_github_org(
-            self.test_email_address, []
-        )
+        github_script.add_new_user_to_github_org(self.test_email_address, [])
         github_script.github_service.get_user.assert_not_called()
 
         github_script.add_new_user_to_github_org(
@@ -282,9 +280,7 @@ class TestGithubScript(unittest.TestCase):
         github_script.add_returning_user_to_github_org("", [])
         github_script.github_service.get_user.assert_not_called()
 
-        github_script.add_returning_user_to_github_org(
-            self.test_user, []
-        )
+        github_script.add_returning_user_to_github_org(self.test_user, [])
         github_script.github_service.get_user.assert_not_called()
 
         github_script.add_returning_user_to_github_org("", [MOJ_TEST_ORG])
@@ -297,11 +293,15 @@ class TestGithubScript(unittest.TestCase):
     def test_add_returning_user_to_github_org(self, mock_github_service):
         github_script = GithubScript(mock_github_service)
         mock_github_service.github_service.get_user.return_value = "a real user"
-        github_script.add_returning_user_to_github_org(self.test_user, [MOJ_ANALYTICAL_SERVICES, MINISTRY_OF_JUSTICE])
+        github_script.add_returning_user_to_github_org(
+            self.test_user, [MOJ_ANALYTICAL_SERVICES, MINISTRY_OF_JUSTICE]
+        )
         mock_github_service.add_new_user_to_org_via_user.assert_called()
 
     @patch("landing_page_app.main.services.github_service")
-    def test_add_returning_user_to_github_org_with_incorrect_org_name(self, mock_github_service):
+    def test_add_returning_user_to_github_org_with_incorrect_org_name(
+        self, mock_github_service
+    ):
         github_script = GithubScript(mock_github_service)
         mock_github_service.github_service.get_user.return_value = "a real user"
         github_script.add_returning_user_to_github_org(self.test_user, [MOJ_TEST_ORG])

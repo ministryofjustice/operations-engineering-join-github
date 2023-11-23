@@ -19,7 +19,6 @@ from landing_page_app.main.views import (
 
 
 class TestAuth0AuthenticationView(unittest.TestCase):
-
     def setUp(self) -> None:
         self.github_script = MagicMock(GithubScript)
         self.slack_service = MagicMock(SlackService)
@@ -32,53 +31,83 @@ class TestAuth0AuthenticationView(unittest.TestCase):
         self.auth0_mock = MagicMock()
 
     def test_login(self):
-        with patch.dict(self.app.extensions, {'authlib.integrations.flask_client': self.auth0_mock}, clear=True):
-            response = self.client.get('/login')
+        with patch.dict(
+            self.app.extensions,
+            {"authlib.integrations.flask_client": self.auth0_mock},
+            clear=True,
+        ):
+            response = self.client.get("/login")
             self.assertEqual(response.status_code, 200)
 
     def test_callback_token_error(self):
-        with patch.dict(self.app.extensions, {'authlib.integrations.flask_client': self.auth0_mock}, clear=True):
+        with patch.dict(
+            self.app.extensions,
+            {"authlib.integrations.flask_client": self.auth0_mock},
+            clear=True,
+        ):
             self.auth0_mock.auth0.authorize_access_token.side_effect = KeyError()
-            response = self.client.get('/callback')
+            response = self.client.get("/callback")
             self.assertEqual(response.status_code, 500)
 
     def test_callback_email_error(self):
-        with patch.dict(self.app.extensions, {'authlib.integrations.flask_client': self.auth0_mock}, clear=True):
+        with patch.dict(
+            self.app.extensions,
+            {"authlib.integrations.flask_client": self.auth0_mock},
+            clear=True,
+        ):
             self.auth0_mock.auth0.authorize_access_token.return_value = {"userinfo": {}}
-            response = self.client.get('/callback')
+            response = self.client.get("/callback")
             self.assertEqual(response.status_code, 500)
 
     def test_callback_not_allowed_email(self):
-        with patch.dict(self.app.extensions, {'authlib.integrations.flask_client': self.auth0_mock}, clear=True):
-            self.auth0_mock.auth0.authorize_access_token.return_value = {"userinfo": {"email": "email@example.com"}}
-            response = self.client.get('/callback')
+        with patch.dict(
+            self.app.extensions,
+            {"authlib.integrations.flask_client": self.auth0_mock},
+            clear=True,
+        ):
+            self.auth0_mock.auth0.authorize_access_token.return_value = {
+                "userinfo": {"email": "email@example.com"}
+            }
+            response = self.client.get("/callback")
             self.assertEqual(response.status_code, 302)
-            self.assertIn('Location', response.headers)
-            self.assertEqual(response.headers['Location'], '/logout')
+            self.assertIn("Location", response.headers)
+            self.assertEqual(response.headers["Location"], "/logout")
 
     def test_callback_allowed_email(self):
-        with patch.dict(self.app.extensions, {'authlib.integrations.flask_client': self.auth0_mock}, clear=True):
-            self.auth0_mock.auth0.authorize_access_token.return_value = {"userinfo": {"email": "email@justice.gov.uk"}}
-            response = self.client.get('/callback')
+        with patch.dict(
+            self.app.extensions,
+            {"authlib.integrations.flask_client": self.auth0_mock},
+            clear=True,
+        ):
+            self.auth0_mock.auth0.authorize_access_token.return_value = {
+                "userinfo": {"email": "email@justice.gov.uk"}
+            }
+            response = self.client.get("/callback")
             self.assertEqual(response.status_code, 302)
-            self.assertIn('Location', response.headers)
-            self.assertEqual(response.headers['Location'], '/join-github-auth0-user')
+            self.assertIn("Location", response.headers)
+            self.assertEqual(response.headers["Location"], "/join-github-auth0-user")
 
     def test_callback_email_is_none(self):
-        with patch.dict(self.app.extensions, {'authlib.integrations.flask_client': self.auth0_mock}, clear=True):
-            self.auth0_mock.auth0.authorize_access_token.return_value = {"userinfo": {"email": None}}
-            response = self.client.get('/callback')
+        with patch.dict(
+            self.app.extensions,
+            {"authlib.integrations.flask_client": self.auth0_mock},
+            clear=True,
+        ):
+            self.auth0_mock.auth0.authorize_access_token.return_value = {
+                "userinfo": {"email": None}
+            }
+            response = self.client.get("/callback")
             self.assertEqual(response.status_code, 302)
-            self.assertIn('Location', response.headers)
-            self.assertEqual(response.headers['Location'], '/logout')
+            self.assertIn("Location", response.headers)
+            self.assertEqual(response.headers["Location"], "/logout")
 
     @patch.dict(os.environ, {"AUTH0_DOMAIN": ""})
     @patch.dict(os.environ, {"AUTH0_CLIENT_ID": ""})
     def test_logout(self):
-        response = self.client.get('/logout')
+        response = self.client.get("/logout")
         self.assertEqual(response.status_code, 302)
-        self.assertIn('Location', response.headers)
-        self.assertIn('v2/logout', response.headers['Location'])
+        self.assertIn("Location", response.headers)
+        self.assertIn("v2/logout", response.headers["Location"])
 
 
 class TestViews(unittest.TestCase):
@@ -114,7 +143,7 @@ class TestViews(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
         redirect = False
         for item in response.headers:
-            if item[0] == 'Location' and item[1] == '/index':
+            if item[0] == "Location" and item[1] == "/index":
                 redirect = True
         self.assertEqual(redirect, True)
 
@@ -194,12 +223,12 @@ class TestJoinGithubAuth0User(unittest.TestCase):
             "/join-github-auth0-user", method="POST", data=form_data
         ) as request_context:
             request_context.session = MagicMock()
-            request_context.session = {'user': {'userinfo': {'email': "some-email"}}}
+            request_context.session = {"user": {"userinfo": {"email": "some-email"}}}
             self.app.github_script.get_selected_organisations.return_value = [self.org]
             response = _join_github_auth0_users(request_context.request)
             self.assertEqual(response.status_code, 302)
             for item in response.headers:
-                if item[0] == 'Location' and item[1] == 'thank-you':
+                if item[0] == "Location" and item[1] == "thank-you":
                     redirect = True
             self.assertEqual(redirect, True)
             self.app.github_script.validate_user_rejoining_org.assert_not_called()
@@ -221,12 +250,12 @@ class TestJoinGithubAuth0User(unittest.TestCase):
             response = _join_github_auth0_users(request_context.request)
             self.assertEqual(response.status_code, 302)
             for item in response.headers:
-                if item[0] == 'Location' and item[1] == 'thank-you':
+                if item[0] == "Location" and item[1] == "thank-you":
                     redirect = True
             self.assertEqual(redirect, True)
             self.app.github_script.add_new_user_to_github_org.assert_not_called()
             self.app.github_script.add_returning_user_to_github_org.assert_called_once_with(
-                'some-username', ['some-org']
+                "some-username", ["some-org"]
             )
 
     def test_join_github_auth0_user_when_rejoining_but_username_not_found(self):
@@ -243,7 +272,10 @@ class TestJoinGithubAuth0User(unittest.TestCase):
             response = _join_github_auth0_users(request_context.request)
             self.app.github_script.add_new_user_to_github_org.assert_not_called()
             self.app.github_script.add_returning_user_to_github_org.assert_not_called()
-            self.assertRegex(response, "Username not found or has expired. Create a new request and leave the username box empty.")
+            self.assertRegex(
+                response,
+                "Username not found or has expired. Create a new request and leave the username box empty.",
+            )
 
     def test_join_github_auth0_user_when_github_seat_protection_enabled(self):
         form_data = {

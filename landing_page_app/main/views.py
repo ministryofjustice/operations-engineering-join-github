@@ -148,9 +148,15 @@ def _user_has_approved_auth0_email_address(email_address):
     allowed_on_as_org = False
     for organisation in MOJ_ORGS:
         if organisation.lower() == MINISTRY_OF_JUSTICE:
-            allowed_on_moj_org = any(email_address.endswith(domain) for domain in MOJ_ORG_ALLOWED_EMAIL_DOMAINS)
+            allowed_on_moj_org = any(
+                email_address.endswith(domain)
+                for domain in MOJ_ORG_ALLOWED_EMAIL_DOMAINS
+            )
         if organisation.lower() == MOJ_ANALYTICAL_SERVICES:
-            allowed_on_as_org = any(email_address.endswith(domain) for domain in AS_ORG_ALLOWED_EMAIL_DOMAINS)
+            allowed_on_as_org = any(
+                email_address.endswith(domain)
+                for domain in AS_ORG_ALLOWED_EMAIL_DOMAINS
+            )
     return bool(allowed_on_moj_org) or bool(allowed_on_as_org)
 
 
