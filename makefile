@@ -45,7 +45,7 @@ clean-test:
 	rm -fr htmlcov/
 
 local: venv
-	venv/bin/python3 -m operations_engineering_landing_page
+	export FLASK_CONFIGURATION=development; venv/bin/python3 -m operations_engineering_landing_page
 
 all:
 

@@ -1,4 +1,5 @@
 """Flask App"""
+import os
 import logging
 
 from flask import Flask
@@ -29,6 +30,8 @@ def create_app(
 
     app = Flask(__name__, instance_relative_config=True)
 
+    app.logger.info("Start App Setup")
+
     limiter = Limiter(
         get_remote_address,
         app=app,
@@ -40,12 +43,26 @@ def create_app(
     limiter.init_app(app)
     limiter.enabled = rate_limit
 
-    app.logger.info("Start App Setup")
+    # Config folder file mapping
+    config = {
+        "development": "landing_page_app.config.development",
+        "production": "landing_page_app.config.production",
+    }
 
-    # Set the config file and logging level
-    app.logger.setLevel(logging.DEBUG)
-    app.config.from_object("landing_page_app.config.development")
-    app.logger.info("Running in Development mode.")
+    # Set config, logging level and AWS DynamoDB table name
+    if os.getenv("FLASK_CONFIGURATION", "production") == "development":
+        app.config.from_object(config["development"])
+        app.logger.setLevel(logging.DEBUG)
+        logging.info("Running in Development mode.")
+    else:
+        app.config.from_object(config["production"])
+        app.logger.setLevel(logging.INFO)
+        logging.info("Running in Production mode.")
+
+    # Load sensitive settings from instance/config.py
+    app.config.from_pyfile("config.py", silent=True)
+
+    logging.info("App Setup")
 
     app.secret_key = app.config.get("APP_SECRET_KEY")
 

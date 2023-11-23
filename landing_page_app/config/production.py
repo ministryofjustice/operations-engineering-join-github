@@ -1,8 +1,8 @@
-""" Config values to be used during development """
+""" Config values to be used in production """
 
-DEBUG = True
-FLASK_DEBUG = True
+DEBUG = False
+FLASK_DEBUG = False
 MAIL_FROM_EMAIL = "operations-engineering@digital.justice.gov.uk"
 PORT = 4567
 SSL_REDIRECT = False
-TESTING = True
+TESTING = False
