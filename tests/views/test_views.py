@@ -21,6 +21,7 @@ class TestAuth0AuthenticationView(unittest.TestCase):
     def setUp(self) -> None:
         self.github_script = MagicMock(GithubScript)
         self.app = landing_page_app.create_app(self.github_script, False)
+        self.app.secret_key = "dev"
         self.ctx = self.app.app_context()
         self.ctx.push()
         self.client = self.app.test_client()
