@@ -39,14 +39,14 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: ops-eng-landing-page-poc-token
-                  key: AUTH0_DOMAIN                
+                  key: AUTH0_DOMAIN
             - name: APP_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: ops-eng-landing-page-poc-token
-                  key: APP_SECRET_KEY                      
+                  key: APP_SECRET_KEY
             - name: FLASK_CONFIGURATION
               valueFrom:
                 secretKeyRef:
                   name: ops-eng-landing-page-poc-token
-                  key: FLASK_CONFIGURATION                      
+                  key: FLASK_CONFIGURATION
