@@ -66,7 +66,7 @@ class TestGithubServiceGetOrgPendingInvites(unittest.TestCase):
 class TestGithubServiceAddNewUserToOrgViaUser(unittest.TestCase):
     def test_calls_downstream_services(self, mock_github_client_core_api):
         github_service = GithubService("")
-        github_service.add_new_user_to_org_via_user("some-user", "test_org")
+        github_service.invite_user_to_org_using_nameduser("some-user", "test_org")
         github_service.github_client_core_api.get_organization.assert_has_calls(
             [call("test_org"), call().invite_user("some-user")]
         )
@@ -87,7 +87,7 @@ class TestGithubServiceGetUser(unittest.TestCase):
 class TestGithubServiceAddNewUserToOrgViaEmailAddress(unittest.TestCase):
     def test_calls_downstream_services(self, mock_github_client_core_api):
         github_service = GithubService("")
-        github_service.add_new_user_to_org_via_email_address(
+        github_service.invite_user_to_org_using_email_address(
             "approved@email.com", "some-org"
         )
         github_service.github_client_core_api.get_organization.assert_has_calls(

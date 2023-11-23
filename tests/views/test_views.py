@@ -2,7 +2,6 @@ import os
 import unittest
 from unittest.mock import MagicMock, patch
 
-from landing_page_app.main.services.slack_service import SlackService
 from landing_page_app.main.scripts.github_script import GithubScript
 import landing_page_app
 
@@ -21,9 +20,8 @@ from landing_page_app.main.views import (
 class TestAuth0AuthenticationView(unittest.TestCase):
     def setUp(self) -> None:
         self.github_script = MagicMock(GithubScript)
-        self.slack_service = MagicMock(SlackService)
         self.app = landing_page_app.create_app(
-            self.github_script, self.slack_service, False
+            self.github_script, False
         )
         self.ctx = self.app.app_context()
         self.ctx.push()
@@ -113,9 +111,8 @@ class TestAuth0AuthenticationView(unittest.TestCase):
 class TestViews(unittest.TestCase):
     def setUp(self):
         self.github_script = MagicMock(GithubScript)
-        self.slack_service = MagicMock(SlackService)
         self.app = landing_page_app.create_app(
-            self.github_script, self.slack_service, False
+            self.github_script, False
         )
 
     def test_index(self):
@@ -193,9 +190,8 @@ class TestJoinGithubAuth0User(unittest.TestCase):
     def setUp(self):
         self.org = "some-org"
         self.github_script = MagicMock(GithubScript)
-        self.slack_service = MagicMock(SlackService)
         self.app = landing_page_app.create_app(
-            self.github_script, self.slack_service, False
+            self.github_script, False
         )
 
     def test_join_github_auth0_user_decorator_is_working(self):
@@ -328,9 +324,8 @@ class TestCompletedRateLimit(unittest.TestCase):
 
         self.org = "some-org"
         self.github_script = MagicMock(GithubScript)
-        self.slack_service = MagicMock(SlackService)
         self.app = landing_page_app.create_app(
-            self.github_script, self.slack_service, True
+            self.github_script, True
         )
 
     def test_rate_limit(self):

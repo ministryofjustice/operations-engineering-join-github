@@ -19,7 +19,7 @@ To develop, deploy or run this app you will need to install:
 
 ### Tokens
 
-The Application requires a GitHub token, Slack token and Auth0 credentials. For local development create a .env file with the tokens. See the .env.example file for an example. To run the Application in Docker these tokens need to be added as environment variables. The live Application gets these tokens via the CP Secret Manager.
+The Application requires a GitHub token and Auth0 credentials. For local development create a .env file with the tokens. See the .env.example file for an example. To run the Application in Docker these tokens need to be added as environment variables. The live Application gets these tokens via the CP Secret Manager.
 
 ### Run application within Terminal
 

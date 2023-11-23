@@ -11,7 +11,6 @@ from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from landing_page_app.main.scripts.github_script import GithubScript
-from landing_page_app.main.services.slack_service import SlackService
 from landing_page_app.main.views import (
     main,
     page_not_found,
@@ -22,7 +21,7 @@ from landing_page_app.main.views import (
 
 
 def create_app(
-    github_script: GithubScript, slack_service: SlackService, rate_limit: bool = True
+    github_script: GithubScript, rate_limit: bool = True
 ) -> Flask:
     logging.basicConfig(
         format="%(asctime)s %(levelname)s in %(module)s: %(message)s",
@@ -87,7 +86,6 @@ def create_app(
     CORS(app, resources={r"/*": {"origins": "*", "send_wildcard": "False"}})
 
     app.github_script = github_script
-    app.slack_service = slack_service
 
     app.logger.info("App Setup complete, running App...")
     return app

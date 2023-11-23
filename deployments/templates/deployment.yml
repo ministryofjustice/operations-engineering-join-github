@@ -25,11 +25,6 @@ spec:
                 secretKeyRef:
                   name: ops-eng-landing-page-poc-token
                   key: GH_TOKEN
-            - name: SLACK_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: ops-eng-landing-page-poc-token
-                  key: SLACK_TOKEN
             - name: AUTH0_CLIENT_ID
               valueFrom:
                 secretKeyRef:
