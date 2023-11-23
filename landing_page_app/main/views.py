@@ -1,6 +1,7 @@
 import os
 import logging
 from functools import wraps
+from urllib.parse import quote_plus, urlencode
 from flask import (
     Blueprint,
     render_template,
@@ -20,6 +21,8 @@ from landing_page_app.main.config.constants import (
     MINISTRY_OF_JUSTICE,
     MOJ_ANALYTICAL_SERVICES,
     MOJ_ORGS,
+    MOJ_ORG_ALLOWED_EMAIL_DOMAINS,
+    AS_ORG_ALLOWED_EMAIL_DOMAINS,
 )
 
 logger = logging.getLogger(__name__)
@@ -86,6 +89,29 @@ def login():
     )
 
 
+@main.route("/logout", methods=["GET", "POST"])
+def logout():
+    """When click on the logout button, clear the session, and log out of Auth0
+
+    Returns:
+        Redirects to /index
+    """
+    logger.debug("logout()")
+    session.clear()
+    return redirect(
+        "https://"
+        + os.getenv("AUTH0_DOMAIN")
+        + "/v2/logout?"
+        + urlencode(
+            {
+                "returnTo": url_for("main.index", _external=True),
+                "client_id": os.getenv("AUTH0_CLIENT_ID"),
+            },
+            quote_via=quote_plus,
+        )
+    )
+
+
 @main.route("/callback", methods=["GET", "POST"])
 def callback():
     """If login succesful redirect to /thank-you
@@ -103,55 +129,29 @@ def callback():
     try:
         user_email = session["user"]["userinfo"]["email"]
     except KeyError:
-        logger.warning("Unauthorised: User does not have an email address")
+        logger.error("Unauthorised: User does not have an email address")
         return render_template("500.html"), 500
     if user_email is None:
-        logger.warning("User %s does not have an email address", user_email)
+        logger.error("User %s does not have an email address", user_email)
         return redirect("/logout")
 
-    if __user_has_approved_auth0_email_address(user_email):
-        logger.info("User %s has approved email domain", user_email)
+    if _user_has_approved_auth0_email_address(user_email):
+        logger.debug("User %s has approved email domain", user_email)
         return redirect("/join-github-auth0-user")
 
-    logger.warning("User %s does not have an approved email domain", user_email)
+    logger.error("User %s does not have an approved email domain", user_email)
     return redirect("/logout")
 
 
-def __user_has_approved_auth0_email_address(email_address):
+def _user_has_approved_auth0_email_address(email_address):
     allowed_on_moj_org = False
     allowed_on_as_org = False
     for organisation in MOJ_ORGS:
         if organisation.lower() == MINISTRY_OF_JUSTICE:
-            allowed_on_moj_org = __is_allowed_email_for_moj_org(email_address)
+            allowed_on_moj_org = any(email_address.endswith(domain) for domain in MOJ_ORG_ALLOWED_EMAIL_DOMAINS)
         if organisation.lower() == MOJ_ANALYTICAL_SERVICES:
-            allowed_on_as_org = __is_allowed_email_for_as_org(email_address)
+            allowed_on_as_org = any(email_address.endswith(domain) for domain in AS_ORG_ALLOWED_EMAIL_DOMAINS)
     return bool(allowed_on_moj_org) or bool(allowed_on_as_org)
-
-
-def __is_allowed_email_for_moj_org(email_address):
-    allowed_domains = (
-        "@digital.justice.gov.uk",
-        "@justice.gov.uk",
-        "@publicguardian.gov.uk",
-        "@cica.gov.uk",
-        "@ima-citizensrights.org.uk",
-    )
-    return any(email_address.endswith(domain) for domain in allowed_domains)
-
-
-def __is_allowed_email_for_as_org(email_address):
-    allowed_domains = (
-        "@digital.justice.gov.uk",
-        "@justice.gov.uk",
-        "@publicguardian.gov.uk",
-        "@judicialappointments.gov.uk",
-        "@judiciary.uk",
-        "@cica.gov.uk",
-        "@ppo.gov.uk",
-        "@sentencingcouncil.gov.uk",
-        "@yjb.gov.uk",
-    )
-    return any(email_address.endswith(domain) for domain in allowed_domains)
 
 
 @main.route("/home")
@@ -177,11 +177,7 @@ def error(error_message):
     return render_template("internal-error.html", error_message=error_message)
 
 
-def wrapper_join_github_auth0_users(request):
-    return __join_github_auth0_users(request)
-
-
-def __join_github_auth0_users(request):
+def _join_github_auth0_users(request):
     form = JoinGithubFormAuth0User(request.form)
     if request.method == "POST" and form.validate() and form.validate_org():
         selected_orgs = current_app.github_script.get_selected_organisations(
@@ -221,7 +217,7 @@ def __join_github_auth0_users(request):
 @main.route("/join-github-auth0-user", methods=["GET", "POST"])
 @requires_auth
 def join_github_auth0_users():
-    return __join_github_auth0_users(request)
+    return _join_github_auth0_users(request)
 
 
 @main.errorhandler(GithubException)
@@ -240,7 +236,7 @@ def page_not_found(err):
     Returns:
         Load the templates/404.html page
     """
-    logger.debug("A request was made to a page that doesn't exist %s", err)
+    logger.error("A request was made to a page that doesn't exist %s", err)
     return render_template("404.html"), 404
 
 
@@ -254,7 +250,7 @@ def server_forbidden(err):
     Returns:
         Load the templates/403.html page
     """
-    logger.debug("server_forbidden(): %s", err)
+    logger.error("server_forbidden(): %s", err)
     return render_template("403.html"), 403
 
 
