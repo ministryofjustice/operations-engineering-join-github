@@ -53,16 +53,14 @@ def create_app(
     if os.getenv("FLASK_CONFIGURATION", "production") == "development":
         app.config.from_object(config["development"])
         app.logger.setLevel(logging.DEBUG)
-        logging.info("Running in Development mode.")
+        app.logger.info("Running in Development mode.")
     else:
         app.config.from_object(config["production"])
         app.logger.setLevel(logging.INFO)
-        logging.info("Running in Production mode.")
+        app.logger.info("Running in Production mode.")
 
     # Load sensitive settings from instance/config.py
     app.config.from_pyfile("config.py", silent=True)
-
-    logging.info("App Setup")
 
     app.secret_key = app.config.get("APP_SECRET_KEY")
 
@@ -92,5 +90,4 @@ def create_app(
     app.slack_service = slack_service
 
     app.logger.info("App Setup complete, running App...")
-
     return app
