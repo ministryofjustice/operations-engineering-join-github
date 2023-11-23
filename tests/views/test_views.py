@@ -20,9 +20,7 @@ from landing_page_app.main.views import (
 class TestAuth0AuthenticationView(unittest.TestCase):
     def setUp(self) -> None:
         self.github_script = MagicMock(GithubScript)
-        self.app = landing_page_app.create_app(
-            self.github_script, False
-        )
+        self.app = landing_page_app.create_app(self.github_script, False)
         self.ctx = self.app.app_context()
         self.ctx.push()
         self.client = self.app.test_client()
@@ -111,9 +109,7 @@ class TestAuth0AuthenticationView(unittest.TestCase):
 class TestViews(unittest.TestCase):
     def setUp(self):
         self.github_script = MagicMock(GithubScript)
-        self.app = landing_page_app.create_app(
-            self.github_script, False
-        )
+        self.app = landing_page_app.create_app(self.github_script, False)
 
     def test_index(self):
         response = self.app.test_client().get("index")
@@ -190,9 +186,7 @@ class TestJoinGithubAuth0User(unittest.TestCase):
     def setUp(self):
         self.org = "some-org"
         self.github_script = MagicMock(GithubScript)
-        self.app = landing_page_app.create_app(
-            self.github_script, False
-        )
+        self.app = landing_page_app.create_app(self.github_script, False)
 
     def test_join_github_auth0_user_decorator_is_working(self):
         form_data = {
@@ -324,9 +318,7 @@ class TestCompletedRateLimit(unittest.TestCase):
 
         self.org = "some-org"
         self.github_script = MagicMock(GithubScript)
-        self.app = landing_page_app.create_app(
-            self.github_script, True
-        )
+        self.app = landing_page_app.create_app(self.github_script, True)
 
     def test_rate_limit(self):
         # Send requests until you receive a 429 response

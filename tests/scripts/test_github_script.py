@@ -137,11 +137,11 @@ class TestGithubScript(unittest.TestCase):
         github_script.github_service.get_user.assert_not_called()
 
     @patch("landing_page_app.main.services.github_service")
-    def test_add_new_user_to_github_org(
-        self, mock_github_service
-    ):
+    def test_add_new_user_to_github_org(self, mock_github_service):
         github_script = GithubScript(mock_github_service)
-        github_script.add_new_user_to_github_org(self.approved_email_address, [MINISTRY_OF_JUSTICE])
+        github_script.add_new_user_to_github_org(
+            self.approved_email_address, [MINISTRY_OF_JUSTICE]
+        )
         mock_github_service.invite_user_to_org_using_email_address.assert_called()
 
     @patch("landing_page_app.main.services.github_service")

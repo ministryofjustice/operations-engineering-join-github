@@ -20,9 +20,7 @@ from landing_page_app.main.views import (
 )
 
 
-def create_app(
-    github_script: GithubScript, rate_limit: bool = True
-) -> Flask:
+def create_app(github_script: GithubScript, rate_limit: bool = True) -> Flask:
     logging.basicConfig(
         format="%(asctime)s %(levelname)s in %(module)s: %(message)s",
     )
