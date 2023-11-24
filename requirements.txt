@@ -1,3 +1,4 @@
+authlib
 email-validator
 flask
 flask-cors
@@ -7,6 +8,5 @@ gunicorn
 PyGithub
 python-dotenv
 requests
-slack_sdk
 WTForms
 Flask-Limiter
