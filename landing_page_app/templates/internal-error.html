@@ -1,20 +1,22 @@
 {% extends "base.html" %}
 
 {% block pageTitle %}
-Internal Application Error
+    Internal Application Error
 {% endblock %}
 
 {% block content %}
-<h1 class="govuk-heading-xl">Internal Application Error</h1>
+    <h1 class="govuk-heading-xl">Internal Application Error</h1>
 
-<p class="govuk-body">
-  {{ error_message }}
-</p>
+    <p class="govuk-body">
+        {{ error_message }}
+    </p>
 
-<p class="govuk-body">
-  If you require further assistance please contact the Operations-Engineering team on Slack <a href="https://mojdt.slack.com/archives/C01BUKJSZD4" class="govuk-link">#ask-operations-engineering</a> with details of the request and the error message.
-</p>
+    <p class="govuk-body">
+        If you require further assistance please contact the Operations-Engineering team on Slack <a
+            href="https://mojdt.slack.com/archives/C01BUKJSZD4" class="govuk-link">#ask-operations-engineering</a> with
+        details of the request and the error message.
+    </p>
 
-<a href="/home" class="govuk-back-link">Back</a>
+    <a href="/" class="govuk-back-link">Back</a>
 
 {% endblock %}
