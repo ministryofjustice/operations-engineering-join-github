@@ -1,6 +1,7 @@
 # Operations Engineering Landing Page PoC
 
-> ⚠️ **Please do not deploy this application** - read the [Web Application Security Assessment](./docs/web-application-security-assessment.md) for more information.
+> ⚠️ **Please do not deploy this application to production** - read
+> the [Web Application Security Assessment](./docs/web-application-security-assessment.md) for more information.
 
 This is a PoC repository to test out adding users to the operations-engineering tools.
 
@@ -19,7 +20,9 @@ To develop, deploy or run this app you will need to install:
 
 ### Tokens
 
-The Application requires a GitHub token and Auth0 credentials. For local development create a .env file with the tokens. See the .env.example file for an example. To run the Application in Docker these tokens need to be added as environment variables. The live Application gets these tokens via the CP Secret Manager.
+The Application requires a GitHub token and Auth0 credentials. For local development create a .env file with the tokens.
+See the .env.example file for an example. To run the Application in Docker these tokens need to be added as environment
+variables. The live Application gets these tokens via the CP Secret Manager.
 
 ### Run application within Terminal
 
@@ -61,7 +64,8 @@ make format
 
 The Cloud Platform namespace for this project is called `operations-engineering-landing-page-poc`.
 
-You can see the development app running at: https://operations-engineering-landing-page-poc.cloud-platform.service.justice.gov.uk/
+You can see the development app running
+at: https://operations-engineering-landing-page-poc.cloud-platform.service.justice.gov.uk/
 
 and access Cloud Platform's namespace using:
 
@@ -81,4 +85,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Contact Us
 
-If you have any questions or need further clarification, feel free to ask in the #ask-operations-engineering channel on Slack or email us at operations-engineering@digital.justice.gov.uk.
+If you have any questions or need further clarification, feel free to ask in the #ask-operations-engineering channel on
+Slack or email us at operations-engineering@digital.justice.gov.uk.
