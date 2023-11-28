@@ -53,24 +53,24 @@ The service has been turned off temporarily whilst this concern is addressed. To
 some suggestions below:
 
 - [ ] Verify the user has access to the pre-approved email before raising an invitation to the MoJs Enterprise GitHub
-  Account. This ensures that only our targeted users have access to raise invitations.
+      Account. This ensures that only our targeted users have access to raise invitations.
 
 - [ ] Only make the service available to specific, pre-agreed MoJ network ranges. This method doesn't fix the exploit -
-  but will decrease the chances of it happening, since only a more trusted user base will have access. This may also
-  exclude some of the intended users from using the service.
+      but will decrease the chances of it happening, since only a more trusted user base will have access. This may also
+      exclude some of the intended users from using the service.
 
 - [ ] Whilst in the testing phases, implement logic that checks the number of users currently in
-  the `ministryofjustice-test` organisation and only send invitations if below a certain number (10, for example). This
-  will reduce the impact of the vulnerability being exploited. This will enable the service to be live for testing and
-  development - although is not a suitable solution for production.
+      the `ministryofjustice-test` organisation and only send invitations if below a certain number (10, for example). This
+      will reduce the impact of the vulnerability being exploited. This will enable the service to be live for testing and
+      development - although is not a suitable solution for production.
 
 - [ ] Whilst in the testing phases, implement an allow list of pre-approved emails that are able to complete this
-  process and raise invitations. This will enable the service to be live for testing and development - although is not a
-  suitable solution for production.
+      process and raise invitations. This will enable the service to be live for testing and development - although is not a
+      suitable solution for production.
 
 - [ ] Whilst in the testing phases, implement a check for the number of pending invitations in flight and do not proceed
-  if at a maximum number (5 for example). This reduces the impact of this vulnerability being exploited. This will
-  enable the service to be live for testing and development - although is not a suitable solution for production.
+      if at a maximum number (5 for example). This reduces the impact of this vulnerability being exploited. This will
+      enable the service to be live for testing and development - although is not a suitable solution for production.
 
 ## Decision
 
