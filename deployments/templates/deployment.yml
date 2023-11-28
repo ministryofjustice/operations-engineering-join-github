@@ -5,7 +5,7 @@ metadata:
   labels:
     app: operations-engineering-landing-page-poc
 spec:
-  replicas: 0 # ⚠️ Please do not deploy this application - read the [Web Application Security Assessment](./docs/web-application-security-assessment.md) for more information.
+  replicas: 1
   selector:
     matchLabels:
       app: operations-engineering-landing-page-poc
