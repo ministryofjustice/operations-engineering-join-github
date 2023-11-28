@@ -1,110 +1,9 @@
-import os
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
-from landing_page_app.main.scripts.github_script import GithubScript
 import landing_page_app
-
-from landing_page_app.main.views import (
-    handle_github_exception,
-    page_not_found,
-    server_forbidden,
-    unknown_server_error,
-    gateway_timeout,
-    error,
-    _user_has_approved_auth0_email_address,
-    _join_github_auth0_users,
-)
-
-
-class TestAuth0AuthenticationView(unittest.TestCase):
-    def setUp(self) -> None:
-        self.github_script = MagicMock(GithubScript)
-        self.app = landing_page_app.create_app(self.github_script, False)
-        self.app.secret_key = "dev"
-        self.ctx = self.app.app_context()
-        self.ctx.push()
-        self.client = self.app.test_client()
-        self.auth0_mock = MagicMock()
-
-    def test_login(self):
-        with patch.dict(
-            self.app.extensions,
-            {"authlib.integrations.flask_client": self.auth0_mock},
-            clear=True,
-        ):
-            response = self.client.get("/login")
-            self.assertEqual(response.status_code, 200)
-
-    def test_callback_token_error(self):
-        with patch.dict(
-            self.app.extensions,
-            {"authlib.integrations.flask_client": self.auth0_mock},
-            clear=True,
-        ):
-            self.auth0_mock.auth0.authorize_access_token.side_effect = KeyError()
-            response = self.client.get("/callback")
-            self.assertEqual(response.status_code, 500)
-
-    def test_callback_email_error(self):
-        with patch.dict(
-            self.app.extensions,
-            {"authlib.integrations.flask_client": self.auth0_mock},
-            clear=True,
-        ):
-            self.auth0_mock.auth0.authorize_access_token.return_value = {"userinfo": {}}
-            response = self.client.get("/callback")
-            self.assertEqual(response.status_code, 500)
-
-    def test_callback_not_allowed_email(self):
-        with patch.dict(
-            self.app.extensions,
-            {"authlib.integrations.flask_client": self.auth0_mock},
-            clear=True,
-        ):
-            self.auth0_mock.auth0.authorize_access_token.return_value = {
-                "userinfo": {"email": "email@example.com"}
-            }
-            response = self.client.get("/callback")
-            self.assertEqual(response.status_code, 302)
-            self.assertIn("Location", response.headers)
-            self.assertEqual(response.headers["Location"], "/logout")
-
-    def test_callback_allowed_email(self):
-        with patch.dict(
-            self.app.extensions,
-            {"authlib.integrations.flask_client": self.auth0_mock},
-            clear=True,
-        ):
-            self.auth0_mock.auth0.authorize_access_token.return_value = {
-                "userinfo": {"email": "email@justice.gov.uk"}
-            }
-            response = self.client.get("/callback")
-            self.assertEqual(response.status_code, 302)
-            self.assertIn("Location", response.headers)
-            self.assertEqual(response.headers["Location"], "/join-github-auth0-user")
-
-    def test_callback_email_is_none(self):
-        with patch.dict(
-            self.app.extensions,
-            {"authlib.integrations.flask_client": self.auth0_mock},
-            clear=True,
-        ):
-            self.auth0_mock.auth0.authorize_access_token.return_value = {
-                "userinfo": {"email": None}
-            }
-            response = self.client.get("/callback")
-            self.assertEqual(response.status_code, 302)
-            self.assertIn("Location", response.headers)
-            self.assertEqual(response.headers["Location"], "/logout")
-
-    @patch.dict(os.environ, {"AUTH0_DOMAIN": ""})
-    @patch.dict(os.environ, {"AUTH0_CLIENT_ID": ""})
-    def test_logout(self):
-        response = self.client.get("/logout")
-        self.assertEqual(response.status_code, 302)
-        self.assertIn("Location", response.headers)
-        self.assertIn("v2/logout", response.headers["Location"])
+from landing_page_app.main.scripts.github_script import GithubScript
+from landing_page_app.main.views import _join_github_auth0_users, error
 
 
 class TestViews(unittest.TestCase):
@@ -112,32 +11,22 @@ class TestViews(unittest.TestCase):
         self.github_script = MagicMock(GithubScript)
         self.app = landing_page_app.create_app(self.github_script, False)
 
-    def test_index(self):
-        response = self.app.test_client().get("index")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.request.path, "/index")
-
-    def test_home(self):
-        response = self.app.test_client().get("home")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.request.path, "/home")
-
     def test_default(self):
         response = self.app.test_client().get("/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/")
 
     def test_join_github_info_page(self):
-        response = self.app.test_client().get("/join-github.html")
+        response = self.app.test_client().get("/join-github")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.request.path, "/join-github.html")
+        self.assertEqual(response.request.path, "/join-github")
 
     def test_join_github_form(self):
-        response = self.app.test_client().get("/join-github-auth0-user.html")
+        response = self.app.test_client().get("/join-github-auth0-user")
         self.assertEqual(response.status_code, 302)
         redirect = False
         for item in response.headers:
-            if item[0] == "Location" and item[1] == "/index":
+            if item[0] == "Location" and item[1] == "/":
                 redirect = True
         self.assertEqual(redirect, True)
 
@@ -146,41 +35,10 @@ class TestViews(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/thank-you")
 
-    def test_handle_github_exception(self):
-        with self.app.test_request_context():
-            response = handle_github_exception("12345678")
-            self.assertRegex(response, "12345678")
-
-    def test_page_not_found(self):
-        with self.app.test_request_context():
-            response = page_not_found("some-error")
-            self.assertEqual(response[1], 404)
-
-    def test_server_forbidden(self):
-        with self.app.test_request_context():
-            response = server_forbidden("some-error")
-            self.assertEqual(response[1], 403)
-
-    def test_unknown_server_error(self):
-        with self.app.test_request_context():
-            response = unknown_server_error("some-error")
-            self.assertEqual(response[1], 500)
-
-    def test_gateway_timeout(self):
-        with self.app.test_request_context():
-            response = gateway_timeout("some-error")
-            self.assertEqual(response[1], 504)
-
     def test_error(self):
         with self.app.test_request_context():
             response = error("12345678")
             self.assertRegex(response, "12345678")
-
-    def test_user_has_approved_auth0_email_address(self):
-        self.assertFalse(_user_has_approved_auth0_email_address("email@example.com"))
-        self.assertTrue(_user_has_approved_auth0_email_address("email@justice.gov.uk"))
-        self.assertTrue(_user_has_approved_auth0_email_address("email@cica.gov.uk"))
-        self.assertTrue(_user_has_approved_auth0_email_address("email@yjb.gov.uk"))
 
 
 class TestJoinGithubAuth0User(unittest.TestCase):
@@ -200,7 +58,7 @@ class TestJoinGithubAuth0User(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         # Testing a function that has a decorator which redirect to /index
         # The private function in the function will test the logic
-        self.assertEqual(response.request.path, "/index")
+        self.assertEqual(response.request.path, "/")
         self.app.github_script.add_new_user_to_github_org.assert_not_called()
         self.app.github_script.add_returning_user_to_github_org.assert_not_called()
 

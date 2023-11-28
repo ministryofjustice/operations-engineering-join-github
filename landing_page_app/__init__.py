@@ -1,23 +1,23 @@
 """Flask App"""
-import os
 import logging
+import os
 
 from flask import Flask
 from flask_cors import CORS
-
-from github import GithubException
-
-from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from landing_page_app.main.scripts.github_script import GithubScript
-from landing_page_app.main.views import (
-    main,
+from github import GithubException
+from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
+
+from landing_page_app.main.middleware.error_handler import (
+    handle_github_exception,
     page_not_found,
     server_forbidden,
     unknown_server_error,
-    handle_github_exception,
 )
+from landing_page_app.main.routes.auth import auth_route
+from landing_page_app.main.scripts.github_script import GithubScript
+from landing_page_app.main.views import main
 
 
 def create_app(github_script: GithubScript, rate_limit: bool = True) -> Flask:
@@ -61,6 +61,7 @@ def create_app(github_script: GithubScript, rate_limit: bool = True) -> Flask:
 
     app.secret_key = app.config.get("APP_SECRET_KEY")
 
+    app.register_blueprint(auth_route)
     app.register_blueprint(main)
 
     app.jinja_loader = ChoiceLoader(
