@@ -71,13 +71,13 @@ def callback():
         token = auth0.auth0.authorize_access_token()
         session["user"] = token
     except (KeyError, AttributeError):
-        return render_template("500.html"), 500
+        return render_template("pages/errors/500.html"), 500
 
     try:
         user_email = session["user"]["userinfo"]["email"]
     except KeyError:
         logger.error("Unauthorised: User does not have an email address")
-        return render_template("500.html"), 500
+        return render_template("pages/errors/500.html"), 500
     if user_email is None:
         logger.error("User %s does not have an email address", user_email)
         return redirect("/logout")
