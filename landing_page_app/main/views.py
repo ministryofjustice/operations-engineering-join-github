@@ -16,22 +16,24 @@ main = Blueprint("main", __name__)
 
 @main.route("/")
 def index():
-    return render_template("home.html")
+    return render_template("pages/home.html")
 
 
 @main.route("/join-github")
 def join_github_info_page():
-    return render_template("join-github.html")
+    return render_template("pages/join-github.html")
 
 
 @main.route("/thank-you")
 def thank_you():
-    return render_template("thank-you.html")
+    return render_template("pages/thank-you.html")
 
 
 def error(error_message):
     logger.error(error_message)
-    return render_template("internal-error.html", error_message=error_message)
+    return render_template(
+        "pages/errors/internal-error.html", error_message=error_message
+    )
 
 
 def _join_github_auth0_users(request):
@@ -66,7 +68,9 @@ def _join_github_auth0_users(request):
 
     # Problem in the form
     return render_template(
-        "join-github-auth0-user.html", form=form, template="join-github-auth0-user.html"
+        "pages/join-github-auth0-user.html",
+        form=form,
+        template="join-github-auth0-user.html",
     )
 
 
