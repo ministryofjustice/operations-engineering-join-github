@@ -1,9 +1,7 @@
-# Operations Engineering Landing Page PoC
+# Operations Engineering Join GitHub
 
 > ⚠️ **Please do not deploy this application to production** - read
 > the [Web Application Security Assessment](./docs/web-application-security-assessment.md) for more information.
-
-This is a PoC repository to test out adding users to the operations-engineering tools.
 
 1. [Prerequisites](#prerequisites)
 1. [Development](#development)
@@ -11,7 +9,7 @@ This is a PoC repository to test out adding users to the operations-engineering 
 
 ## Prerequisites
 
-To develop, deploy or run this app you will need to install:
+To develop, deploy or run this app, you will need to install the following:
 
 - [Python 3.11](https://www.python.org/downloads/release/python-3110/)
 - [Docker](https://www.docker.com/)
@@ -20,13 +18,13 @@ To develop, deploy or run this app you will need to install:
 
 ### Tokens
 
-The Application requires a GitHub token and Auth0 credentials. For local development create a .env file with the tokens.
-See the .env.example file for an example. To run the Application in Docker these tokens need to be added as environment
+The Application requires a GitHub token and Auth0 credentials. For local development, create a .env file with the tokens.
+Please take a look at the .env.example file for an example. To run the Application in Docker, these tokens must be added as environment
 variables. The live Application gets these tokens via the CP Secret Manager.
 
 ### Run application within Terminal
 
-To run the application locally from the Terminal.
+Run the application locally from the terminal.
 
 ```bash
 make local
@@ -62,20 +60,20 @@ make format
 
 ### Development environment
 
-The Cloud Platform namespace for this project is called `operations-engineering-landing-page-poc`.
+The Cloud Platform namespace for this project is called `operations-engineering-join-github-dev`.
 
 You can see the development app running
-at: https://operations-engineering-landing-page-poc.cloud-platform.service.justice.gov.uk/
+at: https://operations-engineering-join-github-dev.cloud-platform.service.justice.gov.uk/
 
-and access Cloud Platform's namespace using:
+And access Cloud Platform's namespace using:
 
 ```bash
-kubectl get pods -n operations-engineering-landing-page-poc
+kubectl get pods -n operations-engineering-join-github-dev
 ```
 
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you want to change.
 
 Please make sure to update tests as appropriate.
 
