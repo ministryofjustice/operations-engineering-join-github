@@ -1,9 +1,9 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: operations-engineering-landing-page-poc-ingress
+  name: join-github
   annotations:
-    external-dns.alpha.kubernetes.io/set-identifier: operations-engineering-landing-page-poc-ingress-${NAMESPACE}-green
+    external-dns.alpha.kubernetes.io/set-identifier: operations-engineering-join-github-dev-ingress-${NAMESPACE}-green
     external-dns.alpha.kubernetes.io/aws-weight: "100"
 spec:
   ingressClassName: default
@@ -18,6 +18,6 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: operations-engineering-landing-page-poc-service
+                name: join-github
                 port:
                   number: 4567
