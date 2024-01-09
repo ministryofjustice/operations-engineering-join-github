@@ -1,3 +1,6 @@
+{% from 'govuk_frontend_jinja/components/input/macro.html' import govukInput %}
+{%- from 'govuk_frontend_jinja/components/button/macro.html' import govukButton -%}
+
 {% extends 'govuk_frontend_jinja/template.html' %}
 
 {% block pageTitle %}
@@ -50,3 +53,16 @@
     <script src="{{ url_for('static', filename='javascript/govuk-frontend-4.3.0.min.js') }}"></script>
     <script>window.GOVUKFrontend.initAll()</script>
 {% endblock bodyEnd %}
+
+{% block content %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+{{ govukErrorSummary({
+'titleText': "There is a problem",
+'errorList': [{ 'text': message}]
+}) }}
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% endblock %}

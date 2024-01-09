@@ -1,10 +1,17 @@
 import logging
+import re
 
-from flask import Blueprint, current_app, redirect, render_template, request, session
+from flask import Blueprint, current_app, redirect, render_template, request, session, flash
 
 from landing_page_app.main.middleware.auth import requires_auth
 from landing_page_app.main.scripts.join_github_form_auth0_user import (
     JoinGithubFormAuth0User,
+)
+
+from landing_page_app.main.config.constants import (
+    MOJ_ORG_ALLOWED_EMAIL_DOMAINS,
+    AS_ORG_ALLOWED_EMAIL_DOMAINS,
+    MOJ_ORGS,
 )
 
 logger = logging.getLogger(__name__)
@@ -22,6 +29,49 @@ def index():
 @main.route("/join-github")
 def join_github_info_page():
     return render_template("pages/join-github.html")
+
+@main.route("/check-email-address", methods=['POST'])
+def check_email_address():
+    email = request.form.get('emailAddress').strip()
+    if len(email.split("@")) != 2:
+        # # flash message not working
+        # flash("Please enter a valid email address.")
+        # return redirect(request.url)
+        return render_template("pages/join-github.html")
+    else:
+        domain = email.split("@")[1]
+        if domain not in set(
+            MOJ_ORG_ALLOWED_EMAIL_DOMAINS + AS_ORG_ALLOWED_EMAIL_DOMAINS
+        ):
+            return render_template(
+                "pages/external-collaborator.html",
+                email=email,
+            )
+        elif (
+            domain in MOJ_ORG_ALLOWED_EMAIL_DOMAINS and 
+            domain in AS_ORG_ALLOWED_EMAIL_DOMAINS
+        ):
+            return render_template(
+                "pages/join-both-moj-and-as-option.html",
+                email=email
+            )
+        elif (
+            domain in MOJ_ORG_ALLOWED_EMAIL_DOMAINS and
+            domain not in AS_ORG_ALLOWED_EMAIL_DOMAINS
+        ):
+            return render_template(
+                "pages/join-moj-only-option.html",
+                email=email
+            )
+        elif (
+            domain in AS_ORG_ALLOWED_EMAIL_DOMAINS and
+            domain not in MOJ_ORG_ALLOWED_EMAIL_DOMAINS
+        ):
+            return render_template(
+                "pages/join-as-only-option.html",
+                email=email
+            )
+
 
 
 @main.route("/thank-you")
