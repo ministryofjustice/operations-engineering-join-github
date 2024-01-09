@@ -30,6 +30,7 @@ def index():
 def join_github_info_page():
     return render_template("pages/join-github.html")
 
+
 @main.route("/check-email-address", methods=['POST'])
 def check_email_address():
     email = request.form.get('emailAddress').strip()
@@ -48,30 +49,29 @@ def check_email_address():
                 email=email,
             )
         elif (
-            domain in MOJ_ORG_ALLOWED_EMAIL_DOMAINS and 
-            domain in AS_ORG_ALLOWED_EMAIL_DOMAINS
+            domain in MOJ_ORG_ALLOWED_EMAIL_DOMAINS
+            and domain in AS_ORG_ALLOWED_EMAIL_DOMAINS
         ):
             return render_template(
                 "pages/join-both-moj-and-as-option.html",
                 email=email
             )
         elif (
-            domain in MOJ_ORG_ALLOWED_EMAIL_DOMAINS and
-            domain not in AS_ORG_ALLOWED_EMAIL_DOMAINS
+            domain in MOJ_ORG_ALLOWED_EMAIL_DOMAINS
+            and domain not in AS_ORG_ALLOWED_EMAIL_DOMAINS
         ):
             return render_template(
                 "pages/join-moj-only-option.html",
                 email=email
             )
         elif (
-            domain in AS_ORG_ALLOWED_EMAIL_DOMAINS and
-            domain not in MOJ_ORG_ALLOWED_EMAIL_DOMAINS
+            domain in AS_ORG_ALLOWED_EMAIL_DOMAINS
+            and domain not in MOJ_ORG_ALLOWED_EMAIL_DOMAINS
         ):
             return render_template(
                 "pages/join-as-only-option.html",
                 email=email
             )
-
 
 
 @main.route("/thank-you")
