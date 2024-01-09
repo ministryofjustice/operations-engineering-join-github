@@ -6,8 +6,8 @@ on:
     branches: [ main ]
 
 jobs:
-  deploy-to-poc:
-    name: "Deploy to PoC"
+  deploy-to-dev:
+    name: "Deploy to Dev"
     runs-on: ubuntu-latest
     permissions:
       id-token: write # This is required for requesting the JWT
@@ -16,8 +16,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: ${{ secrets.ECR_ROLE_TO_ASSUME }}
-          aws-region: ${{ vars.ECR_REGION }}
+          role-to-assume: ${{ secrets.DEV_ECR_ROLE_TO_ASSUME }}
+          aws-region: ${{ vars.DEV_ECR_REGION }}
       - uses: aws-actions/amazon-ecr-login@v1
         id: login-ecr
       - run: |
@@ -25,7 +25,7 @@ jobs:
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          REPOSITORY: ${{ vars.DEV_ECR_REPOSITORY }}
           IMAGE_TAG: ${{ github.sha }}
       - run: |
           cat deployments/templates/deployment.yml | envsubst > deployments/deployment.yml
@@ -34,15 +34,15 @@ jobs:
         env:
           IMAGE_TAG: ${{ github.sha }}
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
-          NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+          REPOSITORY: ${{ vars.DEV_ECR_REPOSITORY }}
+          NAMESPACE: ${{ secrets.DEV_KUBE_NAMESPACE }}
       - run: |
-          echo "${{ secrets.KUBE_CERT }}" > ca.crt
+          echo "${{ secrets.DEV_KUBE_CERT }}" > ca.crt
           kubectl config set-cluster ${KUBE_CLUSTER} --certificate-authority=./ca.crt --server=https://${KUBE_CLUSTER}
-          kubectl config set-credentials deploy-user --token=${{ secrets.KUBE_TOKEN }}
+          kubectl config set-credentials deploy-user --token=${{ secrets.DEV_KUBE_TOKEN }}
           kubectl config set-context ${KUBE_CLUSTER} --cluster=${KUBE_CLUSTER} --user=deploy-user --namespace=${KUBE_NAMESPACE}
           kubectl config use-context ${KUBE_CLUSTER}
           kubectl -n ${KUBE_NAMESPACE} apply -f deployments/
         env:
-          KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+          KUBE_NAMESPACE: ${{ secrets.DEV_KUBE_NAMESPACE }}
           KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
