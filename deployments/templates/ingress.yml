@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: join-github
   annotations:
-    external-dns.alpha.kubernetes.io/set-identifier: operations-engineering-join-github-dev-ingress-${NAMESPACE}-green
+    external-dns.alpha.kubernetes.io/set-identifier: join-github-${NAMESPACE}-green
     external-dns.alpha.kubernetes.io/aws-weight: "100"
 spec:
   ingressClassName: default
