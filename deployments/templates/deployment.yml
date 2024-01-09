@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: operations-engineering-landing-page-poc-deployment
+  name: join-github
   labels:
-    app: operations-engineering-landing-page-poc
+    app: join-github
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: operations-engineering-landing-page-poc
+      app: join-github
   template:
     metadata:
       labels:
-        app: operations-engineering-landing-page-poc
+        app: join-github
     spec:
       containers:
-        - name: operations-engineering-landing-page-poc
+        - name: join-github
           image: ${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}
           ports:
             - containerPort: 4567
@@ -23,30 +23,30 @@ spec:
             - name: GH_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: ops-eng-landing-page-poc-token
+                  name: join-github-token
                   key: GH_TOKEN
             - name: AUTH0_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: ops-eng-landing-page-poc-token
+                  name: join-github-token
                   key: AUTH0_CLIENT_ID
             - name: AUTH0_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: ops-eng-landing-page-poc-token
+                  name: join-github-token
                   key: AUTH0_CLIENT_SECRET
             - name: AUTH0_DOMAIN
               valueFrom:
                 secretKeyRef:
-                  name: ops-eng-landing-page-poc-token
+                  name: join-github-token
                   key: AUTH0_DOMAIN
             - name: APP_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: ops-eng-landing-page-poc-token
+                  name: join-github-token
                   key: APP_SECRET_KEY
             - name: FLASK_CONFIGURATION
               valueFrom:
                 secretKeyRef:
-                  name: ops-eng-landing-page-poc-token
+                  name: join-github-token
                   key: FLASK_CONFIGURATION
