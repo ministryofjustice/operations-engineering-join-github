@@ -44,20 +44,14 @@ To run the linter, run the following command:
 make lint
 ```
 
+Our project employs MegaLinter in our GitHub Actions to automatically ensure code quality on every pull request. It performs extensive linting across various languages and file formats, including Python, Bash, Markdown, Dockerfiles, JSON, Kubernetes configurations, and YAML. Configured in the .github/workflows/ directory, MegaLinter helps identify issues early, enforcing best practices and style guidelines.
+
 ### Testing
 
 To run the tests, run the following command:
 
 ```bash
 make test
-```
-
-### Formatting
-
-To run the formatter, run the following command:
-
-```bash
-make format
 ```
 
 ## Deployment
