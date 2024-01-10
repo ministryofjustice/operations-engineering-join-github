@@ -34,7 +34,7 @@ Run the application locally from the terminal.
 make local
 ```
 
-Open a browser to http://127.0.0.1:4567/home
+Open a browser to http://127.0.0.1:4567
 
 ### Linting
 
