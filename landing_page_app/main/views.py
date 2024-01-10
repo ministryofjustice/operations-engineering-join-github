@@ -28,6 +28,7 @@ def index():
 def join_github_info_page():
     return render_template("pages/join-github.html")
 
+
 @main.route("/check-email-address", methods=['POST'])
 def check_email_address():
     email = request.form.get("emailAddress").strip()
@@ -52,7 +53,6 @@ def join_selection():
         "pages/join-org-instructions.html",
         org_selection=org_selection,
     )
-
 
 
 @main.route("/thank-you")
