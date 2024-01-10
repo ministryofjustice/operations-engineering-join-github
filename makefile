@@ -8,7 +8,6 @@ help:
 	@echo "make test             - Run tests"
 	@echo "make local            - Run application locally"
 	@echo "make lint             - Run Lint tools"
-	@echo "make format           - Run Code formatting tools"
 	@echo "make report           - Open the Code Coverage report"
 
 venv: requirements.txt
@@ -16,13 +15,9 @@ venv: requirements.txt
 	venv/bin/pip3 install --upgrade pip
 	venv/bin/pip3 install -r requirements.txt
 
-lint: venv
-	venv/bin/pip3 install flake8
-	venv/bin/pip3 install mypy
-	venv/bin/pip3 install pylint
-	venv/bin/flake8 --ignore=E501,W503,E302 $(PYTHON_SOURCE_FILES)
-	venv/bin/pylint --recursive=y $(PYTHON_SOURCE_FILES)
-	venv/bin/mypy --ignore-missing-imports $(PYTHON_SOURCE_FILES)
+# Run MegaLinter
+lint:
+	npx mega-linter-runner -e 'SHOW_ELAPSED_TIME=true'
 
 format: venv
 	venv/bin/pip3 install black
