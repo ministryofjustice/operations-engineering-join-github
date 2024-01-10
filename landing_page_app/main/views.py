@@ -9,9 +9,7 @@ from landing_page_app.main.scripts.join_github_form_auth0_user import (
 )
 
 from landing_page_app.main.config.constants import (
-    MOJ_ORG_ALLOWED_EMAIL_DOMAINS,
-    AS_ORG_ALLOWED_EMAIL_DOMAINS,
-    MOJ_ORGS,
+   ALLOWED_EMAIL_DOMAINS,
 )
 
 logger = logging.getLogger(__name__)
@@ -32,7 +30,7 @@ def join_github_info_page():
 
 @main.route("/check-email-address", methods=['POST'])
 def check_email_address():
-    email = request.form.get('emailAddress').strip()
+    email = request.form.get("emailAddress").strip()
     if len(email.split("@")) != 2:
         # # flash message not working
         # flash("Please enter a valid email address.")
@@ -40,37 +38,20 @@ def check_email_address():
         return render_template("pages/join-github.html")
     else:
         domain = email.split("@")[1]
-        if domain not in set(
-            MOJ_ORG_ALLOWED_EMAIL_DOMAINS + AS_ORG_ALLOWED_EMAIL_DOMAINS
-        ):
+        if domain not in set(ALLOWED_EMAIL_DOMAINS):
             return render_template(
                 "pages/external-collaborator.html",
                 email=email,
             )
-        elif (
-            domain in MOJ_ORG_ALLOWED_EMAIL_DOMAINS and 
-            domain in AS_ORG_ALLOWED_EMAIL_DOMAINS
-        ):
-            return render_template(
-                "pages/join-both-moj-and-as-option.html",
-                email=email
-            )
-        elif (
-            domain in MOJ_ORG_ALLOWED_EMAIL_DOMAINS and
-            domain not in AS_ORG_ALLOWED_EMAIL_DOMAINS
-        ):
-            return render_template(
-                "pages/join-moj-only-option.html",
-                email=email
-            )
-        elif (
-            domain in AS_ORG_ALLOWED_EMAIL_DOMAINS and
-            domain not in MOJ_ORG_ALLOWED_EMAIL_DOMAINS
-        ):
-            return render_template(
-                "pages/join-as-only-option.html",
-                email=email
-            )
+    return render_template("pages/select-organisations.html", email=email)
+
+@main.route("/select-organisations", methods=["POST"])
+def join_selection():
+    org_selection = request.form.get("organisation_selection", "")
+    return render_template(
+        "pages/join-org-instructions.html",
+        org_selection=org_selection,
+    )
 
 
 

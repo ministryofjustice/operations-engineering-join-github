@@ -1,0 +1,49 @@
+{% extends "components/base.html" %}
+
+{% block pageTitle %}
+    Select Organisation
+{% endblock %}
+
+{% block content %}
+
+    <form action="/select-organisations" method="POST">
+        {{ govukCheckboxes ({
+            'name': 'organisation_selection',
+            'fieldset': {
+              'legend': {
+                'text': 'Which MoJ GitHub Organisatons do you want to join?',
+                'isPageHeading': 'true',
+                'classes': 'govuk-fieldset__legend--l'
+              }
+            },
+            'hint': {
+              'text': 'Select all that apply.'
+            },
+            'items': [
+            {
+              'value': 'ministryofjustice',
+              'text': 'Ministry of Justice'
+            },
+            {
+              'value': 'analytical-services',
+              'text': 'MoJ Analytical Services',
+            }
+            ]
+          }) }}
+    
+        {{ govukButton({
+            'text': "Next"
+        }) }}
+
+    </form>
+
+
+
+    <p class="govuk-body">
+        If you require further assistance contact us on the Operations Engineering team Slack channel <a
+            href="https://mojdt.slack.com/archives/C01BUKJSZD4" class="govuk-link">#ask-operations-engineering</a>.
+    </p>
+
+    <a href="/" class="govuk-back-link">Back</a>
+
+{% endblock %}
