@@ -5,84 +5,32 @@
 {% endblock %}
 
 {% block content %}
+  {{ super() }}
     <h1 class="govuk-heading-xl">Joining GitHub</h1>
 
     <p class="govuk-body">
-        The Ministry of Justice maintains two GitHub Organizations,
+        The Ministry of Justice maintains two GitHub Organisations,
     <ul class="govuk-list govuk-list--bullet">
         <li><a class="govuk-link" href="https://github.com/ministryofjustice">Ministry of Justice</a></li>
         <li><a class="govuk-link" href="https://github.com/moj-analytical-services">MoJ Analytical Services</a></li>
     </ul>
     </p>
-    <p class="govuk-body">
-        Please see below for instructions on how to join.
-    </p>
+
+    <form action="/check-email-address" method="POST">
+        {{ govukInput({
+            'id': 'email_address', 
+            'name': 'emailAddress', 
+            'classes': 'govuk-!-width-one-third',
+            'label': {'text': 'Please provide the email address you want to join with:'}, 
+        })  }}
+    
+        {{ govukButton({
+            'text': "Next"
+        }) }}
+
+    </form>
 
     <br>
-
-    <h3 class="govuk-heading-l">Digital Justice Email Addresses</h3>
-
-    <p class="govuk-body">
-        Users with a @digital.justice.gov.uk email address can join the Ministry of Justice GitHub Organization using <a
-            class="govuk-link" href="https://github.com/orgs/ministryofjustice/sso">Single Sign On</a>.
-    </p>
-
-
-    <h3 class="govuk-heading-l">Approved Email Addresses</h3>
-
-    <p class="govuk-body">
-        Users with one of the following approved email addresses can join the Ministry of Justice GitHub Organization:
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@digital.justice.gov.uk</li>
-        <li>@justice.gov.uk</li>
-        <li>@publicguardian.gov.uk</li>
-        <li>@cica.gov.uk</li>
-        <li>@ima-citizensrights.org.uk</li>
-    </ul>
-    </p>
-
-    <p class="govuk-body">
-        Users with one of the following approved email addresses can join the MoJ Analytical Services GitHub
-        Organization:
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@digital.justice.gov.uk</li>
-        <li>@justice.gov.uk</li>
-        <li>@publicguardian.gov.uk</li>
-        <li>@judicialappointments.gov.uk</li>
-        <li>@judiciary.uk</li>
-        <li>@ppo.gov.uk</li>
-        <li>@sentencingcouncil.gov.uk</li>
-        <li>@yjb.gov.uk</li>
-    </ul>
-    </p>
-
-    <p class="govuk-body">
-        Complete this <a class="govuk-link" href="/login">form</a> to gain access.
-    </p>
-
-    <h3 class="govuk-heading-l">Other Users</h3>
-
-    <p class="govuk-body">
-        Create a request on the Operations-Engineering team Slack channel <a
-            href="https://mojdt.slack.com/archives/C01BUKJSZD4" class="govuk-link">#ask-operations-engineering</a>.
-        Please provide which GitHub Organisation/s you would like to join and your email address.
-    </p>
-
-    <h3 class="govuk-heading-l">External Users</h3>
-
-    <p class="govuk-body">
-        External users can get access to an Organization repository as an Outside Collaborator.
-    </p>
-
-    <p class="govuk-body">
-        For access to a Ministry of Justice GitHub Organization repository see <a class="govuk-link"
-                                                                                  href="https://github.com/ministryofjustice/github-collaborators">https://github.com/ministryofjustice/github-collaborators</a>.
-    </p>
-
-    <p class="govuk-body">
-        For access to an MoJ Analytical Services GitHub Organization repository see <a class="govuk-link"
-                                                                                       href="https://github.com/moj-analytical-services/github-outside-collaborators">https://github.com/moj-analytical-services/github-outside-collaborators</a>.
-    </p>
 
     <a href="/" class="govuk-back-link">Back</a>
 

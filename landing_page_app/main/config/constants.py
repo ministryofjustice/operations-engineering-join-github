@@ -21,3 +21,15 @@ AS_ORG_ALLOWED_EMAIL_DOMAINS = [
     "sentencingcouncil.gov.uk",
     "yjb.gov.uk",
 ]
+ALLOWED_EMAIL_DOMAINS = [
+    "digital.justice.gov.uk",
+    "justice.gov.uk",
+    "publicguardian.gov.uk",
+    "cica.gov.uk",
+    "ima-citizensrights.org.uk",
+    "judicialappointments.gov.uk",
+    "judiciary.uk",
+    "ppo.gov.uk",
+    "sentencingcouncil.gov.uk",
+    "yjb.gov.uk",
+]

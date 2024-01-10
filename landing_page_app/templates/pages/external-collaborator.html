@@ -1,0 +1,30 @@
+{% extends "components/base.html" %}
+
+{% block pageTitle %}
+    External Collaborators
+{% endblock %}
+
+{% block content %}
+    <h1 class="govuk-heading-xl">External collaborators</h1>
+    <p class="govuk-body">
+        The email address {{email}} is not from a pre-approved domain. 
+        Please request access via the following:
+    
+    <ul class="govuk-list govuk-list--bullet">
+        <li>Create a request on the Operations Engineering team Slack channel <a
+        href="https://mojdt.slack.com/archives/C01BUKJSZD4" class="govuk-link">
+        #ask-operations-engineering</a>. Please state which GitHub Organisation/s you 
+        would like to join and your email address.</li>
+        <br>
+        <li>For access to a Ministry of Justice GitHub Organisation repository see <a class="govuk-link"
+        href="https://github.com/ministryofjustice/github-collaborators">https://github.com/ministryofjustice/github-collaborators</a>.</li>
+        <br>
+        <li>For access to an MoJ Analytical Services GitHub Organisation repository see <a class="govuk-link"
+        href="https://github.com/moj-analytical-services/github-outside-collaborators">https://github.com/moj-analytical-services/github-outside-collaborators</a>.</li>
+
+    </ul>
+
+    </p>
+    <a href="/" class="govuk-back-link">Back</a>
+
+{% endblock %}
