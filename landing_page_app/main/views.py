@@ -9,7 +9,7 @@ from landing_page_app.main.scripts.join_github_form_auth0_user import (
 )
 
 from landing_page_app.main.config.constants import (
-   ALLOWED_EMAIL_DOMAINS,
+    ALLOWED_EMAIL_DOMAINS,
 )
 
 logger = logging.getLogger(__name__)
@@ -45,6 +45,7 @@ def check_email_address():
                 email=email,
             )
     return render_template("pages/select-organisations.html", email=email)
+
 
 @main.route("/select-organisations", methods=["POST"])
 def join_selection():
