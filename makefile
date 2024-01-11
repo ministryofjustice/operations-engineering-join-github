@@ -42,6 +42,10 @@ clean-test:
 local: venv
 	export FLASK_CONFIGURATION=development; venv/bin/python3 -m operations_engineering_landing_page
 
+# Assumes you've already built the image locally
+docker-up:
+	docker-compose -f docker-compose.yaml up -d
+
 all:
 
 .PHONY: venv lint test format local clean-test report all
