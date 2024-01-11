@@ -4,6 +4,13 @@
     External Collaborators
 {% endblock %}
 
+{% block beforeContent %}
+  {{ govukBackLink ({
+    'text': 'Back',
+    'href': '/join-github'
+  }) }}
+{% endblock %}
+
 {% block content %}
     <h1 class="govuk-heading-xl">External collaborators</h1>
     <p class="govuk-body">
@@ -25,6 +32,5 @@
     </ul>
 
     </p>
-    <a href="/" class="govuk-back-link">Back</a>
 
 {% endblock %}

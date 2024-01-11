@@ -7,6 +7,7 @@ from landing_page_app.main.middleware.auth import requires_auth
 from landing_page_app.main.scripts.join_github_form_auth0_user import (
     JoinGithubFormAuth0User,
 )
+from landing_page_app.main.middleware.utils import is_valid_email_pattern
 
 from landing_page_app.main.config.constants import (
     ALLOWED_EMAIL_DOMAINS,
@@ -28,12 +29,11 @@ def index():
 def join_github_info_page():
     return render_template("pages/join-github.html")
 
-
 @main.route("/check-email-address", methods=["GET", "POST"])
 def check_email_address():
     if request.method == "POST":
         session["email"] = request.form.get("emailAddress", "Empty").strip()
-        if len(session["email"].split("@")) != 2:
+        if not is_valid_email_pattern(session["email"]):
             flash("Please enter a valid email address.")
             return render_template("pages/join-github.html")
         domain = session["email"].split("@")[1]

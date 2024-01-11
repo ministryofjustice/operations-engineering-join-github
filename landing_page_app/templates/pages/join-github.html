@@ -4,6 +4,13 @@
     Joining GitHub
 {% endblock %}
 
+{% block beforeContent %}
+  {{ govukBackLink ({
+    'text': 'Back',
+    'href': '/'
+  }) }}
+{% endblock %}
+
 {% block content %}
   {{ super() }}
     <h1 class="govuk-heading-xl">Joining GitHub</h1>
@@ -31,7 +38,5 @@
     </form>
 
     <br>
-
-    <a href="/" class="govuk-back-link">Back</a>
 
 {% endblock %}
