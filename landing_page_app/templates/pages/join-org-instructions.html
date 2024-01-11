@@ -4,6 +4,13 @@
     Join Selected Orgs
 {% endblock %}
 
+{% block beforeContent %}
+  {{ govukBackLink ({
+    'text': 'Back',
+    'href': '/select-organisations'
+  }) }}
+{% endblock %}
+
 {% block content %}
     <h1 class="govuk-heading-xl">Selection</h1>
 
@@ -18,7 +25,5 @@
         If you require further assistance contact us on the Operations Engineering team Slack channel <a
             href="https://mojdt.slack.com/archives/C01BUKJSZD4" class="govuk-link">#ask-operations-engineering</a>.
     </p>
-
-    <a href="/" class="govuk-back-link">Back</a>
 
 {% endblock %}

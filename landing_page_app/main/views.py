@@ -53,8 +53,9 @@ def check_email_address():
 @main.route("/select-organisations", methods=["GET", "POST"])
 def join_selection():
     if request.method == "POST":
-        session["org_selection"] = request.form.get("organisation_selection", "Empty")
-        if session["org_selection"] == "Empty":
+        session["org_selection"] = request.form.getlist("organisation_selection")
+        print(session["org_selection"])
+        if session["org_selection"] == []:
             flash("Please select at least one organisation.")
             return render_template("pages/select-organisations.html")
         return render_template(
