@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  app:
+    build: .
+    image: "operations-engineering-join-github"
+    container_name: "operations-engineering-join-github"
+    environment:
+      FLASK_CONFIGURATION: "development"
+      FLASK_DEBUG: "true"
+      FLASK_APP: "operations_engineering_landing_page"
+      GH_TOKEN: "dummy"
+      AUTH0_CLIENT_ID: "dev"
+      AUTH0_CLIENT_SECRET: "dev"
+      AUTH0_DOMAIN: "operations-engineering.eu.auth0.com"
+      APP_SECRET_KEY: "dummy"
+    ports:
+      - "4567:4567"
