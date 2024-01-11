@@ -1,8 +1,12 @@
 FROM python:3.12.0-alpine3.18
 
+LABEL maintainer="operations-engineering <operations-engineering@digital.justice.gov.uk>"
+
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup -u 1051
 
-RUN apk add --no-cache --no-progress build-base \
+RUN apk add --no-cache --no-progress \
+  build-base \
+  curl \
   && apk update \
   && apk upgrade --no-cache --available
 
@@ -17,13 +21,14 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-HEALTHCHECK --interval=5m --timeout=3s \
-  CMD ["curl", "-f", "http://localhost/"]
+HEALTHCHECK --interval=60s --timeout=30s --retries=10 CMD curl -I -XGET http://localhost:4567 || exit 1
 
 USER 1051
 
 EXPOSE 4567
 
-ENTRYPOINT gunicorn operations_engineering_landing_page:app \
+CMD gunicorn operations_engineering_landing_page:app \
   --bind 0.0.0.0:4567 \
   --timeout 120
+
+ENTRYPOINT ["/bin/sh", "-c"]
