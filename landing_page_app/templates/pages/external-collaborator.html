@@ -4,6 +4,13 @@
 Access for Outside Collaborators
 {% endblock %}
 
+{% block beforeContent %}
+  {{ govukBackLink ({
+    'text': 'Back',
+    'href': '/join-github'
+  }) }}
+{% endblock %}
+
 {% block content %}
 <h1 class="govuk-heading-xl">Access for Outside Collaborators</h1>
 <p class="govuk-body">
@@ -54,7 +61,5 @@ Access for Outside Collaborators
             target="_blank">#ask-operations-engineering</a>.
     </p>
 </section>
-
-<a href="/" class="govuk-back-link">Back to Home</a>
 
 {% endblock %}

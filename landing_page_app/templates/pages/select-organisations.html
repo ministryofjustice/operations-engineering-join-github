@@ -4,8 +4,15 @@
     Select Organisation
 {% endblock %}
 
-{% block content %}
+{% block beforeContent %}
+  {{ govukBackLink ({
+    'text': 'Back',
+    'href': '/join-github'
+  }) }}
+{% endblock %}
 
+{% block content %}
+  {{ super() }}
     <form action="/select-organisations" method="POST">
         {{ govukCheckboxes ({
             'name': 'organisation_selection',
@@ -32,7 +39,7 @@
           }) }}
     
         {{ govukButton({
-            'text': "Next"
+            'text': 'Next'
         }) }}
 
     </form>
@@ -43,7 +50,5 @@
         If you require further assistance contact us on the Operations Engineering team Slack channel <a
             href="https://mojdt.slack.com/archives/C01BUKJSZD4" class="govuk-link">#ask-operations-engineering</a>.
     </p>
-
-    <a href="/" class="govuk-back-link">Back</a>
 
 {% endblock %}

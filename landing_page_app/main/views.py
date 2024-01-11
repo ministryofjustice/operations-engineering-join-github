@@ -1,12 +1,13 @@
 import logging
 import re
 
-from flask import Blueprint, current_app, redirect, render_template, request, session, flash
+from flask import Blueprint, current_app, redirect, render_template, request, session, flash, session, url_for
 
 from landing_page_app.main.middleware.auth import requires_auth
 from landing_page_app.main.scripts.join_github_form_auth0_user import (
     JoinGithubFormAuth0User,
 )
+from landing_page_app.main.middleware.utils import is_valid_email_pattern
 
 from landing_page_app.main.config.constants import (
     ALLOWED_EMAIL_DOMAINS,
@@ -28,32 +29,41 @@ def index():
 def join_github_info_page():
     return render_template("pages/join-github.html")
 
-
-@main.route("/check-email-address", methods=['POST'])
+@main.route("/check-email-address", methods=["GET", "POST"])
 def check_email_address():
-    email = request.form.get("emailAddress").strip()
-    if len(email.split("@")) != 2:
-        # # flash message not working
-        # flash("Please enter a valid email address.")
-        # return redirect(request.url)
-        return render_template("pages/join-github.html")
-    else:
-        domain = email.split("@")[1]
-        if domain not in set(ALLOWED_EMAIL_DOMAINS):
+    if request.method == "POST":
+        session["email"] = request.form.get("emailAddress", "Empty").strip()
+        if not is_valid_email_pattern(session["email"]):
+            flash("Please enter a valid email address.")
+            return render_template("pages/join-github.html")
+        domain = session["email"].split("@")[1]
+        if domain in set(ALLOWED_EMAIL_DOMAINS):
+            return render_template(
+                "pages/select-organisations.html",
+                email=session["email"],
+            )
+        else:
             return render_template(
                 "pages/external-collaborator.html",
-                email=email,
+                email=session["email"],
             )
-    return render_template("pages/select-organisations.html", email=email)
+    return render_template("pages/join-github.html")
 
 
-@main.route("/select-organisations", methods=["POST"])
+@main.route("/select-organisations", methods=["GET", "POST"])
 def join_selection():
-    org_selection = request.form.get("organisation_selection", "")
-    return render_template(
-        "pages/join-org-instructions.html",
-        org_selection=org_selection,
-    )
+    if request.method == "POST":
+        session["org_selection"] = request.form.getlist("organisation_selection")
+        print(session["org_selection"])
+        if session["org_selection"] == []:
+            flash("Please select at least one organisation.")
+            return render_template("pages/select-organisations.html")
+        return render_template(
+            "pages/join-org-instructions.html",
+            org_selection=session["org_selection"],
+            email=session["email"],
+        )
+    return render_template("pages/select-organisations.html")
 
 
 @main.route("/thank-you")
