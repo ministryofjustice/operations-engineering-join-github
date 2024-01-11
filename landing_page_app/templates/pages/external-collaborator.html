@@ -1,30 +1,60 @@
 {% extends "components/base.html" %}
 
 {% block pageTitle %}
-    External Collaborators
+Access for Outside Collaborators
 {% endblock %}
 
 {% block content %}
-    <h1 class="govuk-heading-xl">External collaborators</h1>
+<h1 class="govuk-heading-xl">Access for Outside Collaborators</h1>
+<p class="govuk-body">
+    It appears your email address <strong>{{email}}</strong> is not from a pre-approved domain, please follow the
+    relevant instructions below to request access as an outside collaborator.
+</p>
+
+<section class="ministryofjustice-access">
+    <h2 class="govuk-heading-m">Ministry of Justice GitHub Organisation</h2>
     <p class="govuk-body">
-        The email address {{email}} is not from a pre-approved domain. 
-        Please request access via the following:
-    
-    <ul class="govuk-list govuk-list--bullet">
-        <li>Create a request on the Operations Engineering team Slack channel <a
-        href="https://mojdt.slack.com/archives/C01BUKJSZD4" class="govuk-link">
-        #ask-operations-engineering</a>. Please state which GitHub Organisation/s you 
-        would like to join and your email address.</li>
-        <br>
-        <li>For access to a Ministry of Justice GitHub Organisation repository see <a class="govuk-link"
-        href="https://github.com/ministryofjustice/github-collaborators">https://github.com/ministryofjustice/github-collaborators</a>.</li>
-        <br>
-        <li>For access to an MoJ Analytical Services GitHub Organisation repository see <a class="govuk-link"
-        href="https://github.com/moj-analytical-services/github-outside-collaborators">https://github.com/moj-analytical-services/github-outside-collaborators</a>.</li>
-
-    </ul>
-
+        For access to a Ministry of Justice GitHub repository, please follow these steps:
     </p>
-    <a href="/" class="govuk-back-link">Back</a>
+    <ol class="govuk-list govuk-list--number">
+        <li>
+            <p>Visit the <a href="https://github.com/ministryofjustice/github-collaborators" class="govuk-link"
+                    target="_blank">GitHub Collaborators Repository</a> for Ministry of Justice.</p>
+        </li>
+        <li>
+            <p>Fill out an issue in the above repository with your GitHub username, the repository you need access to,
+                and the reason for your request.</p>
+        </li>
+    </ol>
+</section>
+
+<section class="moj-analytical-services-access">
+    <h2 class="govuk-heading-m">MoJ Analytical Services GitHub Organisation</h2>
+    <p class="govuk-body">
+        For access to an MoJ Analytical Services GitHub repository, please follow these steps:
+    </p>
+    <ol class="govuk-list govuk-list--number">
+        <li>
+            <p>Visit the <a href="https://github.com/moj-analytical-services/github-outside-collaborators"
+                    class="govuk-link" target="_blank">GitHub Outside Collaborators Repository</a> for MoJ Analytical
+                Services.</p>
+        </li>
+        <li>
+            <p>Fill out an issue in the above repository with your GitHub username, the repository you need access to,
+                and the reason for your request.</p>
+        </li>
+    </ol>
+</section>
+
+<section class="additional-help">
+    <h2 class="govuk-heading-l">Need Additional Help?</h2>
+    <p class="govuk-body">
+        If you encounter any issues or have questions, please reach out on our Operations Engineering team Slack
+        channel: <a href="https://mojdt.slack.com/archives/C01BUKJSZD4" class="govuk-link"
+            target="_blank">#ask-operations-engineering</a>.
+    </p>
+</section>
+
+<a href="/" class="govuk-back-link">Back to Home</a>
 
 {% endblock %}
