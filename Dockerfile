@@ -21,14 +21,10 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-HEALTHCHECK --interval=60s --timeout=30s --retries=10 CMD curl -I -XGET http://localhost:4567 || exit 1
-
 USER 1051
 
 EXPOSE 4567
 
-CMD gunicorn operations_engineering_landing_page:app \
-  --bind 0.0.0.0:4567 \
-  --timeout 120
+HEALTHCHECK --interval=60s --timeout=30s CMD curl -I -XGET http://localhost:4567 || exit 1
 
-ENTRYPOINT ["/bin/sh", "-c"]
+ENTRYPOINT ["gunicorn", "--bind=0.0.0.0:4567", "operations_engineering_landing_page:app()"]
