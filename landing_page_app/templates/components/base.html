@@ -1,6 +1,8 @@
 {% from 'govuk_frontend_jinja/components/input/macro.html' import govukInput %}
 {% from 'govuk_frontend_jinja/components/button/macro.html' import govukButton %}
 {% from 'govuk_frontend_jinja/components/checkboxes/macro.html' import govukCheckboxes %}
+{% from 'govuk_frontend_jinja/components/header/macro.html' import govukHeader %}
+{% from 'govuk_frontend_jinja/components/phase-banner/macro.html' import govukPhaseBanner %}
 
 {% extends 'govuk_frontend_jinja/template.html' %}
 
@@ -22,31 +24,20 @@
 {% endblock head %}
 
 {% block header %}
-    <div class="app-pane__header toc-open-disabled">
-        <header class="govuk-header app-header" role="banner" data-module="govuk-header">
-            <div class="govuk-header__container govuk-header__container--full-width">
-                <div class="govuk-header__logo">
-                    <a class="govuk-header__link govuk-header__link--homepage" href="/">
-          <span class="govuk-header__product-name">
-            Operations-Engineering Landing Page PoC
-          </span>
-                    </a>
-                </div>
-                <div class="govuk-header__content">
-                    <nav class="govuk-header__navigation govuk-header__navigation--end">
-                        <ul class="govuk-header__navigation-list">
-                            <li class="govuk-header__navigation-item">
-                                <a class="govuk-header__link"
-                                   href="https://github.com/ministryofjustice/operations-engineering-landing-page-poc">
-                                    GitHub
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-        </header>
-    </div>
+  {{ govukHeader({
+    'homepageUrl': 'https://github.com/ministryofjustice/operations-engineering-landing-page-poc',
+    'serviceName': 'Operations-Engineering Landing Page PoC',
+    'serviceUrl': 'https://github.com/ministryofjustice/operations-engineering-landing-page-poc'
+  }) }}
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    'tag': {
+      'text': 'DEV'
+    },
+    'html': 'This is a new service – your <a class="govuk-link" href="mailto:' + 'operations-engineering@digital.justice.gov.uk' +'?subject=Feedback">feedback</a> will help us to improve it.'
+  }) }}
 {% endblock %}
 
 {% block bodyEnd %}
