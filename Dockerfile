@@ -10,7 +10,7 @@ RUN apk add --no-cache --no-progress \
   && apk update \
   && apk upgrade --no-cache --available
 
-WORKDIR /home/operations-engineering-jon-github
+WORKDIR /home/operations-engineering-join-github
 
 COPY requirements.txt requirements.txt
 COPY join_github_app join_github_app
