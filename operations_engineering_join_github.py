@@ -1,4 +1,3 @@
-"""operations-engineering-landing-page"""
 import sys
 import logging
 from os import environ

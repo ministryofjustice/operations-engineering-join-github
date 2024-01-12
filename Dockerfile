@@ -10,11 +10,11 @@ RUN apk add --no-cache --no-progress \
   && apk update \
   && apk upgrade --no-cache --available
 
-WORKDIR /home/operations-engineering-poc-landing-page
+WORKDIR /home/operations-engineering-jon-github
 
 COPY requirements.txt requirements.txt
-COPY join_github_app landing_page_app
-COPY operations_engineering_join_github.py operations_engineering_landing_page.py
+COPY join_github_app join_github_app
+COPY operations_engineering_join_github.py operations_engineering_join_github.py
 
 RUN pip3 install --no-cache-dir -r requirements.txt
 
@@ -27,4 +27,4 @@ EXPOSE 4567
 
 HEALTHCHECK --interval=60s --timeout=30s CMD curl -I -XGET http://localhost:4567 || exit 1
 
-ENTRYPOINT ["gunicorn", "--bind=0.0.0.0:4567", "operations_engineering_landing_page:app()"]
+ENTRYPOINT ["gunicorn", "--bind=0.0.0.0:4567", "operations_engineering_join_github:app()"]
