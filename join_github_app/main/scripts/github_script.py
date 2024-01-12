@@ -1,6 +1,6 @@
 import logging
-from landing_page_app.main.services.github_service import GithubService
-from landing_page_app.main.config.constants import (
+from join_github_app.main.services.github_service import GithubService
+from join_github_app.main.config.constants import (
     MINISTRY_OF_JUSTICE,
     MOJ_ANALYTICAL_SERVICES,
     MOJ_TEST_ORG,
