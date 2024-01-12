@@ -14,7 +14,7 @@ WORKDIR /home/operations-engineering-poc-landing-page
 
 COPY requirements.txt requirements.txt
 COPY join_github_app landing_page_app
-COPY operations_engineering_landing_page.py operations_engineering_landing_page.py
+COPY operations_engineering_join_github.py operations_engineering_landing_page.py
 
 RUN pip3 install --no-cache-dir -r requirements.txt
 
