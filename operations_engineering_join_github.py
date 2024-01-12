@@ -1,12 +1,11 @@
-"""operations-engineering-landing-page"""
 import sys
 import logging
 from os import environ
 from dotenv import dotenv_values
 
-from landing_page_app.main.services.github_service import GithubService
-from landing_page_app.main.scripts.github_script import GithubScript
-from landing_page_app import create_app
+from join_github_app.main.services.github_service import GithubService
+from join_github_app.main.scripts.github_script import GithubScript
+from join_github_app import create_app
 
 
 def get_tokens():

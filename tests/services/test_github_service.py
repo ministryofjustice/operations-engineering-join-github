@@ -2,7 +2,7 @@ import unittest
 from requests import Response
 from unittest.mock import patch, call, MagicMock
 from datetime import datetime, timedelta
-from landing_page_app.main.services.github_service import GithubService
+from join_github_app.main.services.github_service import GithubService
 from freezegun import freeze_time
 from github.Organization import Organization
 from github.PaginatedList import PaginatedList

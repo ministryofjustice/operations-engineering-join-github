@@ -3,13 +3,13 @@ import re
 
 from flask import Blueprint, current_app, redirect, render_template, request, session, flash, session, url_for
 
-from landing_page_app.main.middleware.auth import requires_auth
-from landing_page_app.main.scripts.join_github_form_auth0_user import (
+from join_github_app.main.middleware.auth import requires_auth
+from join_github_app.main.scripts.join_github_form_auth0_user import (
     JoinGithubFormAuth0User,
 )
-from landing_page_app.main.middleware.utils import is_valid_email_pattern
+from join_github_app.main.middleware.utils import is_valid_email_pattern
 
-from landing_page_app.main.config.constants import (
+from join_github_app.main.config.constants import (
     ALLOWED_EMAIL_DOMAINS,
 )
 
