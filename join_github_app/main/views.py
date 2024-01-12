@@ -25,10 +25,6 @@ def index():
     return render_template("pages/home.html")
 
 
-# @main.route("/join-github")
-# def join_github_info_page():
-#     return render_template("pages/join-github.html")
-
 @main.route("/join-github", methods=["GET", "POST"])
 def join_github():
     if request.method == "POST":
@@ -71,6 +67,7 @@ def join_selection():
         org_selection=session["org_selection"],
         email=session["email"],
     )
+
 
 @main.route("/thank-you")
 def thank_you():
