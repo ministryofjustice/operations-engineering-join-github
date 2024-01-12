@@ -1,6 +1,6 @@
 .ONESHELL:
 
-PYTHON_SOURCE_FILES = ./tests operations_engineering_landing_page.py ./landing_page_app
+PYTHON_SOURCE_FILES = ./tests operations_engineering_join_github.py ./join_github_app
 
 help:
 	@echo "Available commands:"
@@ -40,7 +40,7 @@ clean-test:
 	rm -fr htmlcov/
 
 local: venv
-	export FLASK_CONFIGURATION=development; venv/bin/python3 -m operations_engineering_landing_page
+export FLASK_CONFIGURATION=development; venv/bin/python3 -m operations_engineering_join_github
 
 # Assumes you've already built the image locally
 docker-up:
