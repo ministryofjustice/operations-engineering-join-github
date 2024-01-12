@@ -24,8 +24,9 @@ format: venv
 	venv/bin/black $(PYTHON_SOURCE_FILES)
 
 test: venv
+	venv/bin/pip3 install pytest
 	venv/bin/pip3 install coverage
-	export FLASK_CONFIGURATION=development; venv/bin/coverage run -m unittest discover
+	export FLASK_CONFIGURATION=development; venv/bin/coverage run -m pytest tests/
 
 report:
 	venv/bin/coverage html && open htmlcov/index.html
