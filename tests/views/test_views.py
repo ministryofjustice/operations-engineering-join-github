@@ -1,15 +1,15 @@
 import unittest
 from unittest.mock import MagicMock
 
-import landing_page_app
-from landing_page_app.main.scripts.github_script import GithubScript
-from landing_page_app.main.views import _join_github_auth0_users, error
+import join_github_app
+from join_github_app.main.scripts.github_script import GithubScript
+from join_github_app.main.views import _join_github_auth0_users, error
 
 
 class TestViews(unittest.TestCase):
     def setUp(self):
         self.github_script = MagicMock(GithubScript)
-        self.app = landing_page_app.create_app(self.github_script, False)
+        self.app = join_github_app.create_app(self.github_script, False)
 
     def test_default(self):
         response = self.app.test_client().get("/")
@@ -45,7 +45,7 @@ class TestJoinGithubAuth0User(unittest.TestCase):
     def setUp(self):
         self.org = "some-org"
         self.github_script = MagicMock(GithubScript)
-        self.app = landing_page_app.create_app(self.github_script, False)
+        self.app = join_github_app.create_app(self.github_script, False)
 
     def test_join_github_auth0_user_decorator_is_working(self):
         form_data = {
@@ -177,7 +177,7 @@ class TestCompletedRateLimit(unittest.TestCase):
 
         self.org = "some-org"
         self.github_script = MagicMock(GithubScript)
-        self.app = landing_page_app.create_app(self.github_script, True)
+        self.app = join_github_app.create_app(self.github_script, True)
 
     def test_rate_limit(self):
         # Send requests until you receive a 429 response

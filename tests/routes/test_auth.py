@@ -2,15 +2,15 @@ import os
 import unittest
 from unittest.mock import MagicMock, patch
 
-import landing_page_app
-from landing_page_app.main.routes.auth import _user_has_approved_auth0_email_address
-from landing_page_app.main.scripts.github_script import GithubScript
+import join_github_app
+from join_github_app.main.routes.auth import _user_has_approved_auth0_email_address
+from join_github_app.main.scripts.github_script import GithubScript
 
 
 class TestAuth0AuthenticationView(unittest.TestCase):
     def setUp(self) -> None:
         self.github_script = MagicMock(GithubScript)
-        self.app = landing_page_app.create_app(self.github_script, False)
+        self.app = join_github_app.create_app(self.github_script, False)
         self.app.secret_key = "dev"
         self.ctx = self.app.app_context()
         self.ctx.push()
@@ -100,7 +100,7 @@ class TestAuth0AuthenticationView(unittest.TestCase):
 class TestViews(unittest.TestCase):
     def setUp(self):
         self.github_script = MagicMock(GithubScript)
-        self.app = landing_page_app.create_app(self.github_script, False)
+        self.app = join_github_app.create_app(self.github_script, False)
 
     def test_user_has_approved_auth0_email_address(self):
         self.assertFalse(_user_has_approved_auth0_email_address("email@example.com"))

@@ -13,7 +13,7 @@ RUN apk add --no-cache --no-progress \
 WORKDIR /home/operations-engineering-poc-landing-page
 
 COPY requirements.txt requirements.txt
-COPY landing_page_app landing_page_app
+COPY join_github_app landing_page_app
 COPY operations_engineering_landing_page.py operations_engineering_landing_page.py
 
 RUN pip3 install --no-cache-dir -r requirements.txt

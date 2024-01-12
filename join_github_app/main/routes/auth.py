@@ -5,7 +5,7 @@ from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
 from flask import Blueprint, current_app, redirect, render_template, session, url_for
 
-from landing_page_app.main.config.constants import (
+from join_github_app.main.config.constants import (
     AS_ORG_ALLOWED_EMAIL_DOMAINS,
     MINISTRY_OF_JUSTICE,
     MOJ_ANALYTICAL_SERVICES,

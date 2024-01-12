@@ -9,15 +9,15 @@ from flask_limiter.util import get_remote_address
 from github import GithubException
 from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
 
-from landing_page_app.main.middleware.error_handler import (
+from join_github_app.main.middleware.error_handler import (
     handle_github_exception,
     page_not_found,
     server_forbidden,
     unknown_server_error,
 )
-from landing_page_app.main.routes.auth import auth_route
-from landing_page_app.main.scripts.github_script import GithubScript
-from landing_page_app.main.views import main
+from join_github_app.main.routes.auth import auth_route
+from join_github_app.main.scripts.github_script import GithubScript
+from join_github_app.main.views import main
 
 
 def create_app(github_script: GithubScript, rate_limit: bool = True) -> Flask:
@@ -42,8 +42,8 @@ def create_app(github_script: GithubScript, rate_limit: bool = True) -> Flask:
 
     # Config folder file mapping
     config = {
-        "development": "landing_page_app.config.development",
-        "production": "landing_page_app.config.production",
+        "development": "join_github_app.config.development",
+        "production": "join_github_app.config.production",
     }
 
     # Set config, logging level and AWS DynamoDB table name
@@ -66,7 +66,7 @@ def create_app(github_script: GithubScript, rate_limit: bool = True) -> Flask:
 
     app.jinja_loader = ChoiceLoader(
         [
-            PackageLoader("landing_page_app"),
+            PackageLoader("join_github_app"),
             PrefixLoader(
                 {"govuk_frontend_jinja": PackageLoader("govuk_frontend_jinja")}
             ),
