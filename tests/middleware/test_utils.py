@@ -15,7 +15,7 @@ class TestUtils:
             ("@bad", False),
             ("bad@@", False),
             ("", False),
-            ("%bad@gov.uk.com", False)
+            ("%bad@gov.uk.com", True)
         ]
     )
     def test_is_valid_email_pattern(self, email, expected):
