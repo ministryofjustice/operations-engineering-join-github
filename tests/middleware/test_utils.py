@@ -1,7 +1,7 @@
 
 import pytest
 
-from landing_page_app.main.middleware.utils import is_valid_email_pattern
+from join_github_app.main.middleware.utils import is_valid_email_pattern
 
 class TestUtils:
 
