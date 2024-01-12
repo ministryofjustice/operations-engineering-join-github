@@ -25,12 +25,12 @@ def index():
     return render_template("pages/home.html")
 
 
-@main.route("/join-github")
-def join_github_info_page():
-    return render_template("pages/join-github.html")
+# @main.route("/join-github")
+# def join_github_info_page():
+#     return render_template("pages/join-github.html")
 
-@main.route("/check-email-address", methods=["GET", "POST"])
-def check_email_address():
+@main.route("/join-github", methods=["GET", "POST"])
+def join_github():
     if request.method == "POST":
         session["email"] = request.form.get("emailAddress", "Empty").strip()
         if not is_valid_email_pattern(session["email"]):
@@ -38,33 +38,39 @@ def check_email_address():
             return render_template("pages/join-github.html")
         domain = session["email"].split("@")[1]
         if domain in set(ALLOWED_EMAIL_DOMAINS):
-            return render_template(
-                "pages/select-organisations.html",
-                email=session["email"],
-            )
+            return redirect("/select-organisations")
         else:
-            return render_template(
-                "pages/external-collaborator.html",
-                email=session["email"],
-            )
+            return redirect("/outside-collaborator")
     return render_template("pages/join-github.html")
 
 
+@main.route("/outside-collaborator")
+def outside_collaborator():
+    return render_template(
+                "pages/outside-collaborator.html",
+                email=session["email"],
+            )
+
+
 @main.route("/select-organisations", methods=["GET", "POST"])
-def join_selection():
+def select_organisations():
     if request.method == "POST":
         session["org_selection"] = request.form.getlist("organisation_selection")
         print(session["org_selection"])
         if session["org_selection"] == []:
             flash("Please select at least one organisation.")
             return render_template("pages/select-organisations.html")
-        return render_template(
-            "pages/join-org-instructions.html",
-            org_selection=session["org_selection"],
-            email=session["email"],
-        )
+        return redirect("/join-selection")
     return render_template("pages/select-organisations.html")
 
+
+@main.route("/join-selection")
+def join_selection():
+    return render_template(
+        "pages/join-selection.html",
+        org_selection=session["org_selection"],
+        email=session["email"],
+    )
 
 @main.route("/thank-you")
 def thank_you():

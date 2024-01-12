@@ -41,7 +41,7 @@ clean-test:
 	rm -fr htmlcov/
 
 local: venv
-export FLASK_CONFIGURATION=development; venv/bin/python3 -m operations_engineering_join_github
+	export FLASK_CONFIGURATION=development; venv/bin/python3 -m operations_engineering_join_github
 
 # Assumes you've already built the image locally
 docker-up:
