@@ -1,9 +1,8 @@
 import logging
-import re
 import os
 
 from flask import (Blueprint, current_app, flash, redirect, render_template,
-                   request, session, url_for)
+                   request, session)
 
 from join_github_app.main.config.constants import ALLOWED_EMAIL_DOMAINS
 from join_github_app.main.middleware.auth import requires_auth
@@ -17,10 +16,12 @@ AUTHLIB_CLIENT = "authlib.integrations.flask_client"
 
 main = Blueprint("main", __name__)
 
+
 @main.context_processor
 def handle_context():
     '''Inject object into jinja2 templates.'''
     return dict(os=os)
+
 
 @main.route("/")
 def index():
