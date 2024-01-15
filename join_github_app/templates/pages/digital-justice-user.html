@@ -1,0 +1,48 @@
+{% extends "components/base.html" %}
+
+{% block pageTitle %}
+Using SSO for GitHub Access
+{% endblock %}
+
+{% block beforeContent %}
+{{ govukBackLink ({
+'text': 'Back',
+'href': '/select-organisations'
+}) }}
+{% endblock %}
+
+{% block content %}
+<h1 class="govuk-heading-l">Using Single Sign-On Access</h1>
+
+<p class="govuk-body">
+  Your email address <strong>{{email}}</strong> is registered for SSO access to the GitHub organisation. Single Sign-On
+  (SSO) is a convenient
+  method allowing you to access multiple services with one set of login credentials.
+</p>
+<p class="govuk-body">
+  By clicking the button below for the chosen organisation, you'll be directed to a secure login
+  page.
+</p>
+
+<p class="govuk-body">
+  Enter your @digital.justice.gov.uk credentials there, and you'll be automatically joined to the selected GitHub
+  organisation.
+</p>
+
+{% if 'ministryofjustice' in org_selection %}
+<a href="https://github.com/orgs/ministryofjustice/sso" class="govuk-button" role="button" target="_blank">
+  Join Ministry of Justice
+</a>
+{% endif %}
+
+
+{% if 'analytical-services' in org_selection %}
+<a href="https://sso-link-for-analytical-services" class="govuk-button" role="button" target="_blank">
+  Join MoJ Analytical Services
+</a>
+{% endif %}
+<p class="govuk-body">
+  If you require further assistance, contact us on the Operations Engineering team Slack channel <a
+    href="https://mojdt.slack.com/archives/C01BUKJSZD4" class="govuk-link">#ask-operations-engineering</a>.
+</p>
+{% endblock %}
