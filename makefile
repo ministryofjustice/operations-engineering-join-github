@@ -26,7 +26,7 @@ format: venv
 test: venv
 	venv/bin/pip3 install pytest
 	venv/bin/pip3 install coverage
-	export FLASK_CONFIGURATION=development; source .env.example; venv/bin/coverage run -m pytest tests/ -v
+	export FLASK_CONFIGURATION=development; venv/bin/coverage run -m pytest tests/ -v
 
 report:
 	venv/bin/coverage html && open htmlcov/index.html
