@@ -30,6 +30,26 @@ class TestViews(unittest.TestCase):
                 redirect = True
         self.assertEqual(redirect, True)
 
+    def test_join_selection_digital_justice_user(self):
+        with self.app.test_client() as client:
+            with client.session_transaction() as sess:
+                sess['email'] = 'user@digital.justice.gov.uk'
+                sess['org_selection'] = ['ministryofjustice']
+
+            response = client.get("/join-selection")
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('Using Single Sign-On', str(response.data))
+
+    def test_join_selection_other_user(self):
+        with self.app.test_client() as client:
+            with client.session_transaction() as sess:
+                sess['email'] = 'user@example.com'
+                sess['org_selection'] = ['ministryofjustice']
+
+            response = client.get("/join-selection")
+            self.assertEqual(response.status_code, 200)
+            self.assertNotIn('Using Single Sign-On', str(response.data))
+
     def test_thank_you(self):
         response = self.app.test_client().get("/thank-you")
         self.assertEqual(response.status_code, 200)
