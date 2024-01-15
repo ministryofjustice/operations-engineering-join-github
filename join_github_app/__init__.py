@@ -19,6 +19,7 @@ from join_github_app.main.routes.auth import auth_route
 from join_github_app.main.scripts.github_script import GithubScript
 from join_github_app.main.views import main
 
+
 def create_app(github_script: GithubScript, rate_limit: bool = True) -> Flask:
     logging.basicConfig(
         format="%(asctime)s %(levelname)s in %(module)s: %(message)s",
