@@ -31,7 +31,6 @@ class TestViews(unittest.TestCase):
                 redirect = True
         self.assertEqual(redirect, True)
 
-    @patch.dict(os.environ, {"APP_SECRET_KEY": "abc"})
     def test_join_selection_digital_justice_user(self):
         with self.app.test_client() as client:
             with client.session_transaction() as sess:
