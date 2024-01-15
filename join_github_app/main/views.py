@@ -1,17 +1,14 @@
 import logging
 import re
 
-from flask import Blueprint, current_app, redirect, render_template, request, session, flash, session, url_for
+from flask import (Blueprint, current_app, flash, redirect, render_template,
+                   request, session, url_for)
 
+from join_github_app.main.config.constants import ALLOWED_EMAIL_DOMAINS
 from join_github_app.main.middleware.auth import requires_auth
-from join_github_app.main.scripts.join_github_form_auth0_user import (
-    JoinGithubFormAuth0User,
-)
 from join_github_app.main.middleware.utils import is_valid_email_pattern
-
-from join_github_app.main.config.constants import (
-    ALLOWED_EMAIL_DOMAINS,
-)
+from join_github_app.main.scripts.join_github_form_auth0_user import \
+    JoinGithubFormAuth0User
 
 logger = logging.getLogger(__name__)
 
@@ -43,9 +40,9 @@ def join_github():
 @main.route("/outside-collaborator")
 def outside_collaborator():
     return render_template(
-                "pages/outside-collaborator.html",
-                email=session["email"],
-            )
+        "pages/outside-collaborator.html",
+        email=session["email"],
+    )
 
 
 @main.route("/select-organisations", methods=["GET", "POST"])
@@ -62,6 +59,12 @@ def select_organisations():
 
 @main.route("/join-selection")
 def join_selection():
+    if "digital.justice.gov.uk" in session["email"]:
+        return render_template(
+            "pages/digital-justice-user.html",
+            org_selection=session["org_selection"],
+            email=session["email"],
+        )
     return render_template(
         "pages/join-selection.html",
         org_selection=session["org_selection"],
