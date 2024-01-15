@@ -1,5 +1,6 @@
 import logging
 import re
+import os
 
 from flask import Blueprint, current_app, redirect, render_template, request, session, flash, session, url_for
 
@@ -19,6 +20,10 @@ AUTHLIB_CLIENT = "authlib.integrations.flask_client"
 
 main = Blueprint("main", __name__)
 
+@main.context_processor
+def handle_context():
+    '''Inject object into jinja2 templates.'''
+    return dict(os=os)
 
 @main.route("/")
 def index():

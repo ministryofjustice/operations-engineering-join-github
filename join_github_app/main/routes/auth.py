@@ -19,6 +19,11 @@ AUTHLIB_CLIENT = "authlib.integrations.flask_client"
 
 auth_route = Blueprint("auth_routes", __name__)
 
+@auth_route.context_processor
+def handle_context():
+    '''Inject object into jinja2 templates.'''
+    return dict(os=os)
+
 
 @auth_route.record
 def setup_auth0(setup_state):
