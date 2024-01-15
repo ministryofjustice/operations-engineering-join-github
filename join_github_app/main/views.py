@@ -64,17 +64,15 @@ def select_organisations():
 
 @main.route("/join-selection")
 def join_selection():
-    if "digital.justice.gov.uk" in session["email"]:
-        return render_template(
-            "pages/digital-justice-user.html",
-            org_selection=session["org_selection"],
-            email=session["email"],
-        )
-    return render_template(
-        "pages/join-selection.html",
-        org_selection=session["org_selection"],
-        email=session["email"],
-    )
+    email = session.get("email", "").lower()
+    org_selection = session.get("org_selection", [])
+
+    template = "pages/digital-justice-user.html" if is_digital_justice_email(email) else "pages/join-selection.html"
+    return render_template(template, org_selection=org_selection, email=email)
+
+
+def is_digital_justice_email(email):
+    return "digital.justice.gov.uk" in email.lower()
 
 
 @main.route("/thank-you")
