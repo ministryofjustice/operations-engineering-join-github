@@ -1,64 +1,51 @@
 {% extends "components/base.html" %}
 
 {% block pageTitle %}
-Select Organisation
+    Select Organisation
 {% endblock %}
 
 {% block beforeContent %}
-{{ govukBackLink ({
-'text': 'Back',
-'href': '/join-github'
-}) }}
+    {{ govukBackLink({
+        'text': 'Back',
+        'href': '/join-github'
+    }) }}
 {% endblock %}
 
 {% block content %}
-{{ super() }}
-<form action="/select-organisations" method="POST">
-  {{ govukCheckboxes ({
-  'name': 'organisation_selection',
-  'fieldset': {
-  'legend': {
-  'text': 'Which MoJ GitHub Organisation do you want to join?',
-  'isPageHeading': 'true',
-  'classes': 'govuk-fieldset__legend--l'
-  }
-  },
-  'hint': {
-  'text': 'Select all that apply.'
-  },
-  'items': [
-  {
-  'value': 'ministryofjustice',
-  'text': 'Ministry of Justice'
-  },
-  {
-  'value': 'analytical-services',
-  'text': 'MoJ Analytical Services',
-  'disabled': is_digital_justice_user,
-  'error': 'error',
-  }
-  ]
-  }) }}
+    {{ super() }}
+    <form action="/select-organisations" method="POST">
+      {{ govukCheckboxes({
+        'name': 'organisation_selection',
+        'fieldset': {
+            'legend': {
+                'text': 'Which MoJ GitHub Organisation do you want to join?',
+                'isPageHeading': 'true',
+                'classes': 'govuk-fieldset__legend--l'
+            }
+        },
+        'hint': {
+            'text': 'Select all that apply.'
+        },
+        'items': checkboxes_items
+      }) }}
+      
+      {{ govukButton({
+          'text': 'Next'
+      }) }}
+    </form>
 
-  {{ govukButton({
-  'text': 'Next'
-  }) }}
+    {% if is_digital_justice_user %}
+      <div class="govuk-inset-text">
+        <p class="govuk-body">
+          <strong>Note:</strong> The "MoJ Analytical Services" option is not available for @digital.justice.gov.uk email
+          addresses.
+          If you wish to access this organisation, you should start the process again with an "@justice.gov.uk" email address.
+        </p>
+      </div>
+    {% endif %}
 
-</form>
-
-{% if is_digital_justice_user %}
-<div class="govuk-inset-text">
-  <p class="govuk-body">
-    <strong>Note:</strong> The "MoJ Analytical Services" option is not available for @digital.justice.gov.uk email
-    addresses.
-    If you wish to access this organisation, you should start the process again with an "@justice.gov.uk" email address.
-  </p>
-</div>
-{% endif %}
-
-<p class="govuk-body">
-  If you require further assistance contact us on the Operations Engineering team Slack channel <a
-    href="https://mojdt.slack.com/archives/C01BUKJSZD4" class="govuk-link">#ask-operations-engineering</a>.
-</p>
-
+    <p class="govuk-body">
+        If you require further assistance contact us on the Operations Engineering team Slack channel 
+        <a href="https://mojdt.slack.com/archives/C01BUKJSZD4" class="govuk-link">#ask-operations-engineering</a>.
+    </p>
 {% endblock %}

@@ -1,4 +1,4 @@
-""" Config values to be used during development """
+""" Config values to be used during testing """
 from os import environ
 
 DEBUG = True
@@ -12,5 +12,6 @@ AUTH0_CLIENT_SECRET = environ.get("AUTH0_CLIENT_SECRET")
 AUTH0_DOMAIN = environ.get("AUTH0_DOMAIN")
 APP_SECRET_KEY = environ.get("APP_SECRET_KEY")
 SELECTABLE_ORGANISATIONS = [
-    {'value': 'moj-test', 'text': 'Ministry of Justice Test Organisation'}
+    {'value': 'ministryofjustice', 'text': 'Ministry of Justice'},
+    {'value': 'analytical-services', 'text': 'MoJ Analytical Services'}
 ]
