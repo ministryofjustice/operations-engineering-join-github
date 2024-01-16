@@ -30,7 +30,7 @@ GitHub Access via Azure AD
 </p>
 {% for org in org_selection %}
 <form action="/login" method="get">
-  <button type="submit" class="govuk-button">Authenticate for {{ org | capitalize }}</button>
+  <button type="submit" class="govuk-button">Authenticate to {{ org | capitalize }}</button>
 </form>
 {% endfor %}
 
