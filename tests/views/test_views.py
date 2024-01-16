@@ -11,7 +11,7 @@ class TestViews(unittest.TestCase):
     def setUp(self):
         self.github_script = MagicMock(GithubScript)
         self.app = join_github_app.create_app(self.github_script, False)
-        self.app.config['SECRET_KEY'] = 'test_flask'
+        self.app.config["SECRET_KEY"] = "test_flask"
 
     def test_default(self):
         response = self.app.test_client().get("/")
@@ -40,7 +40,7 @@ class TestViews(unittest.TestCase):
             flashed_message = dict(get_flashed_messages(with_categories=True))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.request.path, "/join-github")
-        self.assertEqual(response.headers["Location"], "/select-organisations") 
+        self.assertEqual(response.headers["Location"], "/select-organisations")
         self.assertEqual(flashed_message.get("message"), None)
 
     def test_join_github_outside_collab_email(self):
@@ -50,7 +50,7 @@ class TestViews(unittest.TestCase):
             flashed_message = dict(get_flashed_messages(with_categories=True))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.request.path, "/join-github")
-        self.assertEqual(response.headers["Location"], "/outside-collaborator")   
+        self.assertEqual(response.headers["Location"], "/outside-collaborator")
         self.assertEqual(flashed_message.get("message"), None)
 
     def test_join_github_form_redirects_when_user_not_in_session(self):
@@ -61,40 +61,44 @@ class TestViews(unittest.TestCase):
     def test_join_selection_digital_justice_user(self):
         with self.app.test_client() as client:
             with client.session_transaction() as sess:
-                sess['email'] = 'user@digital.justice.gov.uk'
-                sess['org_selection'] = ['ministryofjustice']
+                sess["email"] = "user@digital.justice.gov.uk"
+                sess["org_selection"] = ["ministryofjustice"]
 
             response = client.get("/join-selection")
             self.assertEqual(response.status_code, 200)
-            self.assertIn('Using Single Sign-On', str(response.data))
+            self.assertIn("Using Single Sign-On", str(response.data))
 
     def test_join_selection_other_user(self):
         with self.app.test_client() as client:
             with client.session_transaction() as sess:
-                sess['email'] = 'user@example.com'
-                sess['org_selection'] = ['ministryofjustice']
+                sess["email"] = "user@example.com"
+                sess["org_selection"] = ["ministryofjustice"]
 
             response = client.get("/join-selection")
             self.assertEqual(response.status_code, 200)
-            self.assertNotIn('Using Single Sign-On', str(response.data))
+            self.assertNotIn("Using Single Sign-On", str(response.data))
 
     def test_select_organisations_digital_justice_user(self):
         with self.app.test_client() as client:
             with client.session_transaction() as sess:
-                sess['email'] = 'user@digital.justice.gov.uk'
+                sess["email"] = "user@digital.justice.gov.uk"
             response = client.get("/select-organisations")
             self.assertEqual(response.status_code, 200)
-            self.assertIn('MoJ Analytical Services', str(response.data))
-            self.assertIn('disabled', str(response.data))  # Check if the checkbox is disabled
+            self.assertIn("MoJ Analytical Services", str(response.data))
+            self.assertIn(
+                "disabled", str(response.data)
+            )  # Check if the checkbox is disabled
 
     def test_select_organisations_other_user(self):
         with self.app.test_client() as client:
             with client.session_transaction() as sess:
-                sess['email'] = 'user@example.com'
+                sess["email"] = "user@example.com"
             response = client.get("/select-organisations")
             self.assertEqual(response.status_code, 200)
-            self.assertIn('MoJ Analytical Services', str(response.data))
-            self.assertNotIn('disabled', str(response.data))  # Check if the checkbox is not disabled
+            self.assertIn("MoJ Analytical Services", str(response.data))
+            self.assertNotIn(
+                "disabled", str(response.data)
+            )  # Check if the checkbox is not disabled
 
     def test_thank_you(self):
         response = self.app.test_client().get("/thank-you")
