@@ -35,12 +35,18 @@ Using SSO for GitHub Access
 </a>
 {% endif %}
 
-
 {% if 'analytical-services' in org_selection %}
 <a href="https://sso-link-for-analytical-services" class="govuk-button" role="button" target="_blank">
   Join MoJ Analytical Services
 </a>
 {% endif %}
+
+{% if 'moj-test' in org_selection %}
+<a href="https://sso-link-for-moj-test-org" class="govuk-button" role="button" target="_blank">
+  Join MoJ Test Organisation
+</a>
+{% endif %}
+
 <p class="govuk-body">
   If you require further assistance, contact us on the Operations Engineering team Slack channel <a
     href="https://mojdt.slack.com/archives/C01BUKJSZD4" class="govuk-link">#ask-operations-engineering</a>.
