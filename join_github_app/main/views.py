@@ -57,7 +57,6 @@ def select_organisations():
 
     if request.method == "POST":
         session["org_selection"] = request.form.getlist("organisation_selection")
-        print(session["org_selection"])
         if not session["org_selection"]:
             flash("Please select at least one organisation.")
             return render_template("pages/select-organisations.html",
