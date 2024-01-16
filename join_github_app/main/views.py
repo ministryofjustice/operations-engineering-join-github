@@ -1,9 +1,8 @@
 import logging
-import re
 import os
 
 from flask import (Blueprint, current_app, flash, redirect, render_template,
-                   request, session, url_for)
+                   request, session)
 
 from join_github_app.main.config.constants import ALLOWED_EMAIL_DOMAINS
 from join_github_app.main.middleware.auth import requires_auth
@@ -17,10 +16,12 @@ AUTHLIB_CLIENT = "authlib.integrations.flask_client"
 
 main = Blueprint("main", __name__)
 
+
 @main.context_processor
 def handle_context():
     '''Inject object into jinja2 templates.'''
     return dict(os=os)
+
 
 @main.route("/")
 def index():
@@ -52,14 +53,18 @@ def outside_collaborator():
 
 @main.route("/select-organisations", methods=["GET", "POST"])
 def select_organisations():
+    is_digital_justice_user = "digital.justice.gov.uk" in session.get("email", "").lower()
+
     if request.method == "POST":
         session["org_selection"] = request.form.getlist("organisation_selection")
-        print(session["org_selection"])
-        if session["org_selection"] == []:
+        if not session["org_selection"]:
             flash("Please select at least one organisation.")
-            return render_template("pages/select-organisations.html")
+            return render_template("pages/select-organisations.html",
+                                   is_digital_justice_user=is_digital_justice_user)
         return redirect("/join-selection")
-    return render_template("pages/select-organisations.html")
+
+    return render_template("pages/select-organisations.html",
+                           is_digital_justice_user=is_digital_justice_user)
 
 
 @main.route("/join-selection")
