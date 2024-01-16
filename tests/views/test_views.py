@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import MagicMock
+
 from flask import get_flashed_messages
 
 import join_github_app
@@ -67,7 +68,7 @@ class TestViews(unittest.TestCase):
             response = client.get("/join-selection")
             self.assertEqual(response.status_code, 200)
             self.assertIn("Using Single Sign-On", str(response.data))
-            
+
     def test_join_selection_justice_user(self):
         with self.app.test_client() as client:
             with client.session_transaction() as sess:
