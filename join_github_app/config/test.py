@@ -1,4 +1,4 @@
-""" Config values to be used during development """
+""" Config values to be used during testing """
 from os import environ
 
 DEBUG = True
