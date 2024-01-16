@@ -68,7 +68,7 @@ def select_organisations():
     for org in selectable_orgs:
         item = {'value': org['value'], 'text': org['text']}
         if org['value'] == 'analytical-services' and is_digital_justice_user:
-            item['is_digital_justice_user'] = is_digital_justice_user
+            item['disabled'] = is_digital_justice_user
         checkboxes_items.append(item)
 
     return render_template("pages/select-organisations.html",
