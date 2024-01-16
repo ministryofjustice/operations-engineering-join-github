@@ -60,7 +60,9 @@ def select_organisations():
             flash("Please select at least one organisation.")
             return render_template("pages/select-organisations.html")
         return redirect("/join-selection")
-    return render_template("pages/select-organisations.html")
+    selectable_orgs = current_app.config['SELECTABLE_ORGANISATIONS']
+    checkboxes_items = [{'value': org['value'], 'text': org['text']} for org in selectable_orgs]
+    return render_template("pages/select-organisations.html", checkboxes_items=checkboxes_items)
 
 
 @main.route("/join-selection")
