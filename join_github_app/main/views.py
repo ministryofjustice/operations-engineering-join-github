@@ -53,14 +53,19 @@ def outside_collaborator():
 
 @main.route("/select-organisations", methods=["GET", "POST"])
 def select_organisations():
+    is_digital_justice_user = "digital.justice.gov.uk" in session.get("email", "").lower()
+
     if request.method == "POST":
         session["org_selection"] = request.form.getlist("organisation_selection")
         print(session["org_selection"])
-        if session["org_selection"] == []:
+        if not session["org_selection"]:
             flash("Please select at least one organisation.")
-            return render_template("pages/select-organisations.html")
+            return render_template("pages/select-organisations.html",
+                                   is_digital_justice_user=is_digital_justice_user)
         return redirect("/join-selection")
-    return render_template("pages/select-organisations.html")
+
+    return render_template("pages/select-organisations.html",
+                           is_digital_justice_user=is_digital_justice_user)
 
 
 @main.route("/join-selection")
