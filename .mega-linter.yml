@@ -34,6 +34,9 @@ GITHUB_COMMENT_REPORTER: true
 VALIDATE_ALL_CODEBASE: false
 LOG_LEVEL: INFO
 MARKDOWN_MARKDOWN_LINK_CHECK_ARGUMENTS: "-q"
+PRE_COMMANDS: 
+  - command: pip install -r requirements.txt"
+    cwd: workspace
 
 PLUGINS:
   - https://raw.githubusercontent.com/shiranr/linkcheck/v2.0.17.beta/mega-linter-plugin-linkcheck/linkcheck.megalinter-descriptor.yml
