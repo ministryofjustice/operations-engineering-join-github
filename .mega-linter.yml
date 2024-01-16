@@ -35,9 +35,20 @@ VALIDATE_ALL_CODEBASE: false
 LOG_LEVEL: INFO
 MARKDOWN_MARKDOWN_LINK_CHECK_ARGUMENTS: "-q"
 PRE_COMMANDS: 
-  - command: pip install -r requirements.txt
-    cwd: workspace
+  - command: pip install -r /github/workspace/requirements.txt
     venv: pylint
+
+  - command: cwd
+    venv: pylint
+
+  - command: ls
+    venv: pylint
+
+  - command: cwd
+    cwd: workspace
+
+  - command: ls
+    cwd: workspace
 
 PLUGINS:
   - https://raw.githubusercontent.com/shiranr/linkcheck/v2.0.17.beta/mega-linter-plugin-linkcheck/linkcheck.megalinter-descriptor.yml
