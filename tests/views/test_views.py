@@ -13,9 +13,6 @@ class TestViews(unittest.TestCase):
         self.app = join_github_app.create_app(self.github_script, False)
         self.app.config["SECRET_KEY"] = "test_flask"
 
-    def dummy_python_change_to_test_linter(self):
-        self.assertEqual(True, True)
-
     def test_default(self):
         response = self.app.test_client().get("/")
         self.assertEqual(response.status_code, 200)
