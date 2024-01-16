@@ -33,6 +33,17 @@
           'text': 'Next'
       }) }}
     </form>
+
+    {% if is_digital_justice_user %}
+      <div class="govuk-inset-text">
+        <p class="govuk-body">
+          <strong>Note:</strong> The "MoJ Analytical Services" option is not available for @digital.justice.gov.uk email
+          addresses.
+          If you wish to access this organisation, you should start the process again with an "@justice.gov.uk" email address.
+        </p>
+      </div>
+    {% endif %}
+
     <p class="govuk-body">
         If you require further assistance contact us on the Operations Engineering team Slack channel 
         <a href="https://mojdt.slack.com/archives/C01BUKJSZD4" class="govuk-link">#ask-operations-engineering</a>.

@@ -72,7 +72,7 @@ def select_organisations():
         checkboxes_items.append(item)
 
     return render_template("pages/select-organisations.html",
-                           checkboxes_items=checkboxes_items)
+                           checkboxes_items=checkboxes_items, is_digital_justice_user=is_digital_justice_user)
 
 
 @main.route("/join-selection")
