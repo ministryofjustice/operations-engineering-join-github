@@ -18,3 +18,4 @@ __pycache__
 htmlcov
 .idea/
 .pylintrc
+megalinter-reports/
