@@ -69,6 +69,24 @@ class TestViews(unittest.TestCase):
             self.assertIn('MoJ Analytical Services', str(response.data))
             self.assertNotIn('disabled', str(response.data))  # Check if the checkbox is not disabled
 
+    def test_select_organisations_digital_justice_user(self):
+        with self.app.test_client() as client:
+            with client.session_transaction() as sess:
+                sess['email'] = 'user@digital.justice.gov.uk'
+            response = client.get("/select-organisations")
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('MoJ Analytical Services', str(response.data))
+            self.assertIn('disabled', str(response.data))  # Check if the checkbox is disabled
+
+    def test_select_organisations_other_user(self):
+        with self.app.test_client() as client:
+            with client.session_transaction() as sess:
+                sess['email'] = 'user@example.com'
+            response = client.get("/select-organisations")
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('MoJ Analytical Services', str(response.data))
+            self.assertNotIn('disabled', str(response.data))  # Check if the checkbox is not disabled
+
     def test_thank_you(self):
         response = self.app.test_client().get("/thank-you")
         self.assertEqual(response.status_code, 200)
