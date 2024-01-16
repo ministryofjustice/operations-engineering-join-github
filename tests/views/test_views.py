@@ -40,7 +40,7 @@ class TestViews(unittest.TestCase):
             flashed_message = dict(get_flashed_messages(with_categories=True))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.request.path, "/join-github")
-        self.assertEqual(response.headers["Location"], "/select-organisations")          
+        self.assertEqual(response.headers["Location"], "/select-organisations") 
         self.assertEqual(flashed_message.get("message"), None)
 
     def test_join_github_outside_collab_email(self):
@@ -49,14 +49,14 @@ class TestViews(unittest.TestCase):
             response = client.post("/join-github", data=form_data)
             flashed_message = dict(get_flashed_messages(with_categories=True))
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.request.path, "/join-github")              
-        self.assertEqual(response.headers["Location"], "/outside-collaborator")              
+        self.assertEqual(response.request.path, "/join-github")
+        self.assertEqual(response.headers["Location"], "/outside-collaborator")   
         self.assertEqual(flashed_message.get("message"), None)
 
     def test_join_github_form_redirects_when_user_not_in_session(self):
         response = self.app.test_client().get("/join-github-auth0-user")
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.headers["Location"], "/")              
+        self.assertEqual(response.headers["Location"], "/")
 
     def test_join_selection_digital_justice_user(self):
         with self.app.test_client() as client:
