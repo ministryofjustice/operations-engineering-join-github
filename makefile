@@ -6,9 +6,8 @@ RELEASE_NAME ?= default-release-name
 AUTH0_CLIENT_ID ?= default-auth0-client-id
 AUTH0_CLIENT_SECRET ?= default-auth0-client-secret
 APP_SECRET_KEY ?= default-app-secret-key
-ENCRYPTION_KEY ?= default-encryption-key
 API_KEY ?= default-api-key
-HOST_SUFFIX ?= default-host-suffix
+HOST_NAME?= default-host-suffix
 IMAGE ?= default-image
 REGISTRY ?= default-registry
 
