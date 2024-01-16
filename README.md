@@ -1,8 +1,5 @@
 # Operations Engineering Join GitHub
 
-> ⚠️ **Please do not deploy this application to production** - read
-> the [Web Application Security Assessment](./docs/web-application-security-assessment.md) for more information.
-
 1. [Prerequisites](#prerequisites)
 1. [Development](#development)
 1. [Deployment](#deployment)
