@@ -44,12 +44,12 @@ class TestViews(unittest.TestCase):
     def test_join_selection_other_user(self):
         with self.app.test_client() as client:
             with client.session_transaction() as sess:
-                sess['email'] = 'user@example.com'
+                sess['email'] = 'user@justice.gov.uk'
                 sess['org_selection'] = ['ministryofjustice']
 
             response = client.get("/join-selection")
             self.assertEqual(response.status_code, 200)
-            self.assertNotIn('Using Single Sign-On', str(response.data))
+            self.assertIn('Azure', str(response.data))
 
     def test_select_organisations_digital_justice_user(self):
         with self.app.test_client() as client:

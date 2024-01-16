@@ -70,14 +70,24 @@ def select_organisations():
 @main.route("/join-selection")
 def join_selection():
     email = session.get("email", "").lower()
+    domain = email[email.index('@') + 1:]
     org_selection = session.get("org_selection", [])
 
-    template = "pages/digital-justice-user.html" if is_digital_justice_email(email) else "pages/join-selection.html"
+    if is_justice_email(domain):
+        template = "pages/justice-user.html"
+    elif is_digital_justice_email(domain):
+        template = "pages/digital-justice-user.html"
+    else:
+        template = "pages/join-selection.html"
     return render_template(template, org_selection=org_selection, email=email)
 
 
-def is_digital_justice_email(email):
-    return "digital.justice.gov.uk" in email.lower()
+def is_digital_justice_email(domain):
+    return "digital.justice.gov.uk" == domain.lower()
+
+
+def is_justice_email(domain):
+    return "justice.gov.uk" == domain.lower()
 
 
 @main.route("/thank-you")
