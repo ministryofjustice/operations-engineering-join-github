@@ -11,3 +11,8 @@ AUTH0_CLIENT_ID = environ.get("AUTH0_CLIENT_ID")
 AUTH0_CLIENT_SECRET = environ.get("AUTH0_CLIENT_SECRET")
 AUTH0_DOMAIN = environ.get("AUTH0_DOMAIN")
 APP_SECRET_KEY = environ.get("APP_SECRET_KEY")
+SELECTABLE_ORGANISATIONS = [
+    {'value': 'moj-test', 'text': 'Ministry of Justice Test Organisation'}
+]
+
+
