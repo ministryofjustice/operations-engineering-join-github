@@ -3,7 +3,7 @@ name: "♻️ Deploy to Development Namespace"
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [main]
 env:
   KUBE_CLUSTER: ${{ secrets.DEV_KUBE_CLUSTER }}
   KUBE_NAMESPACE: ${{ secrets.DEV_KUBE_NAMESPACE }}
@@ -31,6 +31,7 @@ jobs:
           aws-region: ${{ vars.DEV_ECR_REGION }}
 
       - uses: aws-actions/amazon-ecr-login@v2
+        id: login-ecr
       - run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
@@ -57,17 +58,16 @@ jobs:
           kubectl config use-context ${KUBE_CLUSTER}
 
       - name: Deploy helm chart to dev
-        run:
-            helm upgrade join-github \
-            helm/operations-engineering-reports \
-            --install \
-            --force \
-            --wait \
-            --timeout 10m \
-            --namespace ${KUBE_NAMESPACE} \
-            --set image.tag=${IMAGE_TAG} \
-            --set application.auth0ClientId=${AUTH0_CLIENT_ID} \
-            --set application.auth0ClientSecret=${AUTH0_CLIENT_SECRET} \
-            --set application.appSecretKey=${FLASK_APP_SECRET} \
-            --set image.repository=${ECR_REGISTRY}/${ECR_REPOSITORY} \
-            --set ingress.hosts={operations-engineering-join-github-dev.cloud-platform.service.justice.gov.uk}
+        run: helm upgrade join-github \
+          helm/operations-engineering-reports \
+          --install \
+          --force \
+          --wait \
+          --timeout 10m \
+          --namespace ${KUBE_NAMESPACE} \
+          --set image.tag=${IMAGE_TAG} \
+          --set application.auth0ClientId=${AUTH0_CLIENT_ID} \
+          --set application.auth0ClientSecret=${AUTH0_CLIENT_SECRET} \
+          --set application.appSecretKey=${FLASK_APP_SECRET} \
+          --set image.repository=${ECR_REGISTRY}/${ECR_REPOSITORY} \
+          --set ingress.hosts={operations-engineering-join-github-dev.cloud-platform.service.justice.gov.uk}
