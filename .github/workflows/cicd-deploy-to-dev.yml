@@ -11,6 +11,9 @@ env:
   KUBE_TOKEN: ${{ secrets.DEV_KUBE_TOKEN }}
 
   IMAGE_TAG: ${{ github.sha }}
+  ECR_REGISTRY: ${{ vars.DEV_ECR_REGISTRY }}
+  ECR_REPOSITORY: ${{ vars.DEV_ECR_REPOSITORY }}
+
   FLASK_APP_SECRET: ${{ secrets.DEV_FLASK_APP_SECRET }}
   FLASK_CONFIGURATION: "development"
 
@@ -34,12 +37,8 @@ jobs:
       - uses: aws-actions/amazon-ecr-login@v2
         id: login-ecr
       - run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: ${{ vars.DEV_ECR_REPOSITORY }}
-          IMAGE_TAG: ${{ github.sha }}
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
   deploy-to-dev:
     needs: build-push
