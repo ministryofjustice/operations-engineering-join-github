@@ -1,0 +1,36 @@
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "join-github.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
+---
+{{- $ingressHosts := .Values.ingress.hosts }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "join-github.labels" . | nindent 4 }}
+  annotations:
+    external-dns.alpha.kubernetes.io/set-identifier: {{ $fullName }}-{{ $fullName }}-{{ .Values.ingress.colour }}
+    external-dns.alpha.kubernetes.io/aws-weight: "100"
+    cloud-platform.justice.gov.uk/ignore-external-dns-weight: "true"
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  tls:
+    - hosts:
+        {{- range $host := $ingressHosts }}
+        - {{ $host }}
+        {{- end }}
+  rules:
+    {{- range $host := $ingressHosts }}
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $svcPort }}
+    {{- end }}
+{{- end }}

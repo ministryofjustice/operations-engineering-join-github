@@ -1,6 +1,15 @@
 .ONESHELL:
 
 PYTHON_SOURCE_FILES = ./tests operations_engineering_join_github.py ./join_github_app
+# Default values for variables (can be overridden by passing arguments to `make`)
+RELEASE_NAME ?= default-release-name
+AUTH0_CLIENT_ID ?= default-auth0-client-id
+AUTH0_CLIENT_SECRET ?= default-auth0-client-secret
+APP_SECRET_KEY ?= default-app-secret-key
+API_KEY ?= default-api-key
+HOST_NAME?= default-host-suffix
+IMAGE ?= default-image
+REGISTRY ?= default-registry
 
 help:
 	@echo "Available commands:"
@@ -46,6 +55,22 @@ local: venv
 # Assumes you've already built the image locally
 docker-up:
 	docker-compose -f docker-compose.yaml up -d
+
+# To run locally, you need to pass the following:
+# make deploy-dev IMAGE=my-image RELEASE_NAME=my-release AUTH0_CLIENT_ID=my-auth0-id AUTH0_CLIENT_SECRET=my-secret APP_SECRET_KEY=my-app-secret HOST_NAME=my-host
+deploy-dev:
+	helm --debug upgrade join-github helm/join-github \
+		--install \
+		--force \
+		--wait \
+		--set image.tag=$(IMAGE) \
+		--set application.auth0ClientId=$(AUTH0_CLIENT_ID) \
+		--set application.auth0ClientSecret=$(AUTH0_CLIENT_SECRET) \
+		--set application.appSecretKey=$(APP_SECRET_KEY) \
+		--set application.apiKey=$(API_KEY) \
+		--set ingress.hosts={$(HOST_NAME).cloud-platform.service.justice.gov.uk} \
+		--set image.repository=754256621582.dkr.ecr.eu-west-2.amazonaws.com/operations-engineering/operations-engineering-join-github-dev-ecr \
+		--namespace operations-engineering-join-github-dev
 
 all:
 
