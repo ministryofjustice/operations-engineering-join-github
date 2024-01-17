@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from join_github_app.main.config.constants import (
     MAX_ALLOWED_ORG_PENDING_INVITES,
