@@ -20,7 +20,7 @@ spec:
           ports:
             - containerPort: 4567
           env:
-            - name: GH_TOKEN
+            - name: ADMIN_GITHUB_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: join-github-token

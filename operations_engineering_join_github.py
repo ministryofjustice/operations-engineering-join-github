@@ -9,10 +9,10 @@ from join_github_app import create_app
 
 
 def get_tokens():
-    github_token = environ.get("GH_TOKEN")
+    github_token = environ.get("ADMIN_GITHUB_TOKEN")
     if not github_token:
         # Look for a local .env file
-        github_token = dotenv_values(".env").get("GH_TOKEN")
+        github_token = dotenv_values(".env").get("ADMIN_GITHUB_TOKEN")
         if not github_token:
             logging.error("Failed to find a GitHub Token")
             sys.exit(1)
