@@ -116,42 +116,46 @@ class TestGithubScript(unittest.TestCase):
     ):
         github_script = GithubScript(mock_github_service)
 
-        github_script.add_new_user_to_github_org(None, [])
+        github_script.add_new_user_to_github_org(None, [], True)
         github_script.github_service.get_user.assert_not_called()
 
-        github_script.add_new_user_to_github_org("", [])
+        github_script.add_new_user_to_github_org("", [], True)
         github_script.github_service.get_user.assert_not_called()
 
-        github_script.add_new_user_to_github_org(self.test_email_address, [])
+        github_script.add_new_user_to_github_org(self.test_email_address, [], True)
         github_script.github_service.get_user.assert_not_called()
 
         github_script.add_new_user_to_github_org(
-            self.test_email_address, [MOJ_TEST_ORG]
+            self.test_email_address, [MOJ_TEST_ORG], True
         )
         github_script.github_service.get_user.assert_not_called()
 
-        github_script.add_new_user_to_github_org("", [MOJ_TEST_ORG])
+        github_script.add_new_user_to_github_org("", [MOJ_TEST_ORG], True)
         github_script.github_service.get_user.assert_not_called()
 
-        github_script.add_new_user_to_github_org(None, [MOJ_TEST_ORG])
+        github_script.add_new_user_to_github_org(None, [MOJ_TEST_ORG], True)
         github_script.github_service.get_user.assert_not_called()
 
-    @patch("join_github_app.main.services.github_service")
-    def test_add_new_user_to_github_org(self, mock_github_service):
-        github_script = GithubScript(mock_github_service)
         github_script.add_new_user_to_github_org(
-            self.approved_email_address, [MINISTRY_OF_JUSTICE]
+            self.test_email_address, [MOJ_TEST_ORG], True
         )
-        mock_github_service.invite_user_to_org_using_email_address.assert_called()
+        github_script.github_service.get_user.assert_not_called()
 
     @patch("join_github_app.main.services.github_service")
     def test_add_new_user_to_github_org_send_email_invites_true(self, mock_github_service):
-        SEND_EMAIL_INVITES = True
         github_script = GithubScript(mock_github_service)
         github_script.add_new_user_to_github_org(
-            self.approved_email_address, [MINISTRY_OF_JUSTICE]
+            self.approved_email_address, [MINISTRY_OF_JUSTICE], True
         )
         mock_github_service.invite_user_to_org_using_email_address.assert_called()
+
+    @patch("join_github_app.main.services.github_service")
+    def test_add_new_user_to_github_org_send_email_invites_false(self, mock_github_service):
+        github_script = GithubScript(mock_github_service)
+        github_script.add_new_user_to_github_org(
+            self.approved_email_address, [MINISTRY_OF_JUSTICE], False
+        )
+        mock_github_service.invite_user_to_org_using_email_address.assert_not_called()
 
     @patch("join_github_app.main.services.github_service")
     def test_get_selected_organisations(self, mock_github_service):

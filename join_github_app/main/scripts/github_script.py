@@ -18,8 +18,13 @@ class GithubScript:
     def __init__(self, github_service: GithubService):
         self.github_service = github_service
 
-    def add_new_user_to_github_org(self, email_address: str, organisations: list):
-        if SEND_EMAIL_INVITES == True:
+    def add_new_user_to_github_org(
+            self,
+            email_address: str,
+            organisations: list,
+            send_email_invites: bool=SEND_EMAIL_INVITES
+        ):
+        if send_email_invites == True:
             if email_address == "" or email_address is None or len(organisations) == 0:
                 logger.debug("add_new_user_to_github_org: incorrect function argument")
             else:
@@ -34,7 +39,7 @@ class GithubScript:
                         )
         else:
             logger.debug(
-                "SEND_EMAIL_INVITES toggle set to {str(SEND_EMAIL_INVITES)}: No invite sent."
+                f"send_email_invites toggle set to {str(send_email_invites)}: No invite sent."
             )
 
     def get_selected_organisations(self, moj_org: bool, as_org: bool) -> list:
