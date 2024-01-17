@@ -119,19 +119,6 @@ def _join_github_auth0_users(request):
 
         if current_app.github_script.is_github_seat_protection_enabled() is True:
             return error("GitHub Seat protection enabled")
-
-        username = form.gh_username.data
-        if len(username) > 0:
-            if current_app.github_script.validate_user_rejoining_org(
-                selected_orgs, username
-            ):
-                current_app.github_script.add_returning_user_to_github_org(
-                    username, selected_orgs
-                )
-            else:
-                return error(
-                    "Username not found or has expired. Create a new request and leave the username box empty."
-                )
         else:
             user_email = session["user"]["userinfo"]["email"]
             current_app.github_script.add_new_user_to_github_org(

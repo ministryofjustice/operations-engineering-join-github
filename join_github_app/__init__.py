@@ -32,7 +32,7 @@ def create_app(github_script: GithubScript, rate_limit: bool = True) -> Flask:
     limiter = Limiter(
         get_remote_address,
         app=app,
-        default_limits=["5 per minute", "1 per second"],
+        default_limits=["10 per minute", "2 per second"],
         storage_uri="memory://",
         strategy="moving-window",
     )

@@ -120,7 +120,6 @@ class TestJoinGithubAuth0User(unittest.TestCase):
         # The private function in the function will test the logic
         self.assertEqual(response.request.path, "/")
         self.app.github_script.add_new_user_to_github_org.assert_not_called()
-        self.app.github_script.add_returning_user_to_github_org.assert_not_called()
 
     def test_join_github_auth0_user_new_joiner(self):
         form_data = {
@@ -140,50 +139,8 @@ class TestJoinGithubAuth0User(unittest.TestCase):
                 if item[0] == "Location" and item[1] == "thank-you":
                     redirect = True
             self.assertEqual(redirect, True)
-            self.app.github_script.validate_user_rejoining_org.assert_not_called()
             self.app.github_script.add_new_user_to_github_org.assert_called_once_with(
                 "some-email", [self.org]
-            )
-
-    def test_join_github_auth0_user_rejoining(self):
-        form_data = {
-            "gh_username": "some-username",
-            "access_moj_org": True,
-            "access_as_org": True,
-        }
-        with self.app.test_request_context(
-            "/join-github-auth0-user", method="POST", data=form_data
-        ) as request_context:
-            self.app.github_script.get_selected_organisations.return_value = [self.org]
-            self.app.github_script.validate_user_rejoining_org.return_value = True
-            response = _join_github_auth0_users(request_context.request)
-            self.assertEqual(response.status_code, 302)
-            for item in response.headers:
-                if item[0] == "Location" and item[1] == "thank-you":
-                    redirect = True
-            self.assertEqual(redirect, True)
-            self.app.github_script.add_new_user_to_github_org.assert_not_called()
-            self.app.github_script.add_returning_user_to_github_org.assert_called_once_with(
-                "some-username", ["some-org"]
-            )
-
-    def test_join_github_auth0_user_when_rejoining_but_username_not_found(self):
-        form_data = {
-            "gh_username": "some-username",
-            "access_moj_org": True,
-            "access_as_org": True,
-        }
-        with self.app.test_request_context(
-            "/join-github-auth0-user", method="POST", data=form_data
-        ) as request_context:
-            self.app.github_script.get_selected_organisations.return_value = [self.org]
-            self.app.github_script.validate_user_rejoining_org.return_value = False
-            response = _join_github_auth0_users(request_context.request)
-            self.app.github_script.add_new_user_to_github_org.assert_not_called()
-            self.app.github_script.add_returning_user_to_github_org.assert_not_called()
-            self.assertRegex(
-                response,
-                "Username not found or has expired. Create a new request and leave the username box empty.",
             )
 
     def test_join_github_auth0_user_when_github_seat_protection_enabled(self):
@@ -198,7 +155,6 @@ class TestJoinGithubAuth0User(unittest.TestCase):
             self.app.github_script.is_github_seat_protection_enabled.return_value = True
             response = _join_github_auth0_users(request_context.request)
             self.app.github_script.add_new_user_to_github_org.assert_not_called()
-            self.app.github_script.add_returning_user_to_github_org.assert_not_called()
             self.assertRegex(response, "GitHub Seat protection enabled")
 
     def test_join_github_form_with_incorrect_special_character_inputs(self):
@@ -212,19 +168,17 @@ class TestJoinGithubAuth0User(unittest.TestCase):
             response = _join_github_auth0_users(request_context.request)
             self.assertRegex(response, "There is a problem")
             self.app.github_script.add_new_user_to_github_org.assert_not_called()
-            self.app.github_script.add_returning_user_to_github_org.assert_not_called()
 
     def test_join_github_form_with_missing_orgs(self):
-        form_data1 = {
+        form_data = {
             "gh_username": "",
         }
         with self.app.test_request_context(
-            "/join-github-auth0-user", method="POST", data=form_data1
+            "/join-github-auth0-user", method="POST", data=form_data
         ) as request_context:
             response = _join_github_auth0_users(request_context.request)
             self.assertRegex(response, "There is a problem")
             self.app.github_script.add_new_user_to_github_org.assert_not_called()
-            self.app.github_script.add_returning_user_to_github_org.assert_not_called()
 
 
 class TestCompletedRateLimit(unittest.TestCase):

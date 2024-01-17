@@ -162,55 +162,6 @@ class TestGithubScript(unittest.TestCase):
         self.assertEqual(len(orgs), 1)
         self.assertEqual(orgs[0], MOJ_ANALYTICAL_SERVICES)
 
-    @patch("join_github_app.main.services.github_service")
-    def test_validate_user_rejoining_org(self, mock_github_service):
-        github_script = GithubScript(mock_github_service)
-        github_script.is_user_in_audit_log = MagicMock(return_value=False)
-        result = github_script.validate_user_rejoining_org([MINISTRY_OF_JUSTICE], "")
-        self.assertFalse(result)
-        github_script.is_user_in_audit_log = MagicMock(return_value=True)
-        result = github_script.validate_user_rejoining_org([MINISTRY_OF_JUSTICE], "")
-        self.assertTrue(result)
-
-    @patch("join_github_app.main.services.github_service")
-    def test_add_returning_user_to_github_org_with_incorrect_inputs(
-        self, mock_github_service
-    ):
-        github_script = GithubScript(mock_github_service)
-
-        github_script.add_returning_user_to_github_org(None, [])
-        github_script.github_service.get_user.assert_not_called()
-
-        github_script.add_returning_user_to_github_org("", [])
-        github_script.github_service.get_user.assert_not_called()
-
-        github_script.add_returning_user_to_github_org(self.test_user, [])
-        github_script.github_service.get_user.assert_not_called()
-
-        github_script.add_returning_user_to_github_org("", [MOJ_TEST_ORG])
-        github_script.github_service.get_user.assert_not_called()
-
-        github_script.add_returning_user_to_github_org(None, [MOJ_TEST_ORG])
-        github_script.github_service.get_user.assert_not_called()
-
-    @patch("join_github_app.main.services.github_service")
-    def test_add_returning_user_to_github_org(self, mock_github_service):
-        github_script = GithubScript(mock_github_service)
-        mock_github_service.github_service.get_user.return_value = "a real user"
-        github_script.add_returning_user_to_github_org(
-            self.test_user, [MOJ_ANALYTICAL_SERVICES, MINISTRY_OF_JUSTICE]
-        )
-        mock_github_service.invite_user_to_org_using_nameduser.assert_called()
-
-    @patch("join_github_app.main.services.github_service")
-    def test_add_returning_user_to_github_org_with_incorrect_org_name(
-        self, mock_github_service
-    ):
-        github_script = GithubScript(mock_github_service)
-        mock_github_service.github_service.get_user.return_value = "a real user"
-        github_script.add_returning_user_to_github_org(self.test_user, [MOJ_TEST_ORG])
-        mock_github_service.invite_user_to_org_using_nameduser.assert_not_called()
-
 
 if __name__ == "__main__":
     unittest.main(argv=["first-arg-is-ignored"], exit=False)

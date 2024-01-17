@@ -63,16 +63,6 @@ class TestGithubServiceGetOrgPendingInvites(unittest.TestCase):
 
 
 @patch("github.Github.__new__")
-class TestGithubServiceInviteUserToOrgUsingNameduser(unittest.TestCase):
-    def test_calls_downstream_services(self, mock_github_client_core_api):
-        github_service = GithubService("")
-        github_service.invite_user_to_org_using_nameduser("some-user", "test_org")
-        github_service.github_client_core_api.get_organization.assert_has_calls(
-            [call("test_org"), call().invite_user("some-user")]
-        )
-
-
-@patch("github.Github.__new__")
 class TestGithubServiceGetUser(unittest.TestCase):
     def test_calls_downstream_services(self, mock_github_client_core_api):
         mock_github_client_core_api.return_value.get_user.return_value = "mock_user"
