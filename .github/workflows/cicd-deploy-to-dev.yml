@@ -12,6 +12,7 @@ env:
 
   IMAGE_TAG: ${{ github.sha }}
   FLASK_APP_SECRET: ${{ secrets.DEV_FLASK_APP_SECRET }}
+  FLASK_CONFIGURATION: "development"
 
   AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
   AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
@@ -66,8 +67,9 @@ jobs:
           --timeout 10m \
           --namespace ${KUBE_NAMESPACE} \
           --set image.tag=${IMAGE_TAG} \
+          --set application.environment=${FLASK_CONFIGURATION} \
           --set application.auth0ClientId=${AUTH0_CLIENT_ID} \
           --set application.auth0ClientSecret=${AUTH0_CLIENT_SECRET} \
           --set application.appSecretKey=${FLASK_APP_SECRET} \
           --set image.repository=${ECR_REGISTRY}/${ECR_REPOSITORY} \
-          --set ingress.hosts={operations-engineering-join-github-dev.cloud-platform.service.justice.gov.uk}
+          --set ingress.hosts={operations-engineering-join-github-dev2.cloud-platform.service.justice.gov.uk}
