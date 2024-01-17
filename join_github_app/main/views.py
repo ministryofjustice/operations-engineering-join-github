@@ -60,10 +60,9 @@ def outside_collaborator():
 
 @main.route("/select-organisations", methods=["GET", "POST"])
 def select_organisations():
-    is_digital_justice_user = (
-        "digital.justice.gov.uk" in session.get("email", "").lower()
-    )
-
+    email = session.get("email", "").lower()
+    domain = email[email.index("@") + 1:]
+    is_digital_justice_user = is_digital_justice_email(domain)
     if request.method == "POST":
         session["org_selection"] = request.form.getlist("organisation_selection")
         if not session["org_selection"]:
