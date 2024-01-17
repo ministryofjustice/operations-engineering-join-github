@@ -145,6 +145,15 @@ class TestGithubScript(unittest.TestCase):
         mock_github_service.invite_user_to_org_using_email_address.assert_called()
 
     @patch("join_github_app.main.services.github_service")
+    def test_add_new_user_to_github_org_send_email_invites_true(self, mock_github_service):
+        SEND_EMAIL_INVITES = True
+        github_script = GithubScript(mock_github_service)
+        github_script.add_new_user_to_github_org(
+            self.approved_email_address, [MINISTRY_OF_JUSTICE]
+        )
+        mock_github_service.invite_user_to_org_using_email_address.assert_called()
+
+    @patch("join_github_app.main.services.github_service")
     def test_get_selected_organisations(self, mock_github_service):
         github_script = GithubScript(mock_github_service)
         orgs = github_script.get_selected_organisations(None, None)
