@@ -1,3 +1,4 @@
+import os
 import logging
 from join_github_app.main.services.github_service import GithubService
 from join_github_app.main.config.constants import (
@@ -7,6 +8,7 @@ from join_github_app.main.config.constants import (
     MINIMUM_ORG_SEATS,
     MAX_ALLOWED_ORG_PENDING_INVITES,
     MOJ_ORGS,
+    SEND_EMAIL_INVITES,
 )
 
 logger = logging.getLogger(__name__)
@@ -17,36 +19,42 @@ class GithubScript:
         self.github_service = github_service
 
     def add_returning_user_to_github_org(self, username: str, organisations: list):
-        if username == "" or username is None or len(organisations) == 0:
-            logger.debug(
-                "add_returning_user_to_github_org: incorrect function argument"
-            )
+        if SEND_EMAIL_INVITES == True:
+            if username == "" or username is None or len(organisations) == 0:
+                logger.debug(
+                    "add_returning_user_to_github_org: incorrect function argument"
+                )
+            else:
+                user = self.github_service.get_user(username.lower())
+                if user is not None:
+                    for organisation in organisations:
+                        if organisation.lower() in MOJ_ORGS:
+                            # TODO: change MOJ_TEST_ORG to organisation
+                            self.github_service.invite_user_to_org_using_nameduser(
+                                user, MOJ_TEST_ORG
+                            )
+                            logger.debug(
+                                f"{user.login.lower()} has been invited to {organisation.lower()} with the role 'member'."
+                            )
         else:
-            user = self.github_service.get_user(username.lower())
-            if user is not None:
+            logger.debug("SEND_INVITES toggle set to {str(SEND_INVITES)}: No invite sent.")
+
+    def add_new_user_to_github_org(self, email_address: str, organisations: list):
+        if SEND_EMAIL_INVITES == True:
+            if email_address == "" or email_address is None or len(organisations) == 0:
+                logger.debug("add_new_user_to_github_org: incorrect function argument")
+            else:
                 for organisation in organisations:
                     if organisation.lower() in MOJ_ORGS:
                         # TODO: change MOJ_TEST_ORG to organisation
-                        self.github_service.invite_user_to_org_using_nameduser(
-                            user, MOJ_TEST_ORG
+                        self.github_service.invite_user_to_org_using_email_address(
+                            email_address.lower(), MOJ_TEST_ORG
                         )
                         logger.debug(
-                            f"{user.login.lower()} has been invited to {organisation.lower()} with the role 'member'."
+                            f"{email_address.lower()} has been invited to {organisation.lower()} with the role 'member'."
                         )
-
-    def add_new_user_to_github_org(self, email_address: str, organisations: list):
-        if email_address == "" or email_address is None or len(organisations) == 0:
-            logger.debug("add_new_user_to_github_org: incorrect function argument")
         else:
-            for organisation in organisations:
-                if organisation.lower() in MOJ_ORGS:
-                    # TODO: change MOJ_TEST_ORG to organisation
-                    self.github_service.invite_user_to_org_using_email_address(
-                        email_address.lower(), MOJ_TEST_ORG
-                    )
-                    logger.debug(
-                        f"{email_address.lower()} has been invited to {organisation.lower()} with the role 'member'."
-                    )
+            logger.debug("SEND_INVITES toggle set to {str(SEND_INVITES)}: No invite sent.")
 
     def get_selected_organisations(self, moj_org: bool, as_org: bool) -> list:
         organisations = []
