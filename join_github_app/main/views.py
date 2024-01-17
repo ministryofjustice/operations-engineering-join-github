@@ -62,22 +62,40 @@ def select_organisations():
             return render_template("pages/select-organisations.html",
                                    is_digital_justice_user=is_digital_justice_user)
         return redirect("/join-selection")
+    
+    selectable_orgs = current_app.config['SELECTABLE_ORGANISATIONS']
+    checkboxes_items = []
+    for org in selectable_orgs:
+        item = {'value': org['value'], 'text': org['text']}
+        if org['value'] == 'analytical-services' and is_digital_justice_user:
+            item['disabled'] = is_digital_justice_user
+        checkboxes_items.append(item)
 
     return render_template("pages/select-organisations.html",
-                           is_digital_justice_user=is_digital_justice_user)
+                           checkboxes_items=checkboxes_items, is_digital_justice_user=is_digital_justice_user)
 
 
 @main.route("/join-selection")
 def join_selection():
     email = session.get("email", "").lower()
+    domain = email[email.index('@') + 1:]
     org_selection = session.get("org_selection", [])
 
-    template = "pages/digital-justice-user.html" if is_digital_justice_email(email) else "pages/join-selection.html"
+    if is_justice_email(domain):
+        template = "pages/justice-user.html"
+    elif is_digital_justice_email(domain):
+        template = "pages/digital-justice-user.html"
+    else:
+        template = "pages/join-selection.html"
     return render_template(template, org_selection=org_selection, email=email)
 
 
-def is_digital_justice_email(email):
-    return "digital.justice.gov.uk" in email.lower()
+def is_digital_justice_email(domain):
+    return "digital.justice.gov.uk" == domain.lower()
+
+
+def is_justice_email(domain):
+    return "justice.gov.uk" == domain.lower()
 
 
 @main.route("/thank-you")

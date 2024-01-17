@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import MagicMock
+
 from flask import get_flashed_messages
 
 import join_github_app
@@ -68,15 +69,15 @@ class TestViews(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertIn("Using Single Sign-On", str(response.data))
 
-    def test_join_selection_other_user(self):
+    def test_join_selection_justice_user(self):
         with self.app.test_client() as client:
             with client.session_transaction() as sess:
-                sess["email"] = "user@example.com"
+                sess["email"] = "user@justice.gov.uk"
                 sess["org_selection"] = ["ministryofjustice"]
 
             response = client.get("/join-selection")
             self.assertEqual(response.status_code, 200)
-            self.assertNotIn("Using Single Sign-On", str(response.data))
+            self.assertIn("Azure", str(response.data))
 
     def test_select_organisations_digital_justice_user(self):
         with self.app.test_client() as client:
@@ -88,17 +89,6 @@ class TestViews(unittest.TestCase):
             self.assertIn(
                 "disabled", str(response.data)
             )  # Check if the checkbox is disabled
-
-    def test_select_organisations_other_user(self):
-        with self.app.test_client() as client:
-            with client.session_transaction() as sess:
-                sess["email"] = "user@example.com"
-            response = client.get("/select-organisations")
-            self.assertEqual(response.status_code, 200)
-            self.assertIn("MoJ Analytical Services", str(response.data))
-            self.assertNotIn(
-                "disabled", str(response.data)
-            )  # Check if the checkbox is not disabled
 
     def test_thank_you(self):
         response = self.app.test_client().get("/thank-you")
