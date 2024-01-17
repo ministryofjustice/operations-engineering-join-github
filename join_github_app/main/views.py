@@ -92,7 +92,7 @@ def select_organisations():
 @main.route("/join-selection")
 def join_selection():
     email = session.get("email", "").lower()
-    domain = email[email.index("@") + 1 :]
+    domain = email[email.index("@") + 1:]
     org_selection = session.get("org_selection", [])
 
     if is_justice_email(domain):
