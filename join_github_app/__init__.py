@@ -8,7 +8,6 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from github import GithubException
 from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
-
 from join_github_app.main.middleware.error_handler import (
     handle_github_exception,
     page_not_found,

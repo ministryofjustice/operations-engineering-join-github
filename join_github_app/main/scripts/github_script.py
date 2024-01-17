@@ -1,15 +1,15 @@
-import os
 import logging
-from join_github_app.main.services.github_service import GithubService
+
 from join_github_app.main.config.constants import (
+    MAX_ALLOWED_ORG_PENDING_INVITES,
+    MINIMUM_ORG_SEATS,
     MINISTRY_OF_JUSTICE,
     MOJ_ANALYTICAL_SERVICES,
-    MOJ_TEST_ORG,
-    MINIMUM_ORG_SEATS,
-    MAX_ALLOWED_ORG_PENDING_INVITES,
     MOJ_ORGS,
+    MOJ_TEST_ORG,
     SEND_EMAIL_INVITES,
 )
+from join_github_app.main.services.github_service import GithubService
 
 logger = logging.getLogger(__name__)
 
@@ -19,12 +19,12 @@ class GithubScript:
         self.github_service = github_service
 
     def add_new_user_to_github_org(
-            self,
-            email_address: str,
-            organisations: list,
-            send_email_invites: bool=SEND_EMAIL_INVITES
-        ):
-        if send_email_invites == True:
+        self,
+        email_address: str,
+        organisations: list,
+        send_email_invites: bool = SEND_EMAIL_INVITES,
+    ):
+        if send_email_invites:
             if email_address == "" or email_address is None or len(organisations) == 0:
                 logger.debug("add_new_user_to_github_org: incorrect function argument")
             else:

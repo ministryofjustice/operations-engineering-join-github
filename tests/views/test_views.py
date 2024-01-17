@@ -1,9 +1,8 @@
 import unittest
 from unittest.mock import MagicMock
 
-from flask import get_flashed_messages
-
 import join_github_app
+from flask import get_flashed_messages
 from join_github_app.main.scripts.github_script import GithubScript
 from join_github_app.main.views import _join_github_auth0_users, error
 

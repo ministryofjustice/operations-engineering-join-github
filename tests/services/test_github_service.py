@@ -1,11 +1,12 @@
 import unittest
-from requests import Response
-from unittest.mock import patch, call, MagicMock
 from datetime import datetime, timedelta
-from join_github_app.main.services.github_service import GithubService
+from unittest.mock import MagicMock, call, patch
+
 from freezegun import freeze_time
 from github.Organization import Organization
 from github.PaginatedList import PaginatedList
+from join_github_app.main.services.github_service import GithubService
+from requests import Response
 
 
 @patch("github.Github.__new__")
