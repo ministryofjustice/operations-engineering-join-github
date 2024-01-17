@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
 env:
-  KUBE_CLUSTER: ${{ secrets.DEV_KUBE_CLUSTER }}
+  KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
   KUBE_NAMESPACE: ${{ secrets.DEV_KUBE_NAMESPACE }}
   KUBE_CERT: ${{ secrets.DEV_KUBE_CERT }}
   KUBE_TOKEN: ${{ secrets.DEV_KUBE_TOKEN }}
