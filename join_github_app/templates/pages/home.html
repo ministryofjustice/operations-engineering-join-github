@@ -5,12 +5,30 @@
 {% endblock %}
 
 {% block content %}
-    <h1 class="govuk-heading-xl">Join a Ministry of Justice GitHub Organisation</h1>
+<h1 class="govuk-heading-xl">Join a Ministry of Justice GitHub Organisation</h1>
 
-    <p class="govuk-body">
-        This website is used to request access to a Ministry of Justice GitHub organisation.
-    </p>
+<p class="govuk-body">
+    Use this service to request access to one or both of the Ministry of Justice GitHub Organisations:
+    <ul class="govuk-list govuk-list--bullet">
+        <li><a class="govuk-link" href="https://github.com/ministryofjustice">Ministry of Justice</a></li>
+        <li><a class="govuk-link" href="https://github.com/moj-analytical-services">MoJ Analytical Services</a></li>
+    </ul>
+</p>
+<p class="govuk-body">
+    You will need the following:
+</p>
+<ul class="govuk-list govuk-list--bullet">
+    <li>The email address you wish to join with</li>
+    <li>Your login details for Ministry of Justice Azure AD authenticaiton</li>
+</ul>
+<p class="govuk-body">
+Joining takes around 5  minutes.
+</p>
 
-    <p class="govuk-body"><a href="join-github">Join Github</a></p>
+{{ govukButton({
+    'text': 'Start now',
+    'href': '/join-github',
+    'isStartButton': 'true'
+    }) }}
 
 {% endblock %}
