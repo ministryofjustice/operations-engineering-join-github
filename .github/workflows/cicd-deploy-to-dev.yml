@@ -74,4 +74,4 @@ jobs:
             --set application.environment=${FLASK_CONFIGURATION} \
             --set application.githubToken=${ADMIN_GITHUB_TOKEN} \
             --set image.repository=${ECR_REGISTRY}/${ECR_REPOSITORY} \
-            --set ingress.hosts={dev.join-github.cloud-platform.service.justice.gov.uk}
+            --set ingress.hosts={join-github-dev.cloud-platform.service.justice.gov.uk}
