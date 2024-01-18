@@ -33,6 +33,8 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+            - name: ADMIN_GITHUB_TOKEN
+              value: {{ .Values.application.githubToken| quote }}
             - name: AUTH0_DOMAIN
               value: {{ .Values.application.auth0Domain | quote }}
             - name: AUTH0_CLIENT_ID
