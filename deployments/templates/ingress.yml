@@ -1,9 +1,9 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: join-github
+  name: join-github-dev
   annotations:
-    external-dns.alpha.kubernetes.io/set-identifier: join-github-${NAMESPACE}-green
+    external-dns.alpha.kubernetes.io/set-identifier: join-github-dev-${NAMESPACE}-green
     external-dns.alpha.kubernetes.io/aws-weight: "100"
 spec:
   ingressClassName: default
@@ -18,6 +18,6 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: join-github
+                name: join-github-dev
                 port:
                   number: 4567
