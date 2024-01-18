@@ -72,4 +72,4 @@ jobs:
             --set application.appSecretKey=${FLASK_APP_SECRET} \
             --set application.environment=${FLASK_CONFIGURATION} \
             --set image.repository=${ECR_REGISTRY}/${ECR_REPOSITORY} \
-            --set ingress.hosts={operations-engineering-join-github-dev2.cloud-platform.service.justice.gov.uk}
+            --set ingress.hosts={dev.join-github.cloud-platform.service.justice.gov.uk}
