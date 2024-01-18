@@ -1,7 +1,7 @@
 {% extends "components/base.html" %}
 
 {% block pageTitle %}
-Joining GitHub
+Submit Email Address
 {% endblock %}
 
 {% block beforeContent %}
@@ -14,30 +14,25 @@ Joining GitHub
 
 {% block content %}
 {{ super() }}
-<h1 class="govuk-heading-xl">Joining GitHub</h1>
-
-<p class="govuk-body">
-    The Ministry of Justice maintains two GitHub Organisations,
-<ul class="govuk-list govuk-list--bullet">
-    <li><a class="govuk-link" href="https://github.com/ministryofjustice">Ministry of Justice</a></li>
-    <li><a class="govuk-link" href="https://github.com/moj-analytical-services">MoJ Analytical Services</a></li>
-</ul>
-</p>
 
 <form action="/join-github" method="POST">
     {{ govukInput({
-    'id': 'email_address',
-    'name': 'emailAddress',
-    'classes': 'govuk-!-width-one-third',
-    'label': {'text': 'Please provide the email address you want to join with:'},
+        'classes': 'govuk-!-width-one-half',
+        'label': {
+            'text': 'Email address',
+            'classes': 'govuk-label--l',
+            'isPageHeading': 'true',
+        },
+        'hint': {
+            'text': 'Please provide the email address you want to join with:'
+        },
+        'id': 'email_address',
+        'name': 'emailAddress',
     }) }}
 
     {{ govukButton({
-    'text': "Next"
-    }) }}
-
+        'text': "Next"
+        }) }}
 </form>
-
-<br>
 
 {% endblock %}
