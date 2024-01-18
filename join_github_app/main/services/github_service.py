@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
+
+import requests
 from github import Github
 from github.NamedUser import NamedUser
-import requests
 
 
 class GithubService:
@@ -17,13 +18,6 @@ class GithubService:
 
     def get_user(self, user_name: str) -> NamedUser:
         return self.github_client_core_api.get_user(user_name.lower())
-
-    def invite_user_to_org_using_nameduser(
-        self, user: NamedUser, organisation: str
-    ) -> None:
-        self.github_client_core_api.get_organization(organisation.lower()).invite_user(
-            user
-        )
 
     def invite_user_to_org_using_email_address(
         self, email_address: str, organisation: str

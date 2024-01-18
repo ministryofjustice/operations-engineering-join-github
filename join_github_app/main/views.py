@@ -1,14 +1,21 @@
 import logging
 import os
 
-from flask import (Blueprint, current_app, flash, redirect, render_template,
-                   request, session)
-
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    session,
+)
 from join_github_app.main.config.constants import ALLOWED_EMAIL_DOMAINS
 from join_github_app.main.middleware.auth import requires_auth
 from join_github_app.main.middleware.utils import is_valid_email_pattern
-from join_github_app.main.scripts.join_github_form_auth0_user import \
-    JoinGithubFormAuth0User
+from join_github_app.main.scripts.join_github_form_auth0_user import (
+    JoinGithubFormAuth0User,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +26,7 @@ main = Blueprint("main", __name__)
 
 @main.context_processor
 def handle_context():
-    '''Inject object into jinja2 templates.'''
+    """Inject object into jinja2 templates."""
     return dict(os=os)
 
 
@@ -53,32 +60,38 @@ def outside_collaborator():
 
 @main.route("/select-organisations", methods=["GET", "POST"])
 def select_organisations():
-    is_digital_justice_user = "digital.justice.gov.uk" in session.get("email", "").lower()
-
+    email = session.get("email", "").lower()
+    domain = email[email.index("@") + 1:]
+    is_digital_justice_user = is_digital_justice_email(domain)
     if request.method == "POST":
         session["org_selection"] = request.form.getlist("organisation_selection")
         if not session["org_selection"]:
             flash("Please select at least one organisation.")
-            return render_template("pages/select-organisations.html",
-                                   is_digital_justice_user=is_digital_justice_user)
+            return render_template(
+                "pages/select-organisations.html",
+                is_digital_justice_user=is_digital_justice_user,
+            )
         return redirect("/join-selection")
-    
-    selectable_orgs = current_app.config['SELECTABLE_ORGANISATIONS']
+
+    selectable_orgs = current_app.config["SELECTABLE_ORGANISATIONS"]
     checkboxes_items = []
     for org in selectable_orgs:
-        item = {'value': org['value'], 'text': org['text']}
-        if org['value'] == 'analytical-services' and is_digital_justice_user:
-            item['disabled'] = is_digital_justice_user
+        item = {"value": org["value"], "text": org["text"]}
+        if org["value"] == "analytical-services" and is_digital_justice_user:
+            item["disabled"] = is_digital_justice_user
         checkboxes_items.append(item)
 
-    return render_template("pages/select-organisations.html",
-                           checkboxes_items=checkboxes_items, is_digital_justice_user=is_digital_justice_user)
+    return render_template(
+        "pages/select-organisations.html",
+        checkboxes_items=checkboxes_items,
+        is_digital_justice_user=is_digital_justice_user,
+    )
 
 
 @main.route("/join-selection")
 def join_selection():
     email = session.get("email", "").lower()
-    domain = email[email.index('@') + 1:]
+    domain = email[email.index("@") + 1:]
     org_selection = session.get("org_selection", [])
 
     if is_justice_email(domain):
@@ -119,19 +132,6 @@ def _join_github_auth0_users(request):
 
         if current_app.github_script.is_github_seat_protection_enabled() is True:
             return error("GitHub Seat protection enabled")
-
-        username = form.gh_username.data
-        if len(username) > 0:
-            if current_app.github_script.validate_user_rejoining_org(
-                selected_orgs, username
-            ):
-                current_app.github_script.add_returning_user_to_github_org(
-                    username, selected_orgs
-                )
-            else:
-                return error(
-                    "Username not found or has expired. Create a new request and leave the username box empty."
-                )
         else:
             user_email = session["user"]["userinfo"]["email"]
             current_app.github_script.add_new_user_to_github_org(

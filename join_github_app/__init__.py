@@ -8,7 +8,6 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from github import GithubException
 from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
-
 from join_github_app.main.middleware.error_handler import (
     handle_github_exception,
     page_not_found,
@@ -32,7 +31,7 @@ def create_app(github_script: GithubScript, rate_limit: bool = True) -> Flask:
     limiter = Limiter(
         get_remote_address,
         app=app,
-        default_limits=["5 per minute", "1 per second"],
+        default_limits=["10 per minute", "2 per second"],
         storage_uri="memory://",
         strategy="moving-window",
     )
