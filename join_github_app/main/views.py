@@ -35,19 +35,19 @@ def index():
     return render_template("pages/home.html")
 
 
-@main.route("/join-github", methods=["GET", "POST"])
+@main.route("/submit-email", methods=["GET", "POST"])
 def join_github():
     if request.method == "POST":
         session["email"] = request.form.get("emailAddress", "Empty").strip()
         if not is_valid_email_pattern(session["email"]):
             flash("Please enter a valid email address.")
-            return render_template("pages/join-github.html")
+            return render_template("pages/submit-email.html")
         domain = session["email"].split("@")[1]
         if domain in set(ALLOWED_EMAIL_DOMAINS):
             return redirect("/select-organisations")
         else:
             return redirect("/outside-collaborator")
-    return render_template("pages/join-github.html")
+    return render_template("pages/submit-email.html")
 
 
 @main.route("/outside-collaborator")
