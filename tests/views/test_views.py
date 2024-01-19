@@ -19,37 +19,37 @@ class TestViews(unittest.TestCase):
         self.assertEqual(response.request.path, "/")
 
     def test_join_github_info_page(self):
-        response = self.app.test_client().get("/join-github")
+        response = self.app.test_client().get("/submit-email")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.request.path, "/join-github")
+        self.assertEqual(response.request.path, "/submit-email")
 
     def test_join_github_invalid_email_flashes_warning(self):
         form_data = {"emailAddress": ""}
         expected_flashed_message = "Please enter a valid email address."
         with self.app.test_client() as client:
-            response = client.post("/join-github", data=form_data)
+            response = client.post("/submit-email", data=form_data)
             flashed_message = dict(get_flashed_messages(with_categories=True))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.request.path, "/join-github")
+        self.assertEqual(response.request.path, "/submit-email")
         self.assertEqual(flashed_message.get("message"), expected_flashed_message)
 
     def test_join_github_allowed_email(self):
         form_data = {"emailAddress": "email@digital.justice.gov.uk"}
         with self.app.test_client() as client:
-            response = client.post("/join-github", data=form_data)
+            response = client.post("/submit-email", data=form_data)
             flashed_message = dict(get_flashed_messages(with_categories=True))
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.request.path, "/join-github")
+        self.assertEqual(response.request.path, "/submit-email")
         self.assertEqual(response.headers["Location"], "/select-organisations")
         self.assertEqual(flashed_message.get("message"), None)
 
     def test_join_github_outside_collab_email(self):
         form_data = {"emailAddress": "cat@dog.com"}
         with self.app.test_client() as client:
-            response = client.post("/join-github", data=form_data)
+            response = client.post("/submit-email", data=form_data)
             flashed_message = dict(get_flashed_messages(with_categories=True))
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.request.path, "/join-github")
+        self.assertEqual(response.request.path, "/submit-email")
         self.assertEqual(response.headers["Location"], "/outside-collaborator")
         self.assertEqual(flashed_message.get("message"), None)
 
