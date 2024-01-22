@@ -7,6 +7,12 @@
 1. [Development](#development)
 1. [Deployment](#deployment)
 
+# Overview
+
+Welcome to the GitHub repository for our "Join GitHub" onboarding application. This application streamlines the process of adding new users to our two primary GitHub organisations: ministryofjustice and moj-analytical-services.
+
+The aim of this application is to provide a user-friendly interface for onboarding new team members into our GitHub organisations. It simplifies the administrative process, ensuring a smooth and efficient integration for new users.
+
 ## Prerequisites
 
 To develop, deploy or run this app, you will need to install the following:
