@@ -1,18 +1,16 @@
 import logging
 import os
-
 from urllib.parse import quote_plus, urlencode
 
 from authlib.integrations.flask_client import OAuth
-from flask import Blueprint, current_app, redirect, render_template, session, url_for
+from flask import (Blueprint, current_app, redirect, render_template, session,
+                   url_for)
 
 from join_github_app.main.config.constants import (
-    AS_ORG_ALLOWED_EMAIL_DOMAINS,
-    MINISTRY_OF_JUSTICE,
-    MOJ_ANALYTICAL_SERVICES,
-    MOJ_ORG_ALLOWED_EMAIL_DOMAINS,
-    MOJ_ORGS,
-)
+    AS_ORG_ALLOWED_EMAIL_DOMAINS, MINISTRY_OF_JUSTICE, MOJ_ANALYTICAL_SERVICES,
+    MOJ_ORG_ALLOWED_EMAIL_DOMAINS, MOJ_ORGS)
+from join_github_app.main.validators.join_github_form_auth0_user import \
+    JoinGithubFormAuth0User
 
 logger = logging.getLogger(__name__)
 
@@ -106,3 +104,28 @@ def _user_has_approved_auth0_email_address(email_address):
                 for domain in AS_ORG_ALLOWED_EMAIL_DOMAINS
             )
     return bool(allowed_on_moj_org) or bool(allowed_on_as_org)
+
+
+def _join_github_auth0_users(request):
+    form = JoinGithubFormAuth0User(request.form)
+    if request.method == "POST" and form.validate() and form.validate_org():
+        selected_orgs = current_app.github_script.get_selected_organisations(
+            form.access_moj_org.data, form.access_as_org.data
+        )
+
+        if current_app.github_script.is_github_seat_protection_enabled() is True:
+            return error("GitHub Seat protection enabled")
+        else:
+            user_email = session["user"]["userinfo"]["email"]
+            current_app.github_script.add_new_user_to_github_org(
+                user_email, selected_orgs
+            )
+
+        return redirect("thank-you")
+
+    # Problem in the form
+    return render_template(
+        "pages/join-github-auth0-user.html",
+        form=form,
+        template="join-github-auth0-user.html",
+    )
