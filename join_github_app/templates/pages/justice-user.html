@@ -8,7 +8,7 @@ GitHub Access Invitation
 {{ super() }}
 {{ govukBackLink ({
 'text': 'Back',
-'href': '/select-organisations'
+'href': '/join/select-organisations'
 }) }}
 {% endblock %}
 
@@ -31,7 +31,7 @@ GitHub Access Invitation
   <strong>{{email}}</strong>. You will need to accept this invitation to join the selected GitHub organisation.
 </p>
 
-<form action="/login" method="get">
+<form action="/auth/login" method="get">
   <button type="submit" class="govuk-button">Authenticate {{ email }}</button>
 </form>
 
