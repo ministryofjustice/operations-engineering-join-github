@@ -54,7 +54,7 @@ def select_organisations():
                 "pages/select-organisations.html",
                 is_digital_justice_user=is_digital_justice_user,
             )
-        return redirect("/join/join-selection")
+        return redirect("/join/selection")
 
     selectable_orgs = current_app.config["SELECTABLE_ORGANISATIONS"]
     checkboxes_items = []
@@ -71,7 +71,7 @@ def select_organisations():
     )
 
 
-@join_route.route("/join-selection")
+@join_route.route("/selection")
 def join_selection():
     email = session.get("email", "").lower()
     domain = email[email.index("@") + 1:]
@@ -86,7 +86,7 @@ def join_selection():
     return render_template(template, org_selection=org_selection, email=email)
 
 
-@join_route.route("/join-github-auth0-user", methods=["GET", "POST"])
+@join_route.route("/github-auth0-user", methods=["GET", "POST"])
 @requires_auth
 def join_github_auth0_users():
     return _join_github_auth0_users(request)

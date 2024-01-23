@@ -72,7 +72,7 @@ class TestAuth0AuthenticationView(unittest.TestCase):
             response = self.client.get("/auth/callback")
             self.assertEqual(response.status_code, 302)
             self.assertIn("Location", response.headers)
-            self.assertEqual(response.headers["Location"], "/join/join-github-auth0-user")
+            self.assertEqual(response.headers["Location"], "/join/github-auth0-user")
 
     def test_callback_email_is_none(self):
         with patch.dict(

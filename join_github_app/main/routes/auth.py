@@ -85,7 +85,7 @@ def callback():
 
     if _user_has_approved_auth0_email_address(user_email):
         logger.debug("User %s has approved email domain", user_email)
-        return redirect("/join/join-github-auth0-user")
+        return redirect("/join/github-auth0-user")
 
     logger.error("User %s does not have an approved email domain", user_email)
     return redirect("/auth/logout")

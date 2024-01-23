@@ -55,7 +55,7 @@ class TestViews(unittest.TestCase):
         self.assertEqual(flashed_message.get("message"), None)
 
     def test_join_github_form_redirects_when_user_not_in_session(self):
-        response = self.app.test_client().get("/join/join-github-auth0-user")
+        response = self.app.test_client().get("/join/github-auth0-user")
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers["Location"], "/")
 
@@ -65,7 +65,7 @@ class TestViews(unittest.TestCase):
                 sess["email"] = "user@digital.justice.gov.uk"
                 sess["org_selection"] = ["ministryofjustice"]
 
-            response = client.get("/join/join-selection")
+            response = client.get("/join/selection")
             self.assertEqual(response.status_code, 200)
             self.assertIn("Using Single Sign-On", str(response.data))
 
@@ -75,7 +75,7 @@ class TestViews(unittest.TestCase):
                 sess["email"] = "user@justice.gov.uk"
                 sess["org_selection"] = ["ministryofjustice"]
 
-            response = client.get("/join/join-selection")
+            response = client.get("/join/selection")
             self.assertEqual(response.status_code, 200)
             self.assertIn("Azure", str(response.data))
 
@@ -113,7 +113,7 @@ class TestJoinGithubAuth0User(unittest.TestCase):
             "access_moj_org": True,
         }
         response = self.app.test_client().post(
-            "/join/join-github-auth0-user", data=form_data, follow_redirects=True
+            "/join/github-auth0-user", data=form_data, follow_redirects=True
         )
         self.assertEqual(response.status_code, 200)
         # Testing a function that has a decorator which redirect to /index
@@ -128,7 +128,7 @@ class TestJoinGithubAuth0User(unittest.TestCase):
             "access_as_org": True,
         }
         with self.app.test_request_context(
-            "/join/join-github-auth0-user", method="POST", data=form_data
+            "/join/github-auth0-user", method="POST", data=form_data
         ) as request_context:
             request_context.session = MagicMock()
             request_context.session = {"user": {"userinfo": {"email": "some-email"}}}
@@ -149,7 +149,7 @@ class TestJoinGithubAuth0User(unittest.TestCase):
             "access_moj_org": True,
         }
         with self.app.test_request_context(
-            "/join/join-github-auth0-user", method="POST", data=form_data
+            "/join/github-auth0-user", method="POST", data=form_data
         ) as request_context:
             self.app.github_script.get_selected_organisations.return_value = [self.org]
             self.app.github_script.is_github_seat_protection_enabled.return_value = True
@@ -163,7 +163,7 @@ class TestJoinGithubAuth0User(unittest.TestCase):
             "access_moj_org": True,
         }
         with self.app.test_request_context(
-            "/join/join-github-auth0-user", method="POST", data=form_data
+            "/join/github-auth0-user", method="POST", data=form_data
         ) as request_context:
             response = _join_github_auth0_users(request_context.request)
             self.assertRegex(response, "There is a problem")
@@ -174,7 +174,7 @@ class TestJoinGithubAuth0User(unittest.TestCase):
             "gh_username": "",
         }
         with self.app.test_request_context(
-            "/join/join-github-auth0-user", method="POST", data=form_data
+            "/join/github-auth0-user", method="POST", data=form_data
         ) as request_context:
             response = _join_github_auth0_users(request_context.request)
             self.assertRegex(response, "There is a problem")
@@ -200,7 +200,7 @@ class TestCompletedRateLimit(unittest.TestCase):
 
         while not exceeded_rate_limit:
             response = self.app.test_client().post(
-                "/join/join-github-auth0-user", data=self.form_data, follow_redirects=True
+                "/join/github-auth0-user", data=self.form_data, follow_redirects=True
             )
             request_count += 1
 
