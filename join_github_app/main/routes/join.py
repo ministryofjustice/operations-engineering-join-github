@@ -46,16 +46,6 @@ def select_organisations():
     email = session.get("email", "").lower()
     domain = email[email.index("@") + 1:]
     is_digital_justice_user = is_digital_justice_email(domain)
-    if request.method == "POST":
-        session["org_selection"] = request.form.getlist("organisation_selection")
-        if not session["org_selection"]:
-            flash("Please select at least one organisation.")
-            return render_template(
-                "pages/select-organisations.html",
-                is_digital_justice_user=is_digital_justice_user,
-            )
-        return redirect("/join/selection")
-
     selectable_orgs = current_app.config["SELECTABLE_ORGANISATIONS"]
     checkboxes_items = []
     for org in selectable_orgs:
@@ -63,6 +53,17 @@ def select_organisations():
         if org["value"] == "analytical-services" and is_digital_justice_user:
             item["disabled"] = is_digital_justice_user
         checkboxes_items.append(item)
+
+    if request.method == "POST":
+        session["org_selection"] = request.form.getlist("organisation_selection")
+        if not session["org_selection"]:
+            flash("Please select at least one organisation.")
+            return render_template(
+                "pages/select-organisations.html",
+                checkboxes_items=checkboxes_items,
+                is_digital_justice_user=is_digital_justice_user,
+            )
+        return redirect("/join/selection")
 
     return render_template(
         "pages/select-organisations.html",
