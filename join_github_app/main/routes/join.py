@@ -1,6 +1,3 @@
-import logging
-import os
-
 from flask import (
     Blueprint,
     current_app,
@@ -10,6 +7,7 @@ from flask import (
     request,
     session,
 )
+from join_github_app.main.routes.error import error
 from join_github_app.main.config.constants import ALLOWED_EMAIL_DOMAINS
 from join_github_app.main.middleware.auth import requires_auth
 from join_github_app.main.validators.index import is_valid_email_pattern
@@ -17,26 +15,11 @@ from join_github_app.main.validators.join_github_form_auth0_user import (
     JoinGithubFormAuth0User,
 )
 
-logger = logging.getLogger(__name__)
-
-AUTHLIB_CLIENT = "authlib.integrations.flask_client"
-
-main = Blueprint("main", __name__)
+join_route = Blueprint('join_route', __name__)
 
 
-@main.context_processor
-def handle_context():
-    """Inject object into jinja2 templates."""
-    return dict(os=os)
-
-
-@main.route("/")
-def index():
-    return render_template("pages/home.html")
-
-
-@main.route("/submit-email", methods=["GET", "POST"])
-def join_github():
+@join_route.route("/submit-email", methods=["GET", "POST"])
+def submit_email():
     if request.method == "POST":
         session["email"] = request.form.get("emailAddress", "Empty").strip()
         if not is_valid_email_pattern(session["email"]):
@@ -44,13 +27,13 @@ def join_github():
             return render_template("pages/submit-email.html")
         domain = session["email"].split("@")[1]
         if domain in set(ALLOWED_EMAIL_DOMAINS):
-            return redirect("/select-organisations")
+            return redirect("/join/select-organisations")
         else:
-            return redirect("/outside-collaborator")
+            return redirect("/join/outside-collaborator")
     return render_template("pages/submit-email.html")
 
 
-@main.route("/outside-collaborator")
+@join_route.route("/outside-collaborator")
 def outside_collaborator():
     return render_template(
         "pages/outside-collaborator.html",
@@ -58,7 +41,7 @@ def outside_collaborator():
     )
 
 
-@main.route("/select-organisations", methods=["GET", "POST"])
+@join_route.route("/select-organisations", methods=["GET", "POST"])
 def select_organisations():
     email = session.get("email", "").lower()
     domain = email[email.index("@") + 1:]
@@ -71,7 +54,7 @@ def select_organisations():
                 "pages/select-organisations.html",
                 is_digital_justice_user=is_digital_justice_user,
             )
-        return redirect("/join-selection")
+        return redirect("/join/selection")
 
     selectable_orgs = current_app.config["SELECTABLE_ORGANISATIONS"]
     checkboxes_items = []
@@ -88,7 +71,7 @@ def select_organisations():
     )
 
 
-@main.route("/join-selection")
+@join_route.route("/selection")
 def join_selection():
     email = session.get("email", "").lower()
     domain = email[email.index("@") + 1:]
@@ -103,24 +86,23 @@ def join_selection():
     return render_template(template, org_selection=org_selection, email=email)
 
 
+@join_route.route("/github-auth0-user", methods=["GET", "POST"])
+@requires_auth
+def join_github_auth0_users():
+    return _join_github_auth0_users(request)
+
+
+@join_route.route("/submitted")
+def submitted():
+    return render_template("pages/thank-you.html")
+
+
 def is_digital_justice_email(domain):
     return "digital.justice.gov.uk" == domain.lower()
 
 
 def is_justice_email(domain):
     return "justice.gov.uk" == domain.lower()
-
-
-@main.route("/thank-you")
-def thank_you():
-    return render_template("pages/thank-you.html")
-
-
-def error(error_message):
-    logger.error(error_message)
-    return render_template(
-        "pages/errors/internal-error.html", error_message=error_message
-    )
 
 
 def _join_github_auth0_users(request):
@@ -146,9 +128,3 @@ def _join_github_auth0_users(request):
         form=form,
         template="join-github-auth0-user.html",
     )
-
-
-@main.route("/join-github-auth0-user", methods=["GET", "POST"])
-@requires_auth
-def join_github_auth0_users():
-    return _join_github_auth0_users(request)

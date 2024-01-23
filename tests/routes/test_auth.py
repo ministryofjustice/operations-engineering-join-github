@@ -23,7 +23,7 @@ class TestAuth0AuthenticationView(unittest.TestCase):
             {"authlib.integrations.flask_client": self.auth0_mock},
             clear=True,
         ):
-            response = self.client.get("/login")
+            response = self.client.get("/auth/login")
             self.assertEqual(response.status_code, 200)
 
     def test_callback_token_error(self):
@@ -33,7 +33,7 @@ class TestAuth0AuthenticationView(unittest.TestCase):
             clear=True,
         ):
             self.auth0_mock.auth0.authorize_access_token.side_effect = KeyError()
-            response = self.client.get("/callback")
+            response = self.client.get("/auth/callback")
             self.assertEqual(response.status_code, 500)
 
     def test_callback_email_error(self):
@@ -43,7 +43,7 @@ class TestAuth0AuthenticationView(unittest.TestCase):
             clear=True,
         ):
             self.auth0_mock.auth0.authorize_access_token.return_value = {"userinfo": {}}
-            response = self.client.get("/callback")
+            response = self.client.get("/auth/callback")
             self.assertEqual(response.status_code, 500)
 
     def test_callback_not_allowed_email(self):
@@ -55,10 +55,10 @@ class TestAuth0AuthenticationView(unittest.TestCase):
             self.auth0_mock.auth0.authorize_access_token.return_value = {
                 "userinfo": {"email": "email@example.com"}
             }
-            response = self.client.get("/callback")
+            response = self.client.get("/auth/callback")
             self.assertEqual(response.status_code, 302)
             self.assertIn("Location", response.headers)
-            self.assertEqual(response.headers["Location"], "/logout")
+            self.assertEqual(response.headers["Location"], "/auth/logout")
 
     def test_callback_allowed_email(self):
         with patch.dict(
@@ -69,10 +69,10 @@ class TestAuth0AuthenticationView(unittest.TestCase):
             self.auth0_mock.auth0.authorize_access_token.return_value = {
                 "userinfo": {"email": "email@justice.gov.uk"}
             }
-            response = self.client.get("/callback")
+            response = self.client.get("/auth/callback")
             self.assertEqual(response.status_code, 302)
             self.assertIn("Location", response.headers)
-            self.assertEqual(response.headers["Location"], "/join-github-auth0-user")
+            self.assertEqual(response.headers["Location"], "/join/github-auth0-user")
 
     def test_callback_email_is_none(self):
         with patch.dict(
@@ -83,15 +83,15 @@ class TestAuth0AuthenticationView(unittest.TestCase):
             self.auth0_mock.auth0.authorize_access_token.return_value = {
                 "userinfo": {"email": None}
             }
-            response = self.client.get("/callback")
+            response = self.client.get("/auth/callback")
             self.assertEqual(response.status_code, 302)
             self.assertIn("Location", response.headers)
-            self.assertEqual(response.headers["Location"], "/logout")
+            self.assertEqual(response.headers["Location"], "/auth/logout")
 
     @patch.dict(os.environ, {"AUTH0_DOMAIN": ""})
     @patch.dict(os.environ, {"AUTH0_CLIENT_ID": ""})
     def test_logout(self):
-        response = self.client.get("/logout")
+        response = self.client.get("/auth/logout")
         self.assertEqual(response.status_code, 302)
         self.assertIn("Location", response.headers)
         self.assertIn("v2/logout", response.headers["Location"])

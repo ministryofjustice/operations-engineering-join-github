@@ -15,8 +15,10 @@ from join_github_app.main.middleware.error_handler import (
     unknown_server_error,
 )
 from join_github_app.main.routes.auth import auth_route
+from join_github_app.main.routes.join import join_route
+from join_github_app.main.routes.error import error_route
 from join_github_app.main.scripts.github_script import GithubScript
-from join_github_app.main.views import main
+from join_github_app.main.routes.main import main
 
 
 def create_app(github_script: GithubScript, rate_limit: bool = True) -> Flask:
@@ -25,6 +27,10 @@ def create_app(github_script: GithubScript, rate_limit: bool = True) -> Flask:
     )
 
     app = Flask(__name__, instance_relative_config=True)
+
+    @app.context_processor
+    def inject_os():
+        return dict(os=os)
 
     app.logger.info("Start App Setup")
 
@@ -60,7 +66,9 @@ def create_app(github_script: GithubScript, rate_limit: bool = True) -> Flask:
 
     app.secret_key = app.config.get("APP_SECRET_KEY")
 
-    app.register_blueprint(auth_route)
+    app.register_blueprint(auth_route, url_prefix='/auth')
+    app.register_blueprint(join_route, url_prefix='/join')
+    app.register_blueprint(error_route, url_prefix='/error')
     app.register_blueprint(main)
 
     app.jinja_loader = ChoiceLoader(
