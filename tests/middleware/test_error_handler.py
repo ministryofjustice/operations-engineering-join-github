@@ -14,8 +14,8 @@ class TestErrorHandler(unittest.TestCase):
 
     def test_handle_github_exception(self):
         with self.app.test_request_context():
-            response = handle_github_exception("12345678")
-            self.assertRegex(response, "12345678")
+            response = handle_github_exception("Some GitHub exception message")
+            self.assertRegex(response, "Some GitHub exception message")
 
     def test_page_not_found(self):
         with self.app.test_request_context():
