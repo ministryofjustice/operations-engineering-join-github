@@ -10,8 +10,8 @@ from flask import (
 from join_github_app.main.routes.error import error
 from join_github_app.main.config.constants import ALLOWED_EMAIL_DOMAINS
 from join_github_app.main.middleware.auth import requires_auth
-from join_github_app.main.middleware.utils import is_valid_email_pattern
-from join_github_app.main.scripts.join_github_form_auth0_user import (
+from join_github_app.main.validators.index import is_valid_email_pattern
+from join_github_app.main.validators.join_github_form_auth0_user import (
     JoinGithubFormAuth0User,
 )
 
