@@ -4,7 +4,8 @@ from unittest.mock import MagicMock
 import join_github_app
 from flask import get_flashed_messages
 from join_github_app.main.scripts.github_script import GithubScript
-from join_github_app.main.views import _join_github_auth0_users, error
+from join_github_app.main.routes.join import _join_github_auth0_users
+from join_github_app.main.routes.error import error
 
 
 class TestViews(unittest.TestCase):
@@ -19,42 +20,42 @@ class TestViews(unittest.TestCase):
         self.assertEqual(response.request.path, "/")
 
     def test_join_github_info_page(self):
-        response = self.app.test_client().get("/submit-email")
+        response = self.app.test_client().get("/join/submit-email")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.request.path, "/submit-email")
+        self.assertEqual(response.request.path, "/join/submit-email")
 
     def test_join_github_invalid_email_flashes_warning(self):
         form_data = {"emailAddress": ""}
         expected_flashed_message = "Please enter a valid email address."
         with self.app.test_client() as client:
-            response = client.post("/submit-email", data=form_data)
+            response = client.post("/join/submit-email", data=form_data)
             flashed_message = dict(get_flashed_messages(with_categories=True))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.request.path, "/submit-email")
+        self.assertEqual(response.request.path, "/join/submit-email")
         self.assertEqual(flashed_message.get("message"), expected_flashed_message)
 
     def test_join_github_allowed_email(self):
         form_data = {"emailAddress": "email@digital.justice.gov.uk"}
         with self.app.test_client() as client:
-            response = client.post("/submit-email", data=form_data)
+            response = client.post("/join/submit-email", data=form_data)
             flashed_message = dict(get_flashed_messages(with_categories=True))
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.request.path, "/submit-email")
-        self.assertEqual(response.headers["Location"], "/select-organisations")
+        self.assertEqual(response.request.path, "/join/submit-email")
+        self.assertEqual(response.headers["Location"], "/join/select-organisations")
         self.assertEqual(flashed_message.get("message"), None)
 
     def test_join_github_outside_collab_email(self):
         form_data = {"emailAddress": "cat@dog.com"}
         with self.app.test_client() as client:
-            response = client.post("/submit-email", data=form_data)
+            response = client.post("/join/submit-email", data=form_data)
             flashed_message = dict(get_flashed_messages(with_categories=True))
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.request.path, "/submit-email")
-        self.assertEqual(response.headers["Location"], "/outside-collaborator")
+        self.assertEqual(response.request.path, "/join/submit-email")
+        self.assertEqual(response.headers["Location"], "/join/outside-collaborator")
         self.assertEqual(flashed_message.get("message"), None)
 
     def test_join_github_form_redirects_when_user_not_in_session(self):
-        response = self.app.test_client().get("/join-github-auth0-user")
+        response = self.app.test_client().get("/join/github-auth0-user")
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers["Location"], "/")
 
@@ -64,7 +65,7 @@ class TestViews(unittest.TestCase):
                 sess["email"] = "user@digital.justice.gov.uk"
                 sess["org_selection"] = ["ministryofjustice"]
 
-            response = client.get("/join-selection")
+            response = client.get("/join/selection")
             self.assertEqual(response.status_code, 200)
             self.assertIn("Using Single Sign-On", str(response.data))
 
@@ -74,7 +75,7 @@ class TestViews(unittest.TestCase):
                 sess["email"] = "user@justice.gov.uk"
                 sess["org_selection"] = ["ministryofjustice"]
 
-            response = client.get("/join-selection")
+            response = client.get("/join/selection")
             self.assertEqual(response.status_code, 200)
             self.assertIn("Azure", str(response.data))
 
@@ -82,7 +83,7 @@ class TestViews(unittest.TestCase):
         with self.app.test_client() as client:
             with client.session_transaction() as sess:
                 sess["email"] = "user@digital.justice.gov.uk"
-            response = client.get("/select-organisations")
+            response = client.get("/join/select-organisations")
             self.assertEqual(response.status_code, 200)
             self.assertIn("MoJ Analytical Services", str(response.data))
             self.assertIn(
@@ -90,9 +91,9 @@ class TestViews(unittest.TestCase):
             )  # Check if the checkbox is disabled
 
     def test_thank_you(self):
-        response = self.app.test_client().get("/thank-you")
+        response = self.app.test_client().get("/join/submitted")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.request.path, "/thank-you")
+        self.assertEqual(response.request.path, "/join/submitted")
 
     def test_error(self):
         with self.app.test_request_context():
@@ -112,7 +113,7 @@ class TestJoinGithubAuth0User(unittest.TestCase):
             "access_moj_org": True,
         }
         response = self.app.test_client().post(
-            "/join-github-auth0-user", data=form_data, follow_redirects=True
+            "/join/github-auth0-user", data=form_data, follow_redirects=True
         )
         self.assertEqual(response.status_code, 200)
         # Testing a function that has a decorator which redirect to /index
@@ -127,7 +128,7 @@ class TestJoinGithubAuth0User(unittest.TestCase):
             "access_as_org": True,
         }
         with self.app.test_request_context(
-            "/join-github-auth0-user", method="POST", data=form_data
+            "/join/github-auth0-user", method="POST", data=form_data
         ) as request_context:
             request_context.session = MagicMock()
             request_context.session = {"user": {"userinfo": {"email": "some-email"}}}
@@ -148,7 +149,7 @@ class TestJoinGithubAuth0User(unittest.TestCase):
             "access_moj_org": True,
         }
         with self.app.test_request_context(
-            "/join-github-auth0-user", method="POST", data=form_data
+            "/join/github-auth0-user", method="POST", data=form_data
         ) as request_context:
             self.app.github_script.get_selected_organisations.return_value = [self.org]
             self.app.github_script.is_github_seat_protection_enabled.return_value = True
@@ -162,7 +163,7 @@ class TestJoinGithubAuth0User(unittest.TestCase):
             "access_moj_org": True,
         }
         with self.app.test_request_context(
-            "/join-github-auth0-user", method="POST", data=form_data
+            "/join/github-auth0-user", method="POST", data=form_data
         ) as request_context:
             response = _join_github_auth0_users(request_context.request)
             self.assertRegex(response, "There is a problem")
@@ -173,7 +174,7 @@ class TestJoinGithubAuth0User(unittest.TestCase):
             "gh_username": "",
         }
         with self.app.test_request_context(
-            "/join-github-auth0-user", method="POST", data=form_data
+            "/join/github-auth0-user", method="POST", data=form_data
         ) as request_context:
             response = _join_github_auth0_users(request_context.request)
             self.assertRegex(response, "There is a problem")
@@ -199,7 +200,7 @@ class TestCompletedRateLimit(unittest.TestCase):
 
         while not exceeded_rate_limit:
             response = self.app.test_client().post(
-                "/join-github-auth0-user", data=self.form_data, follow_redirects=True
+                "/join/github-auth0-user", data=self.form_data, follow_redirects=True
             )
             request_count += 1
 

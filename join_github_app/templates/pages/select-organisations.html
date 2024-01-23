@@ -8,13 +8,13 @@
 {{ super() }}
     {{ govukBackLink({
         'text': 'Back',
-        'href': '/submit-email'
+        'href': '/join/submit-email'
     }) }}
 {% endblock %}
 
 {% block content %}
     {{ super() }}
-    <form action="/select-organisations" method="POST">
+    <form action="/join/select-organisations" method="POST">
       {{ govukCheckboxes({
         'name': 'organisation_selection',
         'fieldset': {
