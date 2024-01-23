@@ -1,5 +1,6 @@
 import logging
 import os
+from os import environ as env
 from urllib.parse import quote_plus, urlencode
 
 from authlib.integrations.flask_client import OAuth
@@ -22,18 +23,27 @@ auth_route = Blueprint("auth_routes", __name__)
 @auth_route.record
 def setup_auth0(setup_state):
     app = setup_state.app
-    OAuth(app)
-    auth0 = app.extensions.get(AUTHLIB_CLIENT)
-    auth0.register(
+    oauth = OAuth(app)
+    oauth.register(
         "auth0",
-        client_id=os.getenv("AUTH0_CLIENT_ID"),
-        client_secret=os.getenv("AUTH0_CLIENT_SECRET"),
+        client_id=env.get("AUTH0_CLIENT_ID"),
+        client_secret=env.get("AUTH0_CLIENT_SECRET"),
         client_kwargs={
             "scope": "openid profile email",
         },
-        server_metadata_url=f'https://{os.getenv("AUTH0_DOMAIN")}/'
-        + ".well-known/openid-configuration",
+        server_metadata_url=f'https://{env.get("AUTH0_DOMAIN")}/.well-known/openid-configuration'
     )
+    # auth0 = app.extensions.get(AUTHLIB_CLIENT)
+    # auth0.register(
+    #     "auth0",
+    #     client_id=os.getenv("AUTH0_CLIENT_ID"),
+    #     client_secret=os.getenv("AUTH0_CLIENT_SECRET"),
+    #     client_kwargs={
+    #         "scope": "openid profile email",
+    #     },
+    #     server_metadata_url=f'https://{os.getenv("AUTH0_DOMAIN")}/'
+    #     + ".well-known/openid-configuration",
+    # )
 
 
 @auth_route.route("/login")
