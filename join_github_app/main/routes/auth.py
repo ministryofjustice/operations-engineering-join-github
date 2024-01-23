@@ -1,5 +1,6 @@
 import logging
 import os
+
 from urllib.parse import quote_plus, urlencode
 
 from authlib.integrations.flask_client import OAuth
@@ -18,11 +19,6 @@ logger = logging.getLogger(__name__)
 AUTHLIB_CLIENT = "authlib.integrations.flask_client"
 
 auth_route = Blueprint("auth_routes", __name__)
-
-@auth_route.context_processor
-def handle_context():
-    '''Inject object into jinja2 templates.'''
-    return dict(os=os)
 
 
 @auth_route.record
@@ -85,14 +81,14 @@ def callback():
         return render_template("pages/errors/500.html"), 500
     if user_email is None:
         logger.error("User %s does not have an email address", user_email)
-        return redirect("/logout")
+        return redirect("/auth/logout")
 
     if _user_has_approved_auth0_email_address(user_email):
         logger.debug("User %s has approved email domain", user_email)
-        return redirect("/join-github-auth0-user")
+        return redirect("/join/join-github-auth0-user")
 
     logger.error("User %s does not have an approved email domain", user_email)
-    return redirect("/logout")
+    return redirect("/auth/logout")
 
 
 def _user_has_approved_auth0_email_address(email_address):
