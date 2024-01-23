@@ -51,7 +51,7 @@ class TestViews(unittest.TestCase):
             flashed_message = dict(get_flashed_messages(with_categories=True))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.request.path, "/join/submit-email")
-        self.assertEqual(response.headers["Location"], "/outside-collaborator")
+        self.assertEqual(response.headers["Location"], "/join/outside-collaborator")
         self.assertEqual(flashed_message.get("message"), None)
 
     def test_join_github_form_redirects_when_user_not_in_session(self):

@@ -29,7 +29,7 @@ def submit_email():
         if domain in set(ALLOWED_EMAIL_DOMAINS):
             return redirect("/join/select-organisations")
         else:
-            return redirect("/outside-collaborator")
+            return redirect("/join/outside-collaborator")
     return render_template("pages/submit-email.html")
 
 
