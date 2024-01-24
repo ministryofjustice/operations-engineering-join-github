@@ -15,49 +15,32 @@ from join_github_app.main.validators.join_github_form_auth0_user import \
 
 logger = logging.getLogger(__name__)
 
-AUTHLIB_CLIENT = "authlib.integrations.flask_client"
-
 auth_route = Blueprint("auth_routes", __name__)
 
-
-@auth_route.record
-def setup_auth0(setup_state):
-    app = setup_state.app
-    oauth = OAuth(app)
-    oauth.register(
-        "auth0",
-        client_id=env.get("AUTH0_CLIENT_ID"),
-        client_secret=env.get("AUTH0_CLIENT_SECRET"),
-        client_kwargs={
-            "scope": "openid profile email",
-        },
-        server_metadata_url=f'https://{env.get("AUTH0_DOMAIN")}/.well-known/openid-configuration'
-    )
-    # auth0 = app.extensions.get(AUTHLIB_CLIENT)
-    # auth0.register(
-    #     "auth0",
-    #     client_id=os.getenv("AUTH0_CLIENT_ID"),
-    #     client_secret=os.getenv("AUTH0_CLIENT_SECRET"),
-    #     client_kwargs={
-    #         "scope": "openid profile email",
-    #     },
-    #     server_metadata_url=f'https://{os.getenv("AUTH0_DOMAIN")}/'
-    #     + ".well-known/openid-configuration",
-    # )
+oauth = OAuth(current_app)
+oauth.register(
+    "auth0",
+    client_id=env.get("AUTH0_CLIENT_ID"),
+    client_secret=env.get("AUTH0_CLIENT_SECRET"),
+    client_kwargs={
+        "scope": "openid profile email",
+    },
+    server_metadata_url=f'https://{env.get("AUTH0_DOMAIN")}/.well-known/openid-configuration'
+)
 
 
 @auth_route.route("/login")
 def login():
-    logger.debug("login()")
-    auth0 = current_app.extensions.get(AUTHLIB_CLIENT)
-    return auth0.auth0.authorize_redirect(
+    """
+    Redirects the user to auth0
+    """
+    return oauth.auth0.authorize_redirect(
         redirect_uri=url_for("auth_routes.callback", _external=True, _scheme="https")
     )
 
 
 @auth_route.route("/logout", methods=["GET", "POST"])
 def logout():
-    logger.debug("logout()")
     session.clear()
     return redirect(
         "https://"
@@ -76,8 +59,7 @@ def logout():
 @auth_route.route("/callback", methods=["GET", "POST"])
 def callback():
     try:
-        auth0 = current_app.extensions.get(AUTHLIB_CLIENT)
-        token = auth0.auth0.authorize_access_token()
+        token = oauth.auth0.authorize_access_token()
         session["user"] = token
     except (KeyError, AttributeError):
         return render_template("pages/errors/500.html"), 500
