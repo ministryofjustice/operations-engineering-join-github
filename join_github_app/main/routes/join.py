@@ -109,15 +109,15 @@ def is_justice_email(domain):
 def _join_github_auth0_users(request):
     form = JoinGithubFormAuth0User(request.form)
     if request.method == "POST" and form.validate() and form.validate_org():
-        selected_orgs = current_app.github_script.get_selected_organisations(
+        selected_orgs = current_app.github_service.get_selected_organisations(
             form.access_moj_org.data, form.access_as_org.data
         )
 
-        if current_app.github_script.is_github_seat_protection_enabled() is True:
+        if current_app.github_service.is_github_seat_protection_enabled() is True:
             return error("GitHub Seat protection enabled")
         else:
             user_email = session["user"]["userinfo"]["email"]
-            current_app.github_script.add_new_user_to_github_org(
+            current_app.github_service.add_new_user_to_github_org(
                 user_email, selected_orgs
             )
 
