@@ -4,7 +4,6 @@ from os import environ
 from dotenv import dotenv_values
 
 from join_github_app.main.services.github_service import GithubService
-from join_github_app.main.scripts.github_script import GithubScript
 from join_github_app import create_app
 
 
@@ -22,8 +21,7 @@ def get_tokens():
 def build_app():
     github_token = get_tokens()
     github_service = GithubService(github_token)
-    github_script = GithubScript(github_service)
-    return create_app(github_script)
+    return create_app(github_service)
 
 
 # Gunicorn entry point, return the object without running it
