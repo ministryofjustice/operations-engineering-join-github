@@ -79,7 +79,7 @@ class GithubService:
             .invitations()
             .totalCount
         )
-        
+
     def add_new_user_to_github_org(
         self,
         email_address: str,
@@ -103,7 +103,7 @@ class GithubService:
             logger.debug(
                 f"send_email_invites toggle set to {str(send_email_invites)}: No invite sent."
             )
-    
+
     def get_selected_organisations(self, moj_org: bool, as_org: bool) -> list:
         organisations = []
         if moj_org:
