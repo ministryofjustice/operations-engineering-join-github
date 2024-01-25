@@ -17,11 +17,11 @@ from join_github_app.main.middleware.error_handler import (
 from join_github_app.main.routes.auth import auth_route
 from join_github_app.main.routes.join import join_route
 from join_github_app.main.routes.error import error_route
-from join_github_app.main.scripts.github_script import GithubScript
+from join_github_app.main.services.github_service import GithubService
 from join_github_app.main.routes.main import main
 
 
-def create_app(github_script: GithubScript, rate_limit: bool = True) -> Flask:
+def create_app(github_service: GithubService, rate_limit: bool = True) -> Flask:
     logging.basicConfig(
         format="%(asctime)s %(levelname)s in %(module)s: %(message)s",
     )
@@ -91,7 +91,7 @@ def create_app(github_script: GithubScript, rate_limit: bool = True) -> Flask:
     # Security and Protection extenstions
     CORS(app, resources={r"/*": {"origins": "*", "send_wildcard": "False"}})
 
-    app.github_script = github_script
+    app.github_service = github_service
 
     app.logger.info("App Setup complete, running App...")
     return app
