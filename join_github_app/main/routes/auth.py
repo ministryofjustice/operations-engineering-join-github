@@ -60,11 +60,16 @@ def callback():
     except (KeyError, AttributeError):
         return render_template("pages/errors/500.html"), 500
 
+    org_selection = session.get("org_selection", [])
+    if len(org_selection) == 0:
+        logger.debug("No organisations required")
+        return render_template("pages/errors/500.html"), 500
+
     auth0_email = session["user"]["userinfo"]["email"]
     # original_email is how the user initialises the flask app journey
     original_email = session["email"]
-
     if user_is_valid(auth0_email, original_email):
+        current_app.github_service.send_invitation_to_organisation(original_email, org_selection)
         return redirect("/join/invitation-sent")
     return render_template("pages/errors/500.html")
 
