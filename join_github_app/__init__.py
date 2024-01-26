@@ -1,7 +1,10 @@
 """Flask App"""
 import logging
 import os
+import sentry_sdk
 
+
+from os import environ
 from flask import Flask
 from flask_cors import CORS
 from flask_limiter import Limiter
@@ -24,6 +27,12 @@ from join_github_app.main.routes.main import main
 def create_app(github_service: GithubService, rate_limit: bool = True) -> Flask:
     logging.basicConfig(
         format="%(asctime)s %(levelname)s in %(module)s: %(message)s",
+    )
+
+    sentry_sdk.init(
+        dsn=environ.get("SENTRY_DSN_KEY"),
+        enable_tracing=True,
+        sample_rate=0.1,
     )
 
     app = Flask(__name__, instance_relative_config=True)
