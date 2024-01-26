@@ -8,8 +8,8 @@ from flask import (Blueprint, current_app, redirect, render_template, session,
                    url_for)
 
 from join_github_app.main.config.constants import (
-    AS_ORG_ALLOWED_EMAIL_DOMAINS, MINISTRY_OF_JUSTICE, MOJ_ANALYTICAL_SERVICES,
-    MOJ_ORG_ALLOWED_EMAIL_DOMAINS, MOJ_ORGS)
+    ALLOWED_EMAIL_DOMAINS, AS_ORG_ALLOWED_EMAIL_DOMAINS, MINISTRY_OF_JUSTICE,
+    MOJ_ANALYTICAL_SERVICES, MOJ_ORG_ALLOWED_EMAIL_DOMAINS, MOJ_ORGS)
 from join_github_app.main.validators.join_github_form_auth0_user import \
     JoinGithubFormAuth0User
 
@@ -64,38 +64,30 @@ def callback():
     except (KeyError, AttributeError):
         return render_template("pages/errors/500.html"), 500
 
-    try:
-        user_email = session["user"]["userinfo"]["email"]
-    except KeyError:
-        logger.error("Unauthorised: User does not have an email address")
-        return render_template("pages/errors/500.html"), 500
-    if user_email is None:
-        logger.error("User %s does not have an email address", user_email)
-        return redirect("/auth/logout")
+    auth0_email = session["user"]["userinfo"]["email"]
+    # original_email is how the user initialises the flask app journey
+    original_email = session["email"]
 
-    if _user_has_approved_auth0_email_address(user_email):
-        logger.debug("User %s has approved email domain", user_email)
-        return redirect("/join/github-auth0-user")
-
-    logger.error("User %s does not have an approved email domain", user_email)
-    return redirect("/auth/logout")
+    if user_is_valid(auth0_email, original_email):
+        return redirect("/join/invitation-sent")
+    return render_template("pages/errors/500.html")
 
 
-def _user_has_approved_auth0_email_address(email_address):
-    allowed_on_moj_org = False
-    allowed_on_as_org = False
-    for organisation in MOJ_ORGS:
-        if organisation.lower() == MINISTRY_OF_JUSTICE:
-            allowed_on_moj_org = any(
-                email_address.endswith(domain)
-                for domain in MOJ_ORG_ALLOWED_EMAIL_DOMAINS
-            )
-        if organisation.lower() == MOJ_ANALYTICAL_SERVICES:
-            allowed_on_as_org = any(
-                email_address.endswith(domain)
-                for domain in AS_ORG_ALLOWED_EMAIL_DOMAINS
-            )
-    return bool(allowed_on_moj_org) or bool(allowed_on_as_org)
+def user_is_valid(auth0_email, original_email) -> bool:
+    if auth0_email != original_email:
+        return False
+
+    if user_email_allowed(auth0_email):
+        return True
+
+    return False
+
+
+def user_email_allowed(email) -> bool:
+    domain = email[email.index("@") + 1:]
+    if domain in ALLOWED_EMAIL_DOMAINS:
+        return True
+    return False
 
 
 def _join_github_auth0_users(request):
