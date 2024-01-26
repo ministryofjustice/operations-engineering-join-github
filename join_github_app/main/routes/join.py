@@ -79,7 +79,6 @@ def join_selection():
 @join_route.route("/invitation-sent")
 def invitation_sent():
 
-
 @join_route.route("/github-auth0-user", methods=["GET", "POST"])
 @requires_auth
 def join_github_auth0_users():

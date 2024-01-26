@@ -7,11 +7,10 @@ from authlib.integrations.flask_client import OAuth
 from flask import (Blueprint, current_app, redirect, render_template, session,
                    url_for)
 
-from join_github_app.main.config.constants import (
-    ALLOWED_EMAIL_DOMAINS, AS_ORG_ALLOWED_EMAIL_DOMAINS, MINISTRY_OF_JUSTICE,
-    MOJ_ANALYTICAL_SERVICES, MOJ_ORG_ALLOWED_EMAIL_DOMAINS, MOJ_ORGS)
-from join_github_app.main.validators.join_github_form_auth0_user import \
-    JoinGithubFormAuth0User
+from join_github_app.main.config.constants import (ALLOWED_EMAIL_DOMAINS,
+                                                   MINISTRY_OF_JUSTICE,
+                                                   MOJ_ANALYTICAL_SERVICES,
+                                                   MOJ_ORGS)
 
 logger = logging.getLogger(__name__)
 

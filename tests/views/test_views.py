@@ -3,15 +3,15 @@ from unittest.mock import MagicMock
 
 import join_github_app
 from flask import get_flashed_messages
-from join_github_app.main.scripts.github_script import GithubScript
+from join_github_app.main.services.github_service import GithubService
 from join_github_app.main.routes.join import _join_github_auth0_users
 from join_github_app.main.routes.error import error
 
 
 class TestViews(unittest.TestCase):
     def setUp(self):
-        self.github_script = MagicMock(GithubScript)
-        self.app = join_github_app.create_app(self.github_script, False)
+        self.github_service = MagicMock(GithubService)
+        self.app = join_github_app.create_app(self.github_service, False)
         self.app.config["SECRET_KEY"] = "test_flask"
 
     def test_default(self):
@@ -104,8 +104,8 @@ class TestViews(unittest.TestCase):
 class TestJoinGithubAuth0User(unittest.TestCase):
     def setUp(self):
         self.org = "some-org"
-        self.github_script = MagicMock(GithubScript)
-        self.app = join_github_app.create_app(self.github_script, False)
+        self.github_service = MagicMock(GithubService)
+        self.app = join_github_app.create_app(self.github_service, False)
 
     def test_join_github_auth0_user_decorator_is_working(self):
         form_data = {
@@ -119,7 +119,7 @@ class TestJoinGithubAuth0User(unittest.TestCase):
         # Testing a function that has a decorator which redirect to /index
         # The private function in the function will test the logic
         self.assertEqual(response.request.path, "/")
-        self.app.github_script.add_new_user_to_github_org.assert_not_called()
+        self.app.github_service.add_new_user_to_github_org.assert_not_called()
 
     def test_join_github_auth0_user_new_joiner(self):
         form_data = {
@@ -132,14 +132,14 @@ class TestJoinGithubAuth0User(unittest.TestCase):
         ) as request_context:
             request_context.session = MagicMock()
             request_context.session = {"user": {"userinfo": {"email": "some-email"}}}
-            self.app.github_script.get_selected_organisations.return_value = [self.org]
+            self.app.github_service.get_selected_organisations.return_value = [self.org]
             response = _join_github_auth0_users(request_context.request)
             self.assertEqual(response.status_code, 302)
             for item in response.headers:
                 if item[0] == "Location" and item[1] == "thank-you":
                     redirect = True
             self.assertEqual(redirect, True)
-            self.app.github_script.add_new_user_to_github_org.assert_called_once_with(
+            self.app.github_service.add_new_user_to_github_org.assert_called_once_with(
                 "some-email", [self.org]
             )
 
@@ -151,10 +151,10 @@ class TestJoinGithubAuth0User(unittest.TestCase):
         with self.app.test_request_context(
             "/join/github-auth0-user", method="POST", data=form_data
         ) as request_context:
-            self.app.github_script.get_selected_organisations.return_value = [self.org]
-            self.app.github_script.is_github_seat_protection_enabled.return_value = True
+            self.app.github_service.get_selected_organisations.return_value = [self.org]
+            self.app.github_service.is_github_seat_protection_enabled.return_value = True
             response = _join_github_auth0_users(request_context.request)
-            self.app.github_script.add_new_user_to_github_org.assert_not_called()
+            self.app.github_service.add_new_user_to_github_org.assert_not_called()
             self.assertRegex(response, "GitHub Seat protection enabled")
 
     def test_join_github_form_with_incorrect_special_character_inputs(self):
@@ -167,7 +167,7 @@ class TestJoinGithubAuth0User(unittest.TestCase):
         ) as request_context:
             response = _join_github_auth0_users(request_context.request)
             self.assertRegex(response, "There is a problem")
-            self.app.github_script.add_new_user_to_github_org.assert_not_called()
+            self.app.github_service.add_new_user_to_github_org.assert_not_called()
 
     def test_join_github_form_with_missing_orgs(self):
         form_data = {
@@ -178,7 +178,7 @@ class TestJoinGithubAuth0User(unittest.TestCase):
         ) as request_context:
             response = _join_github_auth0_users(request_context.request)
             self.assertRegex(response, "There is a problem")
-            self.app.github_script.add_new_user_to_github_org.assert_not_called()
+            self.app.github_service.add_new_user_to_github_org.assert_not_called()
 
 
 class TestCompletedRateLimit(unittest.TestCase):
@@ -190,8 +190,8 @@ class TestCompletedRateLimit(unittest.TestCase):
         }
 
         self.org = "some-org"
-        self.github_script = MagicMock(GithubScript)
-        self.app = join_github_app.create_app(self.github_script, True)
+        self.github_service = MagicMock(GithubService)
+        self.app = join_github_app.create_app(self.github_service, True)
 
     def test_rate_limit(self):
         # Send requests until you receive a 429 response
