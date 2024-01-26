@@ -7,10 +7,7 @@ from authlib.integrations.flask_client import OAuth
 from flask import (Blueprint, current_app, redirect, render_template, session,
                    url_for)
 
-from join_github_app.main.config.constants import (ALLOWED_EMAIL_DOMAINS,
-                                                   MINISTRY_OF_JUSTICE,
-                                                   MOJ_ANALYTICAL_SERVICES,
-                                                   MOJ_ORGS)
+from join_github_app.main.config.constants import ALLOWED_EMAIL_DOMAINS
 
 logger = logging.getLogger(__name__)
 
@@ -87,28 +84,3 @@ def user_email_allowed(email) -> bool:
     if domain in ALLOWED_EMAIL_DOMAINS:
         return True
     return False
-
-
-def _join_github_auth0_users(request):
-    form = JoinGithubFormAuth0User(request.form)
-    if request.method == "POST" and form.validate() and form.validate_org():
-        selected_orgs = current_app.github_script.get_selected_organisations(
-            form.access_moj_org.data, form.access_as_org.data
-        )
-
-        if current_app.github_script.is_github_seat_protection_enabled() is True:
-            return error("GitHub Seat protection enabled")
-        else:
-            user_email = session["user"]["userinfo"]["email"]
-            current_app.github_script.add_new_user_to_github_org(
-                user_email, selected_orgs
-            )
-
-        return redirect("thank-you")
-
-    # Problem in the form
-    return render_template(
-        "pages/join-github-auth0-user.html",
-        form=form,
-        template="join-github-auth0-user.html",
-    )
