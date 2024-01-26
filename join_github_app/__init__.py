@@ -1,27 +1,24 @@
 """Flask App"""
 import logging
 import os
-import sentry_sdk
-
-
 from os import environ
+
+import sentry_sdk
 from flask import Flask
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from github import GithubException
 from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
+
 from join_github_app.main.middleware.error_handler import (
-    handle_github_exception,
-    page_not_found,
-    server_forbidden,
-    unknown_server_error,
-)
+    handle_github_exception, page_not_found, server_forbidden,
+    unknown_server_error)
 from join_github_app.main.routes.auth import auth_route
-from join_github_app.main.routes.join import join_route
 from join_github_app.main.routes.error import error_route
-from join_github_app.main.services.github_service import GithubService
+from join_github_app.main.routes.join import join_route
 from join_github_app.main.routes.main import main
+from join_github_app.main.services.github_service import GithubService
 
 
 def create_app(github_service: GithubService, rate_limit: bool = True) -> Flask:
