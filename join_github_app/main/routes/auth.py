@@ -7,11 +7,10 @@ from authlib.integrations.flask_client import OAuth
 from flask import Blueprint, current_app, redirect, render_template, session, url_for
 
 from join_github_app.main.config.constants import (
-    AS_ORG_ALLOWED_EMAIL_DOMAINS,
     MINISTRY_OF_JUSTICE,
     MOJ_ANALYTICAL_SERVICES,
-    MOJ_ORG_ALLOWED_EMAIL_DOMAINS,
-    MOJ_ORGS,
+    ALLOWED_EMAIL_DOMAINS,
+    MOJ_ORGS
 )
 
 logger = logging.getLogger(__name__)
@@ -98,11 +97,11 @@ def _user_has_approved_auth0_email_address(email_address):
         if organisation.lower() == MINISTRY_OF_JUSTICE:
             allowed_on_moj_org = any(
                 email_address.endswith(domain)
-                for domain in MOJ_ORG_ALLOWED_EMAIL_DOMAINS
+                for domain in ALLOWED_EMAIL_DOMAINS
             )
         if organisation.lower() == MOJ_ANALYTICAL_SERVICES:
             allowed_on_as_org = any(
                 email_address.endswith(domain)
-                for domain in AS_ORG_ALLOWED_EMAIL_DOMAINS
+                for domain in ALLOWED_EMAIL_DOMAINS
             )
     return bool(allowed_on_moj_org) or bool(allowed_on_as_org)
