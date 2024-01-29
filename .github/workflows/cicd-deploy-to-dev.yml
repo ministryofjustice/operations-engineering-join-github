@@ -22,6 +22,7 @@ env:
   AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
 
   SENTRY_DSN_KEY: ${{secrets.SENTRY_DSN_KEY }}
+  SENTRY_ENV: "development"
 
 jobs:
   build-push:

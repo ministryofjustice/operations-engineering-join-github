@@ -30,6 +30,7 @@ def create_app(github_service: GithubService, rate_limit: bool = True) -> Flask:
 
     sentry_sdk.init(
         dsn=os.environ.get("SENTRY_DSN_KEY"),
+        environment=os.environ.get("SENTRY_ENV"),
         integrations=[FlaskIntegration()],
         enable_tracing=True,
         traces_sample_rate=0.1
