@@ -76,13 +76,8 @@ def join_selection():
     return render_template(template, org_selection=org_selection, email=email)
 
 
-@join_route.route("/invitation-sent")
-def invitation_sent():
-
-@join_route.route("/github-auth0-user", methods=["GET", "POST"])
-@requires_auth
-def join_github_auth0_users():
-    return _join_github_auth0_users(request)
+# @join_route.route("/invitation-sent")
+# def invitation_sent():
 
 
 @join_route.route("/submitted")

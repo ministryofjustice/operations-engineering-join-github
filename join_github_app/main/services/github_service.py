@@ -1,13 +1,9 @@
 import logging
-from datetime import datetime, timedelta
 
 import requests
 from github import Github
-from github.NamedUser import NamedUser
 
-from join_github_app.main.config.constants import (
-    MAX_ALLOWED_ORG_PENDING_INVITES, MINIMUM_ORG_SEATS, MINISTRY_OF_JUSTICE,
-    MOJ_ANALYTICAL_SERVICES, MOJ_ORGS, MOJ_TEST_ORG, SEND_EMAIL_INVITES)
+from join_github_app.main.config.constants import SEND_EMAIL_INVITES
 
 logger = logging.getLogger(__name__)
 
