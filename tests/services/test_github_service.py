@@ -40,14 +40,14 @@ class TestGithubServiceInvites(unittest.TestCase):
         github_service = GithubService("test")
         github_service.github_client_rest_api = mock_github_client_rest_api
 
-        self.assertEqual(github_service.send_invitation_to_organisation(self.valid_email, self.valid_orgs), None)
+        self.assertEqual(github_service.send_invites_to_user_email(self.valid_email, self.valid_orgs), None)
 
     @patch.dict(os.environ, {"SEND_EMAIL_INVITES": "True"}, clear=True)
     def test_send_email_invites_on(self, mock_github_client_rest_api):
         github_service = GithubService("test")
         github_service.github_client_rest_api = mock_github_client_rest_api
 
-        github_service.send_invitation_to_organisation(self.valid_email, self.valid_orgs)
+        github_service.send_invites_to_user_email(self.valid_email, self.valid_orgs)
         mock_github_client_rest_api.assert_called()
 
 

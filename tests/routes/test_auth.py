@@ -124,16 +124,16 @@ class TestAuthRoutes(unittest.TestCase):
             self.assertFalse(result)
 
     def test_send_github_invitation_success(self):
-        self.app.github_service.send_invitation_to_organisation = MagicMock(return_value=None)
+        self.app.github_service.send_invites_to_user_email = MagicMock(return_value=None)
 
         result = send_github_invitation("test@example.com", ["org1", "org2"])
 
         self.assertTrue(result)
 
-        self.app.github_service.send_invitation_to_organisation.assert_called_once_with("test@example.com", ["org1", "org2"])
+        self.app.github_service.send_invites_to_user_email.assert_called_once_with("test@example.com", ["org1", "org2"])
 
     def test_send_github_invitation_fail(self):
-        self.app.github_service.send_invitation_to_organisation = MagicMock(side_effect=Exception("Some error"))
+        self.app.github_service.send_invites_to_user_email = MagicMock(side_effect=Exception("Some error"))
 
         result = send_github_invitation("test@example.com", ["org1", "org2"])
 

@@ -116,7 +116,7 @@ def send_github_invitation(email, org_selection):
     :return: True if the invitation was sent successfully, False otherwise.
     """
     try:
-        current_app.github_service.send_invitation_to_organisation(email, org_selection)
+        current_app.github_service.send_invites_to_user_email(email, org_selection)
         return True
     except Exception as e:
         logger.error("Error sending GitHub invitation: %s", e)
