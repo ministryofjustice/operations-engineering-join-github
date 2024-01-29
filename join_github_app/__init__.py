@@ -3,8 +3,6 @@ import logging
 import os
 import sentry_sdk
 
-
-from os import environ
 from flask import Flask
 from flask_cors import CORS
 from flask_limiter import Limiter
