@@ -20,7 +20,7 @@ help:
 	@echo "make report           - Open the Code Coverage report"
 
 venv: requirements.txt
-	python3 -m venv venv .venv
+	python3 -m venv venv
 	venv/bin/pip3 install --upgrade pip
 	venv/bin/pip3 install -r requirements.txt
 

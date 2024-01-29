@@ -76,9 +76,9 @@ def join_selection():
     return render_template(template, org_selection=org_selection, email=email)
 
 
-# @join_route.route("/invitation-sent")
-# def invitation_sent():
-
+@join_route.route("/invitation-sent")
+def invitation_sent():
+    return render_template("pages/invitation-sent.html")
 
 @join_route.route("/submitted")
 def submitted():

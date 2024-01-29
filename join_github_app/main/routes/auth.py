@@ -31,7 +31,7 @@ def login():
     Redirects the user to auth0
     """
     return oauth.auth0.authorize_redirect(
-        redirect_uri=url_for("auth_routes.callback", _external=True, _scheme="https")
+        redirect_uri=url_for("auth_routes.callback", _external=True)
     )
 
 
@@ -66,7 +66,6 @@ def callback():
         return render_template("pages/errors/500.html"), 500
 
     auth0_email = session["user"]["userinfo"]["email"]
-    # original_email is how the user initialises the flask app journey
     original_email = session["email"]
     if user_is_valid(auth0_email, original_email):
         current_app.github_service.send_invitation_to_organisation(original_email, org_selection)
@@ -75,7 +74,7 @@ def callback():
 
 
 def user_is_valid(auth0_email, original_email) -> bool:
-    if auth0_email != original_email:
+    if auth0_email.lower() != original_email.lower():
         return False
 
     if user_email_allowed(auth0_email):
