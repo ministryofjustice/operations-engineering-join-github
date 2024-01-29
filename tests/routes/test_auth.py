@@ -104,6 +104,7 @@ class TestViews(unittest.TestCase):
 
     def test_user_has_approved_auth0_email_address(self):
         self.assertFalse(_user_has_approved_auth0_email_address("email@example.com"))
+        self.assertTrue(_user_has_approved_auth0_email_address("email@digital.justice.gov.uk"))
         self.assertTrue(_user_has_approved_auth0_email_address("email@justice.gov.uk"))
         self.assertTrue(_user_has_approved_auth0_email_address("email@cica.gov.uk"))
         self.assertTrue(_user_has_approved_auth0_email_address("email@yjb.gov.uk"))

@@ -169,41 +169,38 @@ class TestGithubServiceOrganisationManagement(unittest.TestCase):
 
 
 @patch("github.Github.__new__")
-@patch("join_github_app.main.services.github_service.GithubService.get_user")
-class TestGithubServiceUserManagementIncorrectInputs(unittest.TestCase):
+@patch("join_github_app.main.services.github_service.GithubService.invite_user_to_org_using_email_address")
+class TestGithubServiceUserManagementInvalidInputs(unittest.TestCase):
 
     def setUp(self):
         self.test_email_address = "some-email"
-        self.approved_email_address = "some@justice.gov.uk"
+        self.test_org = "some-org"
 
-    def test_add_new_user_to_github_org_with_incorrect_inputs(self, mock_get_user, mock_github_client_rest_api):
+    def test_add_new_user_to_github_org_with_invalid_inputs(
+            self, mock_invite_user_to_org_using_email_address, mock_github_client_rest_api
+    ):
         github_service = GithubService("")
         github_service.github_client_rest_api = mock_github_client_rest_api
 
-        github_service.add_new_user_to_github_org(None, [], True)
-        mock_get_user.assert_not_called()
+        github_service.add_new_user_to_github_org("", [MINISTRY_OF_JUSTICE], True)
+        mock_invite_user_to_org_using_email_address.assert_not_called()
 
-        github_service.add_new_user_to_github_org("", [], True)
-        mock_get_user.assert_not_called()
+        github_service.add_new_user_to_github_org("", [self.test_org], True)
+        mock_invite_user_to_org_using_email_address.assert_not_called()
+
+        github_service.add_new_user_to_github_org(None, [MINISTRY_OF_JUSTICE], True)
+        mock_invite_user_to_org_using_email_address.assert_not_called()
+
+        github_service.add_new_user_to_github_org(None, [self.test_org], True)
+        mock_invite_user_to_org_using_email_address.assert_not_called()
 
         github_service.add_new_user_to_github_org(self.test_email_address, [], True)
-        mock_get_user.assert_not_called()
+        mock_invite_user_to_org_using_email_address.assert_not_called()
 
         github_service.add_new_user_to_github_org(
-            self.test_email_address, [MOJ_TEST_ORG], True
+            self.test_email_address, [self.test_org], True
         )
-        mock_get_user.assert_not_called()
-
-        github_service.add_new_user_to_github_org("", [MOJ_TEST_ORG], True)
-        mock_get_user.assert_not_called()
-
-        github_service.add_new_user_to_github_org(None, [MOJ_TEST_ORG], True)
-        mock_get_user.assert_not_called()
-
-        github_service.add_new_user_to_github_org(
-            self.test_email_address, [MOJ_TEST_ORG], True
-        )
-        mock_get_user.assert_not_called()
+        mock_invite_user_to_org_using_email_address.assert_not_called()
 
 
 @patch("github.Github.__new__")
@@ -212,7 +209,6 @@ class TestGithubServiceUserManagementValidInputs(unittest.TestCase):
 
     def setUp(self):
         self.test_email_address = "some-email"
-        self.approved_email_address = "some@justice.gov.uk"
 
     def test_add_new_user_to_github_org_send_email_invites_true(
         self, mock_invite_user_to_org_using_email_address, mock_github_client_rest_api
@@ -221,7 +217,7 @@ class TestGithubServiceUserManagementValidInputs(unittest.TestCase):
         github_service.github_client_rest_api = mock_github_client_rest_api
 
         github_service.add_new_user_to_github_org(
-            self.approved_email_address, [MINISTRY_OF_JUSTICE], True
+            self.test_email_address, [MINISTRY_OF_JUSTICE], True
         )
         mock_invite_user_to_org_using_email_address.assert_called()
 
@@ -232,7 +228,7 @@ class TestGithubServiceUserManagementValidInputs(unittest.TestCase):
         github_service.github_client_rest_api = mock_github_client_rest_api
 
         github_service.add_new_user_to_github_org(
-            self.approved_email_address, [MINISTRY_OF_JUSTICE], False
+            self.test_email_address, [MINISTRY_OF_JUSTICE], False
         )
         mock_invite_user_to_org_using_email_address.assert_not_called()
 
