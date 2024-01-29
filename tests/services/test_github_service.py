@@ -2,7 +2,6 @@ import os
 import unittest
 from unittest.mock import call, patch
 
-from join_github_app.main.config.constants import MINISTRY_OF_JUSTICE
 from join_github_app.main.services.github_service import GithubService
 
 
