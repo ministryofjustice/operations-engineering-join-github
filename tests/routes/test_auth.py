@@ -150,7 +150,6 @@ class TestUserValidation(unittest.TestCase):
         self.assertFalse(user_is_valid("test@example.com", "other@example.com"))
 
 
-
 class TestEmailAllowed(unittest.TestCase):
     @patch("join_github_app.main.routes.auth.ALLOWED_EMAIL_DOMAINS", new=["example.com"])
     def test_user_email_allowed(self):
