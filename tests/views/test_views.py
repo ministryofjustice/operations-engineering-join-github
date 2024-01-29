@@ -54,11 +54,6 @@ class TestViews(unittest.TestCase):
         self.assertEqual(response.headers["Location"], "/join/outside-collaborator")
         self.assertEqual(flashed_message.get("message"), None)
 
-    def test_join_github_form_redirects_when_user_not_in_session(self):
-        response = self.app.test_client().get("/join/github-auth0-user")
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.headers["Location"], "/")
-
     def test_join_selection_digital_justice_user(self):
         with self.app.test_client() as client:
             with client.session_transaction() as sess:
@@ -105,8 +100,6 @@ class TestCompletedRateLimit(unittest.TestCase):
     def setUp(self):
         self.form_data = {
             "gh_username": "some-username",
-            "access_moj_org": True,
-            "access_as_org": True,
         }
 
         self.org = "some-org"
@@ -120,7 +113,7 @@ class TestCompletedRateLimit(unittest.TestCase):
 
         while not exceeded_rate_limit:
             response = self.app.test_client().post(
-                "/join/github-auth0-user", data=self.form_data, follow_redirects=True
+                "/join/submit-email", data=self.form_data, follow_redirects=True
             )
             request_count += 1
 
