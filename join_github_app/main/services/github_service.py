@@ -3,7 +3,7 @@ import logging
 import requests
 from github import Github
 
-from join_github_app.main.config.constants import SEND_EMAIL_INVITES
+from join_github_app.main.config.github import SEND_EMAIL_INVITES
 
 logger = logging.getLogger(__name__)
 
@@ -19,22 +19,10 @@ class GithubService:
             }
         )
 
-    def invite_user_to_org_using_email_address(
-        self, email_address: str, organisation: str
-    ) -> None:
-        self.github_client_core_api.get_organization(organisation.lower()).invite_user(
-            email=email_address
-        )
-
     def send_invitation_to_organisation(self, email: str, organisations: list) -> None:
-        if SEND_EMAIL_INVITES is False:
-            logger.debug("Sending invites is disabled at the moment.")
-            return None
+        if SEND_EMAIL_INVITES is True:
+            for organisation in organisations:
+                self.github_client_core_api.get_organization(organisation.lower()).invite_user(email=email)
 
-        for organisation in organisations:
-            self.invite_user_to_org_using_email_address(
-                email,
-                organisation
-            )
-
+        logger.debug("Not sending email as SEND_EMAIL_INVITES is %s", SEND_EMAIL_INVITES)
         return None
