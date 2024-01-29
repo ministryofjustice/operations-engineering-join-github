@@ -18,6 +18,7 @@ class TestAuthRoutes(unittest.TestCase):
         self.app = join_github_app.create_app(self.github_service, False)
         self.ctx = self.app.app_context()
         self.ctx.push()
+        self.app.config['SECRET_KEY'] = 'my_precious_test_key'
         self.client = self.app.test_client()
 
     def tearDown(self):
