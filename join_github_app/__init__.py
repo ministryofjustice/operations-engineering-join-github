@@ -22,6 +22,7 @@ from join_github_app.main.routes.join import join_route
 from join_github_app.main.routes.error import error_route
 from join_github_app.main.services.github_service import GithubService
 from join_github_app.main.routes.main import main
+from sentry_sdk.integrations.flask import FlaskIntegration
 
 
 def create_app(github_service: GithubService, rate_limit: bool = True) -> Flask:
@@ -30,9 +31,10 @@ def create_app(github_service: GithubService, rate_limit: bool = True) -> Flask:
     )
 
     sentry_sdk.init(
-        dsn=environ.get("SENTRY_DSN_KEY"),
+        dsn=os.environ.get("SENTRY_DSN_KEY"),
+        integrations=[FlaskIntegration()],
         enable_tracing=True,
-        sample_rate=0.1,
+        traces_sample_rate=0.1
     )
 
     app = Flask(__name__, instance_relative_config=True)
