@@ -1,3 +1,4 @@
+import os
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -33,7 +34,10 @@ class TestAuthRoutes(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
         mock_authorize_redirect.assert_called_once()
 
-    def test_logout_route(self):
+    @patch("os.getenv")
+    def test_logout_route(self, mock_getenv):
+        mock_getenv.side_effect = lambda var: {"AUTH0_DOMAIN": "test.auth0.com", "AUTH0_CLIENT_ID": "test_client_id"}.get(var)
+
         with self.client as c:
             with c.session_transaction() as sess:
                 sess['user'] = {'some': 'data'}
