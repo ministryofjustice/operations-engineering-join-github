@@ -1,11 +1,11 @@
 import unittest
 from unittest.mock import MagicMock
 
-import join_github_app
 from flask import get_flashed_messages
-from join_github_app.main.services.github_service import GithubService
-from join_github_app.main.routes.join import _join_github_auth0_users
+
+import join_github_app
 from join_github_app.main.routes.error import error
+from join_github_app.main.services.github_service import GithubService
 
 
 class TestViews(unittest.TestCase):
@@ -54,11 +54,6 @@ class TestViews(unittest.TestCase):
         self.assertEqual(response.headers["Location"], "/join/outside-collaborator")
         self.assertEqual(flashed_message.get("message"), None)
 
-    def test_join_github_form_redirects_when_user_not_in_session(self):
-        response = self.app.test_client().get("/join/github-auth0-user")
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.headers["Location"], "/")
-
     def test_join_selection_digital_justice_user(self):
         with self.app.test_client() as client:
             with client.session_transaction() as sess:
@@ -90,10 +85,10 @@ class TestViews(unittest.TestCase):
                 "disabled", str(response.data)
             )  # Check if the checkbox is disabled
 
-    def test_thank_you(self):
-        response = self.app.test_client().get("/join/submitted")
+    def test_invitation_sent(self):
+        response = self.app.test_client().get("/join/invitation-sent")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.request.path, "/join/submitted")
+        self.assertEqual(response.request.path, "/join/invitation-sent")
 
     def test_error(self):
         with self.app.test_request_context():
@@ -101,92 +96,10 @@ class TestViews(unittest.TestCase):
             self.assertRegex(response, "12345678")
 
 
-class TestJoinGithubAuth0User(unittest.TestCase):
-    def setUp(self):
-        self.org = "some-org"
-        self.github_service = MagicMock(GithubService)
-        self.app = join_github_app.create_app(self.github_service, False)
-
-    def test_join_github_auth0_user_decorator_is_working(self):
-        form_data = {
-            "gh_username": "",
-            "access_moj_org": True,
-        }
-        response = self.app.test_client().post(
-            "/join/github-auth0-user", data=form_data, follow_redirects=True
-        )
-        self.assertEqual(response.status_code, 200)
-        # Testing a function that has a decorator which redirect to /index
-        # The private function in the function will test the logic
-        self.assertEqual(response.request.path, "/")
-        self.app.github_service.add_new_user_to_github_org.assert_not_called()
-
-    def test_join_github_auth0_user_new_joiner(self):
-        form_data = {
-            "gh_username": "",
-            "access_moj_org": True,
-            "access_as_org": True,
-        }
-        with self.app.test_request_context(
-            "/join/github-auth0-user", method="POST", data=form_data
-        ) as request_context:
-            request_context.session = MagicMock()
-            request_context.session = {"user": {"userinfo": {"email": "some-email"}}}
-            self.app.github_service.get_selected_organisations.return_value = [self.org]
-            response = _join_github_auth0_users(request_context.request)
-            self.assertEqual(response.status_code, 302)
-            for item in response.headers:
-                if item[0] == "Location" and item[1] == "thank-you":
-                    redirect = True
-            self.assertEqual(redirect, True)
-            self.app.github_service.add_new_user_to_github_org.assert_called_once_with(
-                "some-email", [self.org]
-            )
-
-    def test_join_github_auth0_user_when_github_seat_protection_enabled(self):
-        form_data = {
-            "gh_username": "",
-            "access_moj_org": True,
-        }
-        with self.app.test_request_context(
-            "/join/github-auth0-user", method="POST", data=form_data
-        ) as request_context:
-            self.app.github_service.get_selected_organisations.return_value = [self.org]
-            self.app.github_service.is_github_seat_protection_enabled.return_value = True
-            response = _join_github_auth0_users(request_context.request)
-            self.app.github_service.add_new_user_to_github_org.assert_not_called()
-            self.assertRegex(response, "GitHub Seat protection enabled")
-
-    def test_join_github_form_with_incorrect_special_character_inputs(self):
-        form_data = {
-            "gh_username": "some!username",
-            "access_moj_org": True,
-        }
-        with self.app.test_request_context(
-            "/join/github-auth0-user", method="POST", data=form_data
-        ) as request_context:
-            response = _join_github_auth0_users(request_context.request)
-            self.assertRegex(response, "There is a problem")
-            self.app.github_service.add_new_user_to_github_org.assert_not_called()
-
-    def test_join_github_form_with_missing_orgs(self):
-        form_data = {
-            "gh_username": "",
-        }
-        with self.app.test_request_context(
-            "/join/github-auth0-user", method="POST", data=form_data
-        ) as request_context:
-            response = _join_github_auth0_users(request_context.request)
-            self.assertRegex(response, "There is a problem")
-            self.app.github_service.add_new_user_to_github_org.assert_not_called()
-
-
 class TestCompletedRateLimit(unittest.TestCase):
     def setUp(self):
         self.form_data = {
             "gh_username": "some-username",
-            "access_moj_org": True,
-            "access_as_org": True,
         }
 
         self.org = "some-org"
@@ -200,7 +113,7 @@ class TestCompletedRateLimit(unittest.TestCase):
 
         while not exceeded_rate_limit:
             response = self.app.test_client().post(
-                "/join/github-auth0-user", data=self.form_data, follow_redirects=True
+                "/join/submit-email", data=self.form_data, follow_redirects=True
             )
             request_count += 1
 
