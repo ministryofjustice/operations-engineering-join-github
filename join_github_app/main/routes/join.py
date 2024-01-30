@@ -40,7 +40,7 @@ def select_organisations():
     checkboxes_items = []
     for org in selectable_orgs:
         item = {"value": org["value"], "text": org["text"]}
-        if org["value"] == "analytical-services" and is_digital_justice_user:
+        if org["value"] == "moj-analytical-services" and is_digital_justice_user:
             item["disabled"] = is_digital_justice_user
         checkboxes_items.append(item)
 
