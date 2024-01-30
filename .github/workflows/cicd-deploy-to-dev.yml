@@ -76,6 +76,7 @@ jobs:
             --set application.auth0ClientSecret=${AUTH0_CLIENT_SECRET} \
             --set application.appSecretKey=${FLASK_APP_SECRET} \
             --set application.environment=${FLASK_CONFIGURATION} \
+            --set application.sendEmailInvites=${SEND_EMAIL_INVITES} \
             --set application.githubToken=${ADMIN_GITHUB_TOKEN} \
             --set image.repository=${ECR_REGISTRY}/${ECR_REPOSITORY} \
             --set ingress.hosts={join-github-dev.cloud-platform.service.justice.gov.uk}

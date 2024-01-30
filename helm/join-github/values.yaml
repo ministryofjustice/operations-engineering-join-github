@@ -25,6 +25,7 @@ application:
   environment:
   flaskDebug: "false"
   githubToken:
+  sendEmailInvites:
 
 serviceAccount:
   # Specifies whether a service account should be created
