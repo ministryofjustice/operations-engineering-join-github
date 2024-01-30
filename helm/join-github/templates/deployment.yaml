@@ -47,6 +47,8 @@ spec:
               value: {{ .Values.application.environment | quote }}
             - name: FLASK_DEBUG
               value: {{ .Values.application.flaskDebug | quote }}
+            - name: SEND_EMAIL_INVITES
+              value: {{ .Values.application.sendEmailInvites | quote }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
