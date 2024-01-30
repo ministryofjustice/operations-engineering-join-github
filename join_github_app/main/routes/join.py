@@ -10,10 +10,11 @@ join_route = Blueprint('join_route', __name__)
 @join_route.route("/submit-email", methods=["GET", "POST"])
 def submit_email():
     if request.method == "POST":
-        session["email"] = request.form.get("emailAddress", "Empty").strip()
-        if not is_valid_email_pattern(session["email"]):
+        email = request.form.get("emailAddress", "Empty").strip()
+        if not is_valid_email_pattern(email):
             flash("Please enter a valid email address.")
             return render_template("pages/submit-email.html")
+        session['email'] = email
         domain = session["email"].split("@")[1]
         if domain in set(ALLOWED_EMAIL_DOMAINS):
             return redirect("/join/select-organisations")
