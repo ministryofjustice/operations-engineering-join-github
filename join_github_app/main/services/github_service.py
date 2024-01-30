@@ -20,7 +20,7 @@ class GithubService:
         )
 
     def send_invites_to_user_email(self, email: str, organisations: list) -> None:
-        if SEND_EMAIL_INVITES is True:
+        if SEND_EMAIL_INVITES == "True":
             for organisation in organisations:
                 self.github_client_core_api.get_organization(organisation.lower()).invite_user(email=email)
 
