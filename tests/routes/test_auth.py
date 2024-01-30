@@ -108,7 +108,7 @@ class TestAuthRoutes(unittest.TestCase):
 
     @patch("join_github_app.main.routes.auth.ALLOWED_EMAIL_DOMAINS",
            new=["example.com", "test.com"])
-    def test_process_user_session_with_invalid_user(self):
+    def test_process_user_session_with_mismatched_user_email(self):
         with self.app.test_request_context('/auth/callback'):
             session['user'] = {'userinfo': {'email': 'user@test.com'}}
             session['email'] = 'user@test2.com'
@@ -122,8 +122,8 @@ class TestAuthRoutes(unittest.TestCase):
     def test_process_user_session_with_missing_org_selection(self):
         with self.app.test_request_context('/auth/callback'):
             session['user'] = {'userinfo': {'email': 'user@test.com'}}
-            session['email'] = 'user@test2.com'
-            session['org_selection'] = ['some_org']
+            session['email'] = 'user@test.com'
+            session['org_selection'] = []
 
             result = process_user_session()
             self.assertFalse(result)

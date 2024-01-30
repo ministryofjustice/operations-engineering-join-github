@@ -109,7 +109,7 @@ def process_user_session():
 
 def send_github_invitation(email, org_selection):
     """
-    Send an invitation to the specified GitHub organization(s).
+    Send an invitation to the specified GitHub organisation(s).
 
     :param email: Email of the user to send the invitation to.
     :param org_selection: List of organizations to invite the user to.
