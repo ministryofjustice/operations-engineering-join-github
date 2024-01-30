@@ -23,6 +23,5 @@ class GithubService:
         if SEND_EMAIL_INVITES == "True":
             for organisation in organisations:
                 self.github_client_core_api.get_organization(organisation.lower()).invite_user(email=email)
-
-        logger.debug("Not sending email as SEND_EMAIL_INVITES is %s", SEND_EMAIL_INVITES)
-        return None
+        else:
+            logger.debug("Not sending email as SEND_EMAIL_INVITES is %s", SEND_EMAIL_INVITES)
