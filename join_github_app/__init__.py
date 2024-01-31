@@ -18,6 +18,7 @@ from join_github_app.main.routes.error import error_route
 from join_github_app.main.routes.join import join_route
 from join_github_app.main.routes.main import main
 from join_github_app.main.services.github_service import GithubService
+from join_github_app.app_config import app_config
 
 
 def create_app(github_service: GithubService, rate_limit: bool = True) -> Flask:
@@ -71,7 +72,7 @@ def create_app(github_service: GithubService, rate_limit: bool = True) -> Flask:
     # Load sensitive settings from instance/config.py
     app.config.from_pyfile("config.py", silent=True)
 
-    app.secret_key = os.getenv("APP_SECRET_KEY")
+    app.secret_key = app_config.flask.app_secret_key
 
     app.register_blueprint(auth_route, url_prefix='/auth')
     app.register_blueprint(join_route, url_prefix='/join')
