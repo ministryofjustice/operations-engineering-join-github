@@ -1,7 +1,6 @@
 import sys
 import logging
 from os import environ
-from dotenv import dotenv_values
 
 from join_github_app.main.services.github_service import GithubService
 from join_github_app import create_app
@@ -10,11 +9,8 @@ from join_github_app import create_app
 def get_tokens():
     github_token = environ.get("ADMIN_GITHUB_TOKEN")
     if not github_token:
-        # Look for a local .env file
-        github_token = dotenv_values(".env").get("ADMIN_GITHUB_TOKEN")
-        if not github_token:
-            logging.error("Failed to find a GitHub Token")
-            sys.exit(1)
+        logging.error("Failed to find a GitHub Token")
+        sys.exit(1)
     return github_token
 
 
