@@ -71,7 +71,7 @@ def create_app(github_service: GithubService, rate_limit: bool = True) -> Flask:
     # Load sensitive settings from instance/config.py
     app.config.from_pyfile("config.py", silent=True)
 
-    app.secret_key = app.config.get("APP_SECRET_KEY")
+    app.secret_key = os.getenv("APP_SECRET_KEY")
 
     app.register_blueprint(auth_route, url_prefix='/auth')
     app.register_blueprint(join_route, url_prefix='/join')
