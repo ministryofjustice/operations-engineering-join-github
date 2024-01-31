@@ -25,6 +25,18 @@ app_config = SimpleNamespace(
         app_secret_key=__get_env_var("APP_SECRET_KEY")
     ),
     github=SimpleNamespace(
-        send_email_invites_is_enabled=__get_env_var_as_boolean("SEND_EMAIL_INVITES")
+        send_email_invites_is_enabled=__get_env_var_as_boolean("SEND_EMAIL_INVITES"),
+        allowed_email_domains=[
+            "digital.justice.gov.uk",
+            "justice.gov.uk",
+            "publicguardian.gov.uk",
+            "cica.gov.uk",
+            "ima-citizensrights.org.uk",
+            "judicialappointments.gov.uk",
+            "judiciary.uk",
+            "ppo.gov.uk",
+            "sentencingcouncil.gov.uk",
+            "yjb.gov.uk",
+        ]
     )
 )

@@ -7,7 +7,7 @@ from authlib.integrations.flask_client import OAuth
 from flask import (Blueprint, current_app, redirect, render_template, session,
                    url_for)
 
-from join_github_app.main.config.constants import ALLOWED_EMAIL_DOMAINS
+from join_github_app.app_config import app_config
 from join_github_app.main.middleware.error_handler import AuthTokenError
 
 logger = logging.getLogger(__name__)
@@ -143,6 +143,6 @@ def user_is_valid(auth0_email, original_email) -> bool:
 
 def user_email_allowed(email) -> bool:
     domain = email[email.index("@") + 1:]
-    if domain in ALLOWED_EMAIL_DOMAINS:
+    if domain in app_config.github.allowed_email_domains:
         return True
     return False

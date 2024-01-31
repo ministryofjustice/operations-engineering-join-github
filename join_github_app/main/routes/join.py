@@ -1,7 +1,7 @@
 from flask import (Blueprint, current_app, flash, redirect, render_template,
                    request, session)
 
-from join_github_app.main.config.constants import ALLOWED_EMAIL_DOMAINS
+from join_github_app.app_config import app_config
 from join_github_app.main.validators.index import is_valid_email_pattern
 
 join_route = Blueprint('join_route', __name__)
@@ -16,7 +16,7 @@ def submit_email():
             return render_template("pages/submit-email.html")
         session['email'] = email
         domain = session["email"].split("@")[1]
-        if domain in set(ALLOWED_EMAIL_DOMAINS):
+        if domain in set(app_config.github.allowed_email_domains):
             return redirect("/join/select-organisations")
         else:
             return redirect("/join/outside-collaborator")

@@ -69,9 +69,6 @@ def create_app(github_service: GithubService, rate_limit: bool = True) -> Flask:
         app.logger.setLevel(logging.INFO)
         app.logger.info("Running in Production mode.")
 
-    # Load sensitive settings from instance/config.py
-    app.config.from_pyfile("config.py", silent=True)
-
     app.secret_key = app_config.flask.app_secret_key
 
     app.register_blueprint(auth_route, url_prefix='/auth')

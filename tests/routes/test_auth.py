@@ -77,7 +77,7 @@ class TestAuthRoutes(unittest.TestCase):
         mock_get_token.assert_called_once()
         mock_render_error_page.assert_called_once()
 
-    @patch("join_github_app.main.routes.auth.ALLOWED_EMAIL_DOMAINS",
+    @patch("join_github_app.main.routes.auth.app_config.github.allowed_email_domains",
            new=["example.com", "test.com"])
     def test_process_user_session_success(self):
         with self.app.test_request_context('/auth/callback'):
@@ -106,7 +106,7 @@ class TestAuthRoutes(unittest.TestCase):
             result = process_user_session()
             self.assertFalse(result)
 
-    @patch("join_github_app.main.routes.auth.ALLOWED_EMAIL_DOMAINS",
+    @patch("join_github_app.main.routes.auth.app_config.github.allowed_email_domains",
            new=["example.com", "test.com"])
     def test_process_user_session_with_mismatched_user_email(self):
         with self.app.test_request_context('/auth/callback'):
@@ -117,7 +117,7 @@ class TestAuthRoutes(unittest.TestCase):
             result = process_user_session()
             self.assertFalse(result)
 
-    @patch("join_github_app.main.routes.auth.ALLOWED_EMAIL_DOMAINS",
+    @patch("join_github_app.main.routes.auth.app_config.github.allowed_email_domains",
            new=["example.com", "test.com"])
     def test_process_user_session_with_missing_org_selection(self):
         with self.app.test_request_context('/auth/callback'):
@@ -156,7 +156,7 @@ class TestUserValidation(unittest.TestCase):
 
 
 class TestEmailAllowed(unittest.TestCase):
-    @patch("join_github_app.main.routes.auth.ALLOWED_EMAIL_DOMAINS", new=["example.com"])
+    @patch("join_github_app.main.routes.auth.app_config.github.allowed_email_domains", new=["example.com"])
     def test_user_email_allowed(self):
         self.assertTrue(user_email_allowed("user@example.com"))
         self.assertFalse(user_email_allowed("user@notallowed.com"))
