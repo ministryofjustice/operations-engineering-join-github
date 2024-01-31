@@ -17,5 +17,4 @@ __pycache__
 .coverage
 htmlcov
 .idea/
-.pylintrc
 megalinter-reports/
