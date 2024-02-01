@@ -23,9 +23,12 @@ application:
   auth0Domain: "operations-engineering.eu.auth0.com"
   encryptionKey:
   environment:
-  flaskDebug: "false"
+  flaskDebug: false
   githubToken:
-  sendEmailInvites:
+  mojOrgEnabled: true
+  mojAsOrgEnabled: true
+  mojTestOrgEnabled: false
+  sendEmailInvites: true
 
 serviceAccount:
   # Specifies whether a service account should be created
