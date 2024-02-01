@@ -52,7 +52,7 @@ spec:
             - name: MOJ_ORG_ENABLED
               value: {{ .Values.application.mojOrgEnabled | quote }}
             - name: MOJ_AS_ORG_ENABLED
-              value: {{ .Values.application.mojASOrgEnabled | quote }}
+              value: {{ .Values.application.mojAsOrgEnabled | quote }}
             - name: MOJ_TEST_ORG_ENABLED
               value: {{ .Values.application.mojTestOrgEnabled | quote }}
           ports:
