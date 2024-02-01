@@ -1,5 +1,6 @@
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
+from types import SimpleNamespace
 
 from flask import get_flashed_messages
 
@@ -74,6 +75,7 @@ class TestViews(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertIn("Azure", str(response.data))
 
+    @patch("join_github_app.main.routes.join.app_config", new=SimpleNamespace(github=SimpleNamespace(organisations=[SimpleNamespace(name="moj-analytical-services", enabled=True, display_text="MoJ Analytical Services")])))
     def test_select_organisations_digital_justice_user(self):
         with self.app.test_client() as client:
             with client.session_transaction() as sess:

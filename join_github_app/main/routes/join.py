@@ -1,4 +1,4 @@
-from flask import (Blueprint, current_app, flash, redirect, render_template,
+from flask import (Blueprint, flash, redirect, render_template,
                    request, session)
 
 from join_github_app.app_config import app_config
@@ -36,13 +36,13 @@ def select_organisations():
     email = session.get("email", "").lower()
     domain = email[email.index("@") + 1:]
     is_digital_justice_user = is_digital_justice_email(domain)
-    selectable_orgs = current_app.config["SELECTABLE_ORGANISATIONS"]
-    checkboxes_items = []
-    for org in selectable_orgs:
-        item = {"value": org["value"], "text": org["text"]}
-        if org["value"] == "moj-analytical-services" and is_digital_justice_user:
-            item["disabled"] = is_digital_justice_user
-        checkboxes_items.append(item)
+    enabled_organisations = [organisation for organisation in app_config.github.organisations if organisation.enabled]
+
+    checkboxes_items = [{
+        "value": org.name,
+        "text": org.display_text,
+        "disabled": True if org.name == "moj-analytical-services" and is_digital_justice_user else False
+    } for org in enabled_organisations]
 
     if request.method == "POST":
         session["org_selection"] = request.form.getlist("organisation_selection")

@@ -53,22 +53,6 @@ def create_app(github_service: GithubService, rate_limit: bool = True) -> Flask:
     limiter.init_app(app)
     limiter.enabled = rate_limit
 
-    # Config folder file mapping
-    config = {
-        "development": "join_github_app.config.development",
-        "production": "join_github_app.config.production",
-    }
-
-    # Set config, logging level and AWS DynamoDB table name
-    if os.getenv("FLASK_CONFIGURATION", "production") == "development":
-        app.config.from_object(config["development"])
-        app.logger.setLevel(logging.DEBUG)
-        app.logger.info("Running in Development mode.")
-    else:
-        app.config.from_object(config["production"])
-        app.logger.setLevel(logging.INFO)
-        app.logger.info("Running in Production mode.")
-
     app.secret_key = app_config.flask.app_secret_key
 
     app.register_blueprint(auth_route, url_prefix='/auth')
@@ -93,7 +77,6 @@ def create_app(github_service: GithubService, rate_limit: bool = True) -> Flask:
     app.register_error_handler(500, unknown_server_error)
     app.register_error_handler(GithubException, handle_github_exception)
 
-    # Security and Protection extenstions
     CORS(app, resources={r"/*": {"origins": "*", "send_wildcard": "False"}})
 
     app.github_service = github_service

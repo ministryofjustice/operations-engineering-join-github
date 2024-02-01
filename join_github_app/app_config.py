@@ -9,8 +9,6 @@ def __get_env_var(name: str) -> str | None:
 def __get_env_var_as_boolean(name: str) -> bool | None:
     value = __get_env_var(name)
 
-    print("function: ", value)
-
     if value is None:
         return False
 
@@ -37,6 +35,23 @@ app_config = SimpleNamespace(
             "ppo.gov.uk",
             "sentencingcouncil.gov.uk",
             "yjb.gov.uk",
+        ],
+        organisations=[
+            SimpleNamespace(
+                name="ministryofjustce",
+                enabled=__get_env_var_as_boolean("MOJ_ORG_ENABLED"),
+                display_text="Ministry of Justice"
+            ),
+            SimpleNamespace(
+                name="moj-analytical-services",
+                enabled=__get_env_var_as_boolean("MOJ_AS_ORG_ENABLED"),
+                display_text="MoJ Analytical Services"
+            ),
+            SimpleNamespace(
+                name="ministryofjustce-test",
+                enabled=__get_env_var_as_boolean("MOJ_TEST_ORG_ENABLED"),
+                display_text="Ministry of Justice Test Organisation"
+            ),
         ]
     )
 )
