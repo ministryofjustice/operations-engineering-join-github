@@ -1,54 +1,52 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: { { include "join-github.fullname" . } }
-  labels: { { - include "join-github.labels" . | nindent 4 } }
+  name: {{ include "join-github.fullname" . }}
+  labels:
+    {{- include "join-github.labels" . | nindent 4 }}
 spec:
-  replicas: { { .Values.app.deployment.replicaCount } }
+  replicas: {{ .Values.app.deployment.replicaCount }}
   selector:
-    matchLabels: { { - include "join-github.selectorLabels" . | nindent 6 } }
+    matchLabels:
+      {{- include "join-github.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      labels: { { - include "join-github.selectorLabels" . | nindent 8 } }
+      labels:
+        {{- include "join-github.selectorLabels" . | nindent 8 }}
     spec:
       # serviceAccountName created by the Cloud Platform environment
       serviceAccountName: cd-serviceaccount
       containers:
-        - name: { { .Chart.Name } }
+        - name: {{ .Chart.Name }}
           image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: IfNotPresent
           env:
             - name: ADMIN_GITHUB_TOKEN
-              value:
-                { { .Values.app.deployment.env.ADMIN_GITHUB_TOKEN | quote } }
+              value: {{ .Values.app.deployment.env.ADMIN_GITHUB_TOKEN | quote }}
             - name: AUTH0_DOMAIN
-              value: { { .Values.app.deployment.env.AUTH0_DOMAIN | quote } }
+              value: {{ .Values.app.deployment.env.AUTH0_DOMAIN | quote }}
             - name: AUTH0_CLIENT_ID
-              value: { { .Values.app.deployment.env.AUTH0_CLIENT_ID | quote } }
+              value: {{ .Values.app.deployment.env.AUTH0_CLIENT_ID | quote }}
             - name: AUTH0_CLIENT_SECRET
-              value:
-                { { .Values.app.deployment.env.AUTH0_CLIENT_SECRET | quote } }
+              value: {{ .Values.app.deployment.env.AUTH0_CLIENT_SECRET | quote }}
             - name: APP_SECRET_KEY
-              value: { { .Values.app.deployment.env.APP_SECRET_KEY | quote } }
+              value: {{ .Values.app.deployment.env.APP_SECRET_KEY | quote }}
             - name: FLASK_DEBUG
-              value: { { .Values.app.deployment.env.FLASK_DEBUG | quote } }
+              value: {{ .Values.app.deployment.env.FLASK_DEBUG | quote }}
             - name: SEND_EMAIL_INVITES
-              value:
-                { { .Values.app.deployment.env.SEND_EMAIL_INVITES | quote } }
+              value: {{ .Values.app.deployment.env.SEND_EMAIL_INVITES | quote }}
             - name: MOJ_ORG_ENABLED
-              value: { { .Values.app.deployment.env.MOJ_ORG_ENABLED | quote } }
+              value: {{ .Values.app.deployment.env.MOJ_ORG_ENABLED | quote }}
             - name: MOJ_AS_ORG_ENABLED
-              value:
-                { { .Values.app.deployment.env.MOJ_AS_ORG_ENABLED | quote } }
+              value: {{ .Values.app.deployment.env.MOJ_AS_ORG_ENABLED | quote }}
             - name: MOJ_TEST_ORG_ENABLED
-              value:
-                { { .Values.app.deployment.env.MOJ_TEST_ORG_ENABLED | quote } }
+              value: {{ .Values.app.deployment.env.MOJ_TEST_ORG_ENABLED | quote }}
             - name: SENTRY_DSN_KEY
-              value: { { .Values.app.deployment.env.SENTRY_DSN_KEY } }
+              value: {{ .Values.app.deployment.env.SENTRY_DSN_KEY }}
             - name: SENTRY_ENV
-              value: { { .Values.app.deployment.env.SENTRY_ENV } }
+              value: {{ .Values.app.deployment.env.SENTRY_ENV }}
             - name: PHASE_BANNER_TEXT
-              value: { { .Values.app.deployment.env.PHASE_BANNER_TEXT } }
+              value: {{ .Values.app.deployment.env.PHASE_BANNER_TEXT }}
 
           ports:
             - name: http
