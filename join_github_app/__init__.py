@@ -1,5 +1,4 @@
 import logging
-import os
 
 import sentry_sdk
 from flask import Flask
@@ -21,15 +20,16 @@ from join_github_app.main.services.github_service import GithubService
 from join_github_app.app_config import app_config
 
 
-def create_app(github_service: GithubService, rate_limit: bool = True) -> Flask:
+def create_app(github_service=GithubService(app_config.github.token), rate_limit: bool = True) -> Flask:
     logging.basicConfig(
         format="%(asctime)s %(levelname)s in %(module)s: %(message)s",
+        datefmt='%m/%d/%Y %I:%M:%S %p'
     )
 
-    if os.environ.get("SENTRY_DSN_KEY") and os.environ.get("SENTRY_ENV"):
+    if app_config.sentry.dsn_key and app_config.sentry.environment:
         sentry_sdk.init(
-            dsn=os.environ.get("SENTRY_DSN_KEY"),
-            environment=os.environ.get("SENTRY_ENV"),
+            dsn=app_config.sentry.dsn_key,
+            environment=app_config.sentry.dsn_environment,
             integrations=[FlaskIntegration()],
             enable_tracing=True,
             traces_sample_rate=0.1

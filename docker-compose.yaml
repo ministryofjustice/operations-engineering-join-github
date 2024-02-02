@@ -5,12 +5,27 @@ services:
     image: "operations-engineering-join-github"
     container_name: "operations-engineering-join-github"
     environment:
-      FLASK_DEBUG: "true"
-      FLASK_APP: "operations_engineering_join_github"
-      ADMIN_GITHUB_TOKEN: "dummy"
-      AUTH0_CLIENT_ID: "dev"
-      AUTH0_CLIENT_SECRET: "dev"
-      AUTH0_DOMAIN: "operations-engineering.eu.auth0.com"
-      APP_SECRET_KEY: "dummy"
+      # GitHub
+      ADMIN_GITHUB_TOKEN: fake
+
+      # Auth0
+      AUTH0_CLIENT_ID: dev
+      AUTH0_CLIENT_SECRET: dev
+      AUTH0_DOMAIN: operations-engineering.eu.auth0.com
+
+      # Flask
+      APP_SECRET_KEY: dev
+      FLASK_DEBUG: true
+
+      # Sentry
+      # SENTRY_DSN_KEY: 
+      SENTRY_ENV: local
+
+      # App
+      MOJ_ORG_ENABLED: true
+      MOJ_AS_ORG_ENABLED: true
+      MOJ_TEST_ORG_ENABLED: true
+      SEND_EMAIL_INVITES: true
+      PHASE_BANNER_TEXT: "LOCAL DEV"
     ports:
       - "4567:4567"
