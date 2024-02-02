@@ -20,8 +20,8 @@ class GithubService:
         )
 
     def send_invites_to_user_email(self, email: str, organisations: list) -> None:
-        if app_config.github.send_email_invites_is_enabled:
-            for organisation in organisations:
+        for organisation in organisations:
+            if app_config.github.send_email_invites_is_enabled:
                 self.github_client_core_api.get_organization(organisation.lower()).invite_user(email=email)
-        else:
-            logger.debug("Not sending email as SEND_EMAIL_INVITES is %s", app_config.github.send_email_invites_is_enabled)
+            else:
+                logger.info("Not sending invitation for organisation [ %s ] as SEND_EMAIL_INVITES is [ %s ]", organisation, app_config.github.send_email_invites_is_enabled)
