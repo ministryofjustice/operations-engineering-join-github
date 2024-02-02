@@ -23,7 +23,6 @@ from join_github_app.app_config import app_config
 def create_app(github_service=GithubService(app_config.github.token), rate_limit: bool = True) -> Flask:
     logging.basicConfig(
         format="%(asctime)s %(levelname)s in %(module)s: %(message)s",
-        datefmt='%m/%d/%Y %I:%M:%S %p'
     )
 
     if app_config.sentry.dsn_key and app_config.sentry.environment:
