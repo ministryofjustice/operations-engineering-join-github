@@ -5,7 +5,6 @@ services:
     image: "operations-engineering-join-github"
     container_name: "operations-engineering-join-github"
     environment:
-      FLASK_CONFIGURATION: "development"
       FLASK_DEBUG: "true"
       FLASK_APP: "operations_engineering_join_github"
       ADMIN_GITHUB_TOKEN: "dummy"

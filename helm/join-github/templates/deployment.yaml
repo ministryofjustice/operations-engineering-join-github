@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "join-github.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.app.deployment.replicaCount } }
   selector:
     matchLabels:
       {{- include "join-github.selectorLabels" . | nindent 6 }}
@@ -22,27 +22,33 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: ADMIN_GITHUB_TOKEN
-              value: {{ .Values.application.githubToken| quote }}
+              value: {{ .Values.app.deployment.env.ADMIN_GITHUB_TOKEN | quote }}
             - name: AUTH0_DOMAIN
-              value: {{ .Values.application.auth0Domain | quote }}
+              value: {{ .Values.app.deployment.env.AUTH0_DOMAIN | quote }}
             - name: AUTH0_CLIENT_ID
-              value: {{ .Values.application.auth0ClientId | quote }}
+              value: {{ .Values.app.deployment.env.AUTH0_CLIENT_ID | quote }}
             - name: AUTH0_CLIENT_SECRET
-              value: {{ .Values.application.auth0ClientSecret | quote }}
+              value: {{ .Values.app.deployment.env.AUTH0_CLIENT_SECRET | quote }}
             - name: APP_SECRET_KEY
-              value: {{ .Values.application.appSecretKey | quote }}
-            - name: FLASK_CONFIGURATION
-              value: {{ .Values.application.environment | quote }}
+              value: {{ .Values.app.deployment.env.APP_SECRET_KEY | quote }}
             - name: FLASK_DEBUG
-              value: {{ .Values.application.flaskDebug | quote }}
+              value: {{ .Values.app.deployment.env.FLASK_DEBUG | quote }}
             - name: SEND_EMAIL_INVITES
-              value: {{ .Values.application.sendEmailInvites | quote }}
+              value: {{ .Values.app.deployment.env.SEND_EMAIL_INVITES | quote }}
             - name: MOJ_ORG_ENABLED
-              value: {{ .Values.application.mojOrgEnabled | quote }}
+              value: {{ .Values.app.deployment.env.MOJ_ORG_ENABLED | quote }}
             - name: MOJ_AS_ORG_ENABLED
-              value: {{ .Values.application.mojAsOrgEnabled | quote }}
+              value: {{ .Values.app.deployment.env.MOJ_AS_ORG_ENABLED | quote }}
             - name: MOJ_TEST_ORG_ENABLED
-              value: {{ .Values.application.mojTestOrgEnabled | quote }}
+              value:
+                { { .Values.app.deployment.env.MOJ_TEST_ORG_ENABLED | quote } }
+            - name: SENTRY_DSN_KEY
+              value: { { .Values.app.deployment.env.SENTRY_DSN_KEY } }
+            - name: SENTRY_ENV
+              value: { { .Values.app.deployment.env.SENTRY_ENV } }
+            - name: PHASE_BANNER_TEXT
+              value: { { .Values.app.deployment.env.PHASE_BANNER_TEXT } }
+
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: 80

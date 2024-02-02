@@ -35,7 +35,7 @@ format: venv
 test: venv
 	venv/bin/pip3 install pytest
 	venv/bin/pip3 install coverage
-	export FLASK_CONFIGURATION=test; venv/bin/coverage run -m pytest tests/ -v
+	venv/bin/coverage run -m pytest tests/ -v
 
 report:
 	venv/bin/coverage html && open htmlcov/index.html
@@ -50,7 +50,7 @@ clean-test:
 	rm -fr htmlcov/
 
 local: venv
-	export FLASK_CONFIGURATION=development; venv/bin/python3 -m operations_engineering_join_github
+	venv/bin/python3 -m operations_engineering_join_github
 
 # Assumes you've already built the image locally
 docker-up:

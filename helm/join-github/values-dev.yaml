@@ -1,0 +1,15 @@
+app:
+  ingress:
+    host: "join-github-dev.cloud-platform.service.justice.gov.uk"
+
+  deployment:
+    replicaCount: 1
+    env:
+      AUTH0_DOMAIN: "operations-engineering.eu.auth0.com"
+      SENTRY_ENV: "development"
+      FLASK_DEBUG: true
+      MOJ_ORG_ENABLED: true
+      MOJ_AS_ORG_ENABLED: true
+      MOJ_TEST_ORG_ENABLED: false
+      SEND_EMAIL_INVITES: false
+      PHASE_BANNER_TEXT: "DEV"

@@ -6,7 +6,7 @@ metadata:
     {{- include "join-github.labels" . | nindent 4 }}
 spec:
   ports:
-    - port: {{ .Values.service.port }}
+    - port: 80
       targetPort: 4567
       name: https
   selector:

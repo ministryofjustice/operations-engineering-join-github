@@ -36,21 +36,14 @@
 {% endblock %}
 
 {% block beforeContent %}
-  {% if os.getenv("FLASK_CONFIGURATION", "production") == "production" %}
-            {{ govukPhaseBanner({
-              'tag': {
-                'text': 'Private Beta'
-              },
-              'html': 'This is a new service – your <a class="govuk-link" href="mailto:' + 'operations-engineering@digital.justice.gov.uk' +'?subject=Feedback">feedback</a> will help us to improve it.'
-            }) }}
-          {% else %}
-            {{ govukPhaseBanner({
-              'tag': {
-                'text': 'Dev'
-              },
-              'html': 'This is a new service – your <a class="govuk-link" href="mailto:' + 'operations-engineering@digital.justice.gov.uk' +'?subject=Feedback">feedback</a> will help us to improve it.'
-            }) }}
-          {% endif %}
+  {% if phase_banner_text %}
+    {{ govukPhaseBanner({
+      'tag': {
+        'text': phase_banner_text
+      },
+      'html': 'This is a new service – your <a class="govuk-link" href="mailto:' + 'operations-engineering@digital.justice.gov.uk' +'?subject=Feedback">feedback</a> will help us to improve it.'
+    }) }}
+  {% endif %}
 {% endblock %}
 
 {% block bodyEnd %}

@@ -53,5 +53,6 @@ app_config = SimpleNamespace(
                 display_text="Ministry of Justice Test Organisation"
             ),
         ]
-    )
+    ),
+    phase_banner_text=__get_env_var("PHASE_BANNER_TEXT")
 )
