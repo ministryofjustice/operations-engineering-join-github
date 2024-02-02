@@ -1,5 +1,4 @@
 {{- $fullName := include "join-github.fullname" . -}}
-{{- $svcPort := .Values.service.port -}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -15,12 +14,9 @@ spec:
   ingressClassName: "default"
   tls:
     - hosts:
-        {{- range $host := .Values.ingress.hosts }}
-        - {{ $host }}
-        {{- end }}
+        - {{ .Values.app.ingress.host }}
   rules:
-    {{- range $host := .Values.ingress.hosts }}
-    - host: {{ $host }}
+    - host: {{ .Values.app.ingress.host }}
       http:
         paths:
           - path: /
@@ -29,6 +25,5 @@ spec:
               service:
                 name: {{ $fullName }}
                 port:
-                  number: {{ $svcPort }}
-    {{- end }}
+                  number: 80
 

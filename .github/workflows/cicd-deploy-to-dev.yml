@@ -13,17 +13,11 @@ env:
   IMAGE_TAG: ${{ github.sha }}
   ECR_REGISTRY: ${{ vars.DEV_ECR_REGISTRY }}
   ECR_REPOSITORY: ${{ vars.DEV_ECR_REPOSITORY }}
-
   ADMIN_GITHUB_TOKEN: ${{ secrets.DEV_ADMIN_GITHUB_TOKEN }}
   FLASK_APP_SECRET: ${{ secrets.DEV_FLASK_APP_SECRET }}
-  FLASK_CONFIGURATION: "development"
-  SEND_EMAIL_INVITES: "False"
-
   AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
   AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
-
-  SENTRY_DSN_KEY: ${{secrets.SENTRY_DSN_KEY }}
-  SENTRY_ENV: "development"
+  SENTRY_DSN_KEY: ${{ secrets.SENTRY_DSN_KEY }}
 
 jobs:
   build-push:
@@ -71,13 +65,11 @@ jobs:
             --wait \
             --timeout 10m \
             --namespace ${KUBE_NAMESPACE} \
-            --set image.tag=${IMAGE_TAG} \
-            --set application.auth0ClientId=${AUTH0_CLIENT_ID} \
-            --set application.auth0ClientSecret=${AUTH0_CLIENT_SECRET} \
-            --set application.appSecretKey=${FLASK_APP_SECRET} \
-            --set application.environment=${FLASK_CONFIGURATION} \
-            --set application.sendEmailInvites=${SEND_EMAIL_INVITES} \
-            --set application.githubToken=${ADMIN_GITHUB_TOKEN} \
-            --set application.mojTestOrgEnabled=true \
-            --set image.repository=${ECR_REGISTRY}/${ECR_REPOSITORY} \
-            --set ingress.hosts={join-github-dev.cloud-platform.service.justice.gov.uk}
+            --values=helm/join-github/values-dev.yaml \
+            --set app.deployment.env.AUTH0_CLIENT_ID=${AUTH0_CLIENT_ID} \
+            --set app.deployment.env.AUTH0_CLIENT_SECRET=${AUTH0_CLIENT_SECRET} \
+            --set app.deployment.env.APP_SECRET_KEY=${FLASK_APP_SECRET} \
+            --set app.deployment.env.ADMIN_GITHUB_TOKEN=${ADMIN_GITHUB_TOKEN} \
+            --set app.deployment.env.SENTRY_DSN_KEY=${SENTRY_DSN_KEY} \
+            --set app.deployment.image.repository=${ECR_REGISTRY}/${ECR_REPOSITORY} \
+            --set app.deployment.image.tag=${IMAGE_TAG} 

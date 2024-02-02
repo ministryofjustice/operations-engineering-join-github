@@ -26,19 +26,16 @@ def create_app(github_service: GithubService, rate_limit: bool = True) -> Flask:
         format="%(asctime)s %(levelname)s in %(module)s: %(message)s",
     )
 
-    sentry_sdk.init(
-        dsn=os.environ.get("SENTRY_DSN_KEY"),
-        environment=os.environ.get("SENTRY_ENV"),
-        integrations=[FlaskIntegration()],
-        enable_tracing=True,
-        traces_sample_rate=0.1
-    )
+    if os.environ.get("SENTRY_DSN_KEY") and os.environ.get("SENTRY_ENV"):
+        sentry_sdk.init(
+            dsn=os.environ.get("SENTRY_DSN_KEY"),
+            environment=os.environ.get("SENTRY_ENV"),
+            integrations=[FlaskIntegration()],
+            enable_tracing=True,
+            traces_sample_rate=0.1
+        )
 
     app = Flask(__name__, instance_relative_config=True)
-
-    @app.context_processor
-    def inject_os():
-        return dict(os=os)
 
     app.logger.info("Start App Setup")
 
@@ -68,9 +65,9 @@ def create_app(github_service: GithubService, rate_limit: bool = True) -> Flask:
             ),
         ]
     )
-
     app.jinja_env.trim_blocks = True
     app.jinja_env.lstrip_blocks = True
+    app.jinja_env.globals["phase_banner_text"] = app_config.phase_banner_text
 
     app.register_error_handler(403, server_forbidden)
     app.register_error_handler(404, page_not_found)
