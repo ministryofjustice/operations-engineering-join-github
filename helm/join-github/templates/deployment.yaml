@@ -40,14 +40,13 @@ spec:
             - name: MOJ_AS_ORG_ENABLED
               value: {{ .Values.app.deployment.env.MOJ_AS_ORG_ENABLED | quote }}
             - name: MOJ_TEST_ORG_ENABLED
-              value:
-                { { .Values.app.deployment.env.MOJ_TEST_ORG_ENABLED | quote } }
+              value: {{ .Values.app.deployment.env.MOJ_TEST_ORG_ENABLED | quote }}
             - name: SENTRY_DSN_KEY
-              value: { { .Values.app.deployment.env.SENTRY_DSN_KEY } }
+              value: {{ .Values.app.deployment.env.SENTRY_DSN_KEY }}
             - name: SENTRY_ENV
-              value: { { .Values.app.deployment.env.SENTRY_ENV } }
+              value: {{ .Values.app.deployment.env.SENTRY_ENV }}
             - name: PHASE_BANNER_TEXT
-              value: { { .Values.app.deployment.env.PHASE_BANNER_TEXT } }
+              value: {{ .Values.app.deployment.env.PHASE_BANNER_TEXT }}
 
           ports:
             - name: http
