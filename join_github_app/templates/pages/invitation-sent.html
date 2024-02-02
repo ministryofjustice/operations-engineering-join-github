@@ -4,14 +4,27 @@
     Thank you
 {% endblock %}
 
-{% block content %}
-    <h1 class="govuk-heading-xl">Thank you</h1>
+{% block beforeContent %}
+{{ super() }}
+{{ govukBackLink ({
+'text': 'Back',
+'href': '/home'
+}) }}
+{% endblock %}
 
-    <p class="govuk-body">
-        If you require further assistance contact us on the Operations-Engineering team Slack channel <a
-            href="https://mojdt.slack.com/archives/C01BUKJSZD4" class="govuk-link">#ask-operations-engineering</a>.
+{% block content %}
+
+    {{ govukPanel({
+        "titleText": "Invitation sent"
+    }) }}
+
+    <p class="govuk-body">We have sent an invitation to join XXXXXXXX GitHub Organisation to 
+        EMAIL@ADDRESS. Please check your inbox and follow the instructions in the email.
     </p>
 
-    <a href="/" class="govuk-back-link">Back</a>
+    <p class="govuk-body">
+        If you require further assistance contact us on the Operations Engineering team Slack channel <a
+            href="https://mojdt.slack.com/archives/C01BUKJSZD4" class="govuk-link">#ask-operations-engineering</a>.
+    </p>
 
 {% endblock %}

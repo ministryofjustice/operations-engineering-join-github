@@ -13,6 +13,7 @@ from join_github_app.main.middleware.error_handler import AuthTokenError
 logger = logging.getLogger(__name__)
 
 auth_route = Blueprint("auth_routes", __name__)
+join_route = Blueprint('join_route', __name__)
 
 oauth = OAuth(current_app)
 oauth.register(
@@ -56,19 +57,19 @@ def callback():
         token = get_token()
         session["user"] = token
     except AuthTokenError:
-        return render_error_page()
+        return redirect("/auth/server-error")
 
     if not process_user_session():
         logger.debug("User session processing failed")
-        return render_error_page()
+        return redirect("/auth/server-error")
 
     org_selection = session.get("org_selection", [])
     original_email = session.get("email")
 
     if not send_github_invitation(original_email, org_selection):
-        return render_error_page()
+        return redirect("/auth/server-error")
 
-    return render_success_page()
+    return redirect("/join/invitation-sent")
 
 
 def get_token():
@@ -123,11 +124,13 @@ def send_github_invitation(email, org_selection):
         return False
 
 
-def render_success_page():
+@join_route.route("/invitation-sent")
+def invitation_sent():
     return render_template("pages/invitation-sent.html")
 
 
-def render_error_page():
+@auth_route.route("/server-error")
+def server_error():
     return render_template("pages/errors/500.html"), 500
 
 
