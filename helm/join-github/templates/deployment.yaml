@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "join-github.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.app.deployment.replicaCount } }
+  replicas: {{ .Values.app.deployment.replicaCount }}
   selector:
     matchLabels:
       {{- include "join-github.selectorLabels" . | nindent 6 }}
