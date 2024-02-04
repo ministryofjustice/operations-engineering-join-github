@@ -2,8 +2,7 @@ import logging
 from urllib.parse import quote_plus, urlencode
 
 from authlib.integrations.flask_client import OAuth
-from flask import (Blueprint, current_app, redirect, render_template, session,
-                   url_for)
+from flask import Blueprint, current_app, redirect, render_template, session, url_for
 
 from join_github_app.app_config import app_config
 from join_github_app.main.middleware.error_handler import AuthTokenError
@@ -20,7 +19,7 @@ oauth.register(
     client_kwargs={
         "scope": "openid profile email",
     },
-    server_metadata_url=f'https://{app_config.auth0.domain}/.well-known/openid-configuration'
+    server_metadata_url=f"https://{app_config.auth0.domain}/.well-known/openid-configuration",
 )
 
 
@@ -86,7 +85,7 @@ def process_user_session():
 
     :return: True if session processing is successful, False otherwise.
     """
-    if 'user' not in session or 'email' not in session:
+    if "user" not in session or "email" not in session:
         logger.error("Missing user or email in session")
         return False
 
@@ -140,7 +139,7 @@ def user_is_valid(auth0_email, original_email) -> bool:
 
 
 def user_email_allowed(email) -> bool:
-    domain = email[email.index("@") + 1:]
+    domain = email[email.index("@") + 1 :]
     if domain in app_config.github.allowed_email_domains:
         return True
     return False
