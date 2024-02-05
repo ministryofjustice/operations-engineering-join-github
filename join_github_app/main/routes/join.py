@@ -79,7 +79,19 @@ def join_selection():
 
 @join_route.route("/invitation-sent")
 def invitation_sent():
-    return render_template("pages/invitation-sent.html")
+    auth0_email = session["user"].get("userinfo", {}).get("email").lower()
+    org_selection = session.get("org_selection", [])
+    if len(org_selection) == 1:
+        org_selection_string = org_selection[0]
+        template = "pages/invitation-sent.html"
+    else:
+        org_selection_string = f"{', '.join(org_selection[:-1])} and {org_selection[-1]}"
+        template = "pages/multiple-invitations-sent.html"
+    return render_template(
+        template,
+        org_selection_string=org_selection_string,
+        email=auth0_email
+    )
 
 
 @join_route.route("/submitted")

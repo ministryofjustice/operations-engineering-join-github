@@ -1,7 +1,7 @@
 {% extends "components/base.html" %}
 
 {% block pageTitle %}
-    Invitation sent
+    Thank you
 {% endblock %}
 
 {% block beforeContent %}
@@ -15,13 +15,13 @@
 {% block content %}
 
     {{ govukPanel({
-        'titleText': 'Invitation sent to',
+        'titleText': 'Invitations sent to',
         'html': email
     }) }}
 
     <p class="govuk-body">
-        Please find an email invite from GitHub in your inbox and follow
-        instructions to join the {{org_selection_string}} GitHub Organisation.
+        Please find email invites from GitHub in your inbox and follow
+        instructions to join the {{org_selection_string}} GitHub Organisations.
     </p>
     <p class="govuk-body">
         If you require further assistance contact us on the Operations Engineering team Slack channel <a
