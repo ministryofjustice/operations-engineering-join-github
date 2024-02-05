@@ -81,7 +81,7 @@ class TestAuthRoutes(unittest.TestCase):
     def test_process_user_session_success(self):
         with self.app.test_request_context('/auth/callback'):
             session['user'] = {'userinfo': {'email': 'user@test.com'}}
-            session['email'] = 'user@test.com'
+            session['user_input_email'] = 'user@test.com'
             session['org_selection'] = ['some_org']
 
             result = process_user_session()

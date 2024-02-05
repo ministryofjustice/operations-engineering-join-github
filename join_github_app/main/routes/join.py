@@ -10,12 +10,12 @@ join_route = Blueprint('join_route', __name__)
 @join_route.route("/submit-email", methods=["GET", "POST"])
 def submit_email():
     if request.method == "POST":
-        email = request.form.get("emailAddress", "Empty").strip()
-        if not is_valid_email_pattern(email):
+        user_input_email = request.form.get("emailAddress", "Empty").strip()
+        if not is_valid_email_pattern(user_input_email):
             flash("Please enter a valid email address.")
             return render_template("pages/submit-email.html")
-        session['email'] = email
-        domain = session["email"].split("@")[1]
+        session['user_input_email'] = user_input_email
+        domain = session["user_input_email"].split("@")[1]
         if domain in set(app_config.github.allowed_email_domains):
             return redirect("/join/select-organisations")
         else:
@@ -27,14 +27,14 @@ def submit_email():
 def outside_collaborator():
     return render_template(
         "pages/outside-collaborator.html",
-        email=session["email"],
+        email=session["user_input_email"],
     )
 
 
 @join_route.route("/select-organisations", methods=["GET", "POST"])
 def select_organisations():
-    email = session.get("email", "").lower()
-    domain = email[email.index("@") + 1:]
+    user_input_email = session.get("user_input_email", "").lower()
+    domain = user_input_email[user_input_email.index("@") + 1:]
     is_digital_justice_user = is_digital_justice_email(domain)
     enabled_organisations = [organisation for organisation in app_config.github.organisations if organisation.enabled]
 
@@ -64,8 +64,8 @@ def select_organisations():
 
 @join_route.route("/selection")
 def join_selection():
-    email = session.get("email", "").lower()
-    domain = email[email.index("@") + 1:]
+    user_input_email = session.get("user_input_email", "").lower()
+    domain = user_input_email[user_input_email.index("@") + 1:]
     org_selection = session.get("org_selection", [])
 
     if is_justice_email(domain):
@@ -74,7 +74,11 @@ def join_selection():
         template = "pages/digital-justice-user.html"
     else:
         template = "pages/join-selection.html"
-    return render_template(template, org_selection=org_selection, email=email)
+    return render_template(
+        template,
+        org_selection=org_selection,
+        email=user_input_email
+    )
 
 
 @join_route.route("/invitation-sent")
