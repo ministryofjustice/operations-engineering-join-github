@@ -24,4 +24,4 @@ class GithubService:
             if app_config.github.send_email_invites_is_enabled:
                 self.github_client_core_api.get_organization(organisation.lower()).invite_user(email=email)
             else:
-                logger.info("Did not send invitation for organisation [ %s ] as SEND_EMAIL_INVITES is [ %s ]", organisation, app_config.github.send_email_invites_is_enabled)
+                logger.info("Invitation for organisation [ %s ] not sent as SEND_EMAIL_INVITES is [ %s ]", organisation, app_config.github.send_email_invites_is_enabled)
