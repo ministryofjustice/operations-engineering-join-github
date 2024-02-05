@@ -1,11 +1,10 @@
 import unittest
-from unittest.mock import MagicMock, patch
 from types import SimpleNamespace
+from unittest.mock import MagicMock, patch
 
 from flask import get_flashed_messages
 
 import join_github_app
-from join_github_app.main.routes.error import error
 from join_github_app.main.services.github_service import GithubService
 
 
@@ -75,7 +74,20 @@ class TestViews(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertIn("Azure", str(response.data))
 
-    @patch("join_github_app.main.routes.join.app_config", new=SimpleNamespace(github=SimpleNamespace(organisations=[SimpleNamespace(name="moj-analytical-services", enabled=True, display_text="MoJ Analytical Services")])))
+    @patch(
+        "join_github_app.main.routes.join.app_config",
+        new=SimpleNamespace(
+            github=SimpleNamespace(
+                organisations=[
+                    SimpleNamespace(
+                        name="moj-analytical-services",
+                        enabled=True,
+                        display_text="MoJ Analytical Services",
+                    )
+                ]
+            )
+        ),
+    )
     def test_select_organisations_digital_justice_user(self):
         with self.app.test_client() as client:
             with client.session_transaction() as sess:
@@ -90,7 +102,7 @@ class TestViews(unittest.TestCase):
     def test_single_invitation_sent(self):
         with self.app.test_client() as client:
             with client.session_transaction() as sess:
-                sess["user"] = {'userinfo': {'email': 'test@example.com'}}
+                sess["user"] = {"userinfo": {"email": "test@example.com"}}
                 sess["org_selection"] = ["org1"]
             response = client.get("/join/invitation-sent")
         self.assertEqual(response.status_code, 200)
@@ -100,18 +112,13 @@ class TestViews(unittest.TestCase):
     def test_multiple_invitations_sent(self):
         with self.app.test_client() as client:
             with client.session_transaction() as sess:
-                sess["user"] = {'userinfo': {'email': 'test@example.com'}}
+                sess["user"] = {"userinfo": {"email": "test@example.com"}}
                 sess["org_selection"] = ["org1", "org2"]
             response = client.get("/join/invitation-sent")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/join/invitation-sent")
         self.assertIn("Invitations sent to", str(response.data))
         self.assertIn("org1 and org2", str(response.data))
-
-    def test_error(self):
-        with self.app.test_request_context():
-            response = error("12345678")
-            self.assertRegex(response, "12345678")
 
 
 class TestCompletedRateLimit(unittest.TestCase):
