@@ -1,15 +1,17 @@
-import os
 import unittest
+from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 from flask import Response, session
 
 import join_github_app
 from join_github_app.main.middleware.error_handler import AuthTokenError
-from join_github_app.main.routes.auth import (process_user_session,
-                                              send_github_invitation,
-                                              user_email_allowed,
-                                              user_is_valid)
+from join_github_app.main.routes.auth import (
+    process_user_session,
+    send_github_invitation,
+    user_email_allowed,
+    user_is_valid,
+)
 from join_github_app.main.services.github_service import GithubService
 
 
@@ -19,7 +21,7 @@ class TestAuthRoutes(unittest.TestCase):
         self.app = join_github_app.create_app(self.github_service, False)
         self.ctx = self.app.app_context()
         self.ctx.push()
-        self.app.config['SECRET_KEY'] = 'my_precious_test_key'
+        self.app.config["SECRET_KEY"] = "my_precious_test_key"
         self.client = self.app.test_client()
 
     def tearDown(self):
@@ -34,22 +36,22 @@ class TestAuthRoutes(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
         mock_authorize_redirect.assert_called_once()
 
-    @patch("os.getenv")
-    def test_logout_route(self, mock_getenv):
-        mock_getenv.side_effect = lambda var: {"AUTH0_DOMAIN": "test.auth0.com", "AUTH0_CLIENT_ID": "test_client_id"}.get(var)
+    @patch(
+        "join_github_app.main.routes.auth.app_config",
+        new=SimpleNamespace(
+            auth0=SimpleNamespace(client_id="test_id", domain="auth0.com")
+        ),
+    )
+    def test_logout_route_redirects_and_clears_session_data(self):
+        with self.client.session_transaction() as session:
+            session["user"] = {"some": "data"}
 
-        with self.client as c:
-            with c.session_transaction() as sess:
-                sess['user'] = {'some': 'data'}
+        response = self.client.get("/auth/logout")
 
-            response = c.get("/auth/logout")
-
-            self.assertEqual(response.status_code, 302)
-
-            with c.session_transaction() as sess:
-                self.assertNotIn('user', sess)
-
-        self.assertIn('auth0.com/v2/logout', response.headers['Location'])
+        self.assertEqual(response.status_code, 302)
+        with self.client.session_transaction() as session:
+            self.assertNotIn("user", session)
+        self.assertIn("auth0.com/v2/logout", response.headers["Location"])
 
     @patch("join_github_app.main.routes.auth.render_success_page")
     @patch("join_github_app.main.routes.auth.send_github_invitation", return_value=True)
