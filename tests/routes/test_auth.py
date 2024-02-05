@@ -51,7 +51,7 @@ class TestAuthRoutes(unittest.TestCase):
 
         self.assertIn('auth0.com/v2/logout', response.headers['Location'])
 
-    @patch("join_github_app.main.routes.auth.invitation_sent")
+    @patch("join_github_app.main.routes.join.invitation_sent")
     @patch("join_github_app.main.routes.auth.send_github_invitation", return_value=True)
     @patch("join_github_app.main.routes.auth.process_user_session", return_value=True)
     @patch("join_github_app.main.routes.auth.get_token")

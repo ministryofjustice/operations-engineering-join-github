@@ -124,11 +124,6 @@ def send_github_invitation(email, org_selection):
         return False
 
 
-@join_route.route("/invitation-sent")
-def invitation_sent():
-    return render_template("pages/invitation-sent.html")
-
-
 @auth_route.route("/server-error")
 def server_error():
     return render_template("pages/errors/500.html"), 500

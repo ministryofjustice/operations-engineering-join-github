@@ -38,7 +38,7 @@ app_config = SimpleNamespace(
         ],
         organisations=[
             SimpleNamespace(
-                name="ministryofjustce",
+                name="ministryofjustice",
                 enabled=__get_env_var_as_boolean("MOJ_ORG_ENABLED"),
                 display_text="Ministry of Justice"
             ),
@@ -48,7 +48,7 @@ app_config = SimpleNamespace(
                 display_text="MoJ Analytical Services"
             ),
             SimpleNamespace(
-                name="ministryofjustce-test",
+                name="ministryofjustice-test",
                 enabled=__get_env_var_as_boolean("MOJ_TEST_ORG_ENABLED"),
                 display_text="Ministry of Justice Test Organisation"
             ),
