@@ -79,7 +79,7 @@ def join_selection():
 
 @join_route.route("/invitation-sent")
 def invitation_sent():
-    email = session.get("email", "").lower()
+    auth0_email = session["user"].get("userinfo", {}).get("email").lower()
     org_selection = session.get("org_selection", [])
     if len(org_selection) == 1:
         org_selection_string = org_selection[0]
@@ -90,7 +90,7 @@ def invitation_sent():
     return render_template(
         template,
         org_selection_string=org_selection_string,
-        email=email
+        email=auth0_email
     )
 
 

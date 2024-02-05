@@ -90,7 +90,7 @@ class TestViews(unittest.TestCase):
     def test_single_invitation_sent(self):
         with self.app.test_client() as client:
             with client.session_transaction() as sess:
-                sess["email"] = "user@email.com"
+                sess["user"] = {'userinfo': {'email': 'test@example.com'}}
                 sess["org_selection"] = ["org1"]
             response = client.get("/join/invitation-sent")
         self.assertEqual(response.status_code, 200)
@@ -100,7 +100,7 @@ class TestViews(unittest.TestCase):
     def test_multiple_invitations_sent(self):
         with self.app.test_client() as client:
             with client.session_transaction() as sess:
-                sess["email"] = "user@email.com"
+                sess["user"] = {'userinfo': {'email': 'test@example.com'}}
                 sess["org_selection"] = ["org1", "org2"]
             response = client.get("/join/invitation-sent")
         self.assertEqual(response.status_code, 200)
