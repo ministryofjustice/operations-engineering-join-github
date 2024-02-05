@@ -68,6 +68,7 @@ def callback():
 
     if not send_github_invitation(original_email, org_selection):
         return redirect("/auth/server-error")
+        # return render_template("pages/errors/500.html"), 500
 
     return redirect("/join/invitation-sent")
 

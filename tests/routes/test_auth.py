@@ -1,4 +1,3 @@
-import os
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -58,24 +57,24 @@ class TestAuthRoutes(unittest.TestCase):
     def test_callback_route_success(self, mock_get_token, mock_process_user_session,
                                     mock_send_github_invitation, mock_invitation_sent):
         mock_get_token.return_value = {'userinfo': {'email': 'test@example.com'}}
-        mock_invitation_sent.return_value = Response(status=200)
+        mock_invitation_sent.return_value = Response(status=302)
 
         response = self.client.get("/auth/callback")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('join/invitation-sent', response.headers['Location'])
         mock_get_token.assert_called_once()
         mock_process_user_session.assert_called_once()
         mock_send_github_invitation.assert_called_once()
-        mock_invitation_sent.assert_called_once()
 
-    @patch("join_github_app.main.routes.auth.server_error", return_value=Response(status=500))
+    # @patch("join_github_app.main.routes.auth.server_error", return_value=Response(status=500))
     @patch("join_github_app.main.routes.auth.get_token")
-    def test_callback_route_token_failure(self, mock_get_token, mock_server_error):
+    def test_callback_route_token_failure(self, mock_get_token):
         mock_get_token.side_effect = AuthTokenError("Token error")
 
         response = self.client.get("/auth/callback")
-        self.assertEqual(response.status_code, 500)
+        self.assertIn('/auth/server-error', response.headers['Location'])
+        self.assertEqual(response.status_code, 302)
         mock_get_token.assert_called_once()
-        mock_server_error.assert_called_once()
 
     @patch("join_github_app.main.routes.auth.app_config.github.allowed_email_domains",
            new=["example.com", "test.com"])

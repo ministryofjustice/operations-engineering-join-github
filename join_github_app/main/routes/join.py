@@ -94,8 +94,6 @@ def invitation_sent():
     )
 
 
-
-
 @join_route.route("/submitted")
 def submitted():
     return render_template("pages/thank-you.html")

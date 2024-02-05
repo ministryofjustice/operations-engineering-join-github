@@ -87,10 +87,26 @@ class TestViews(unittest.TestCase):
                 "disabled", str(response.data)
             )  # Check if the checkbox is disabled
 
-    def test_invitation_sent(self):
-        response = self.app.test_client().get("/join/invitation-sent")
+    def test_single_invitation_sent(self):
+        with self.app.test_client() as client:
+            with client.session_transaction() as sess:
+                sess["email"] = "user@email.com"
+                sess["org_selection"] = ["org1"]
+            response = client.get("/join/invitation-sent")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/join/invitation-sent")
+        self.assertIn("Invitation sent to", str(response.data))
+
+    def test_multiple_invitations_sent(self):
+        with self.app.test_client() as client:
+            with client.session_transaction() as sess:
+                sess["email"] = "user@email.com"
+                sess["org_selection"] = ["org1", "org2"]
+            response = client.get("/join/invitation-sent")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.request.path, "/join/invitation-sent")
+        self.assertIn("Invitations sent to", str(response.data))
+        self.assertIn("org1 and org2", str(response.data))
 
     def test_error(self):
         with self.app.test_request_context():
