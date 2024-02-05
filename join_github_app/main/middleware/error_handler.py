@@ -5,13 +5,6 @@ from flask import render_template
 logger = logging.getLogger(__name__)
 
 
-def handle_github_exception(error_message):
-    logger.error("GitHub exception occurred: %s", error_message)
-    return render_template(
-        "pages/errors/internal-error.html", error_message=error_message
-    )
-
-
 def page_not_found(err):
     logger.error("A request was made to a page that doesn't exist %s", err)
     return render_template("pages/errors/404.html"), 404
