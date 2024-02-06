@@ -65,8 +65,6 @@ def callback():
 
     org_selection = session["org_selection"]
     auth0_email = session["user"]["userinfo"]["email"]
-    # org_selection = session.get("org_selection", [])
-    # auth0_email = session["user"].get("userinfo", {}).get("email")
 
     if not send_github_invitation(auth0_email, org_selection):
         return redirect("/auth/server-error")
