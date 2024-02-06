@@ -5,29 +5,22 @@ from flask import render_template
 logger = logging.getLogger(__name__)
 
 
-def handle_github_exception(error_message):
-    logger.error("GitHub exception occurred: %s", error_message)
-    return render_template(
-        "pages/errors/internal-error.html", error_message=error_message
-    )
-
-
-def page_not_found(err):
+def page_not_found(err: Exception):
     logger.error("A request was made to a page that doesn't exist %s", err)
     return render_template("pages/errors/404.html"), 404
 
 
-def server_forbidden(err):
+def server_forbidden(err: Exception):
     logger.error("server_forbidden(): %s", err)
     return render_template("pages/errors/403.html"), 403
 
 
-def unknown_server_error(err):
+def unknown_server_error(err: Exception):
     logger.error("An unknown server error occurred: %s", err)
     return render_template("pages/errors/500.html"), 500
 
 
-def gateway_timeout(err):
+def gateway_timeout(err: Exception):
     logger.error("A gateway timeout error occurred: %s", err)
     return render_template("pages/errors/504.html"), 504
 

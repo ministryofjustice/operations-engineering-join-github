@@ -10,6 +10,7 @@ from join_github_app.main.middleware.error_handler import AuthTokenError
 logger = logging.getLogger(__name__)
 
 auth_route = Blueprint("auth_routes", __name__)
+join_route = Blueprint('join_route', __name__)
 
 oauth = OAuth(current_app)
 oauth.register(
@@ -53,19 +54,19 @@ def callback():
         token = get_token()
         session["user"] = token
     except AuthTokenError:
-        return render_error_page()
+        return redirect("/auth/server-error")
 
     if not process_user_session():
         logger.debug("User session processing failed")
-        return render_error_page()
+        return redirect("/auth/server-error")
 
-    org_selection = session.get("org_selection", [])
-    original_email = session.get("email")
+    org_selection = session["org_selection"]
+    auth0_email = session["user"]["userinfo"]["email"]
 
-    if not send_github_invitation(original_email, org_selection):
-        return render_error_page()
+    if not send_github_invitation(auth0_email, org_selection):
+        return redirect("/auth/server-error")
 
-    return render_success_page()
+    return redirect("/join/invitation-sent")
 
 
 def get_token():
@@ -85,15 +86,15 @@ def process_user_session():
 
     :return: True if session processing is successful, False otherwise.
     """
-    if "user" not in session or "email" not in session:
+    if 'user' not in session or 'user_input_email' not in session:
         logger.error("Missing user or email in session")
         return False
 
     auth0_email = session["user"].get("userinfo", {}).get("email")
-    original_email = session["email"]
+    user_input_email = session["user_input_email"]
     org_selection = session.get("org_selection", [])
 
-    if not auth0_email or not user_is_valid(auth0_email, original_email):
+    if not auth0_email or not user_is_valid(auth0_email, user_input_email):
         logger.error("Invalid email in session or email mismatch")
         return False
 
@@ -120,16 +121,13 @@ def send_github_invitation(email, org_selection):
         return False
 
 
-def render_success_page():
-    return render_template("pages/invitation-sent.html")
-
-
-def render_error_page():
+@auth_route.route("/server-error")
+def server_error():
     return render_template("pages/errors/500.html"), 500
 
 
-def user_is_valid(auth0_email, original_email) -> bool:
-    if auth0_email.lower() != original_email.lower():
+def user_is_valid(auth0_email, user_input_email) -> bool:
+    if auth0_email.lower() != user_input_email.lower():
         return False
 
     if user_email_allowed(auth0_email):
