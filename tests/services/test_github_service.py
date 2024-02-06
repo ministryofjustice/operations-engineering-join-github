@@ -2,7 +2,7 @@ import os
 import unittest
 from unittest.mock import call, patch
 
-from join_github_app.main.services.github_service import GithubService
+from app.main.services.github_service import GithubService
 
 
 @patch("github.Github.__new__")

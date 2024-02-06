@@ -4,21 +4,21 @@ from unittest.mock import MagicMock, patch
 
 from flask import Response, session
 
-import join_github_app
-from join_github_app.main.middleware.error_handler import AuthTokenError
-from join_github_app.main.routes.auth import (
+import app
+from app.main.middleware.error_handler import AuthTokenError
+from app.main.routes.auth import (
     process_user_session,
     send_github_invitation,
     user_email_allowed,
     user_is_valid,
 )
-from join_github_app.main.services.github_service import GithubService
+from app.main.services.github_service import GithubService
 
 
 class TestAuthRoutes(unittest.TestCase):
     def setUp(self):
         self.github_service = MagicMock(GithubService)
-        self.app = join_github_app.create_app(self.github_service, False)
+        self.app = app.create_app(self.github_service, False)
         self.ctx = self.app.app_context()
         self.ctx.push()
         self.app.config["SECRET_KEY"] = "my_precious_test_key"
@@ -27,7 +27,7 @@ class TestAuthRoutes(unittest.TestCase):
     def tearDown(self):
         self.ctx.pop()
 
-    @patch("join_github_app.main.routes.auth.oauth.auth0.authorize_redirect")
+    @patch("app.main.routes.auth.oauth.auth0.authorize_redirect")
     def test_login_route(self, mock_authorize_redirect):
         mock_response = Response(status=302, headers={'Location': 'mock://auth0.redirect'})
         mock_authorize_redirect.return_value = mock_response
@@ -37,7 +37,7 @@ class TestAuthRoutes(unittest.TestCase):
         mock_authorize_redirect.assert_called_once()
 
     @patch(
-        "join_github_app.main.routes.auth.app_config",
+        "app.main.routes.auth.app_config",
         new=SimpleNamespace(
             auth0=SimpleNamespace(client_id="test_id", domain="auth0.com")
         ),
@@ -53,10 +53,10 @@ class TestAuthRoutes(unittest.TestCase):
             self.assertNotIn("user", session)
         self.assertIn("auth0.com/v2/logout", response.headers["Location"])
 
-    @patch("join_github_app.main.routes.join.invitation_sent")
-    @patch("join_github_app.main.routes.auth.send_github_invitation", return_value=True)
-    @patch("join_github_app.main.routes.auth.process_user_session", return_value=True)
-    @patch("join_github_app.main.routes.auth.get_token")
+    @patch("app.main.routes.join.invitation_sent")
+    @patch("app.main.routes.auth.send_github_invitation", return_value=True)
+    @patch("app.main.routes.auth.process_user_session", return_value=True)
+    @patch("app.main.routes.auth.get_token")
     def test_callback_route_success(self, mock_get_token, mock_process_user_session,
                                     mock_send_github_invitation, mock_invitation_sent):
         mock_get_token.return_value = {'userinfo': {'email': 'test@example.com'}}
@@ -74,7 +74,7 @@ class TestAuthRoutes(unittest.TestCase):
         mock_process_user_session.assert_called_once()
         mock_send_github_invitation.assert_called_once()
 
-    @patch("join_github_app.main.routes.auth.get_token")
+    @patch("app.main.routes.auth.get_token")
     def test_callback_route_token_failure(self, mock_get_token):
         mock_get_token.side_effect = AuthTokenError("Token error")
 
@@ -83,7 +83,7 @@ class TestAuthRoutes(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
         mock_get_token.assert_called_once()
 
-    @patch("join_github_app.main.routes.auth.app_config.github.allowed_email_domains",
+    @patch("app.main.routes.auth.app_config.github.allowed_email_domains",
            new=["example.com", "test.com"])
     def test_process_user_session_success(self):
         with self.app.test_request_context('/auth/callback'):
@@ -112,7 +112,7 @@ class TestAuthRoutes(unittest.TestCase):
             result = process_user_session()
             self.assertFalse(result)
 
-    @patch("join_github_app.main.routes.auth.app_config.github.allowed_email_domains",
+    @patch("app.main.routes.auth.app_config.github.allowed_email_domains",
            new=["example.com", "test.com"])
     def test_process_user_session_with_mismatched_user_email(self):
         with self.app.test_request_context('/auth/callback'):
@@ -123,7 +123,7 @@ class TestAuthRoutes(unittest.TestCase):
             result = process_user_session()
             self.assertFalse(result)
 
-    @patch("join_github_app.main.routes.auth.app_config.github.allowed_email_domains",
+    @patch("app.main.routes.auth.app_config.github.allowed_email_domains",
            new=["example.com", "test.com"])
     def test_process_user_session_with_missing_org_selection(self):
         with self.app.test_request_context('/auth/callback'):
@@ -152,17 +152,17 @@ class TestAuthRoutes(unittest.TestCase):
 
 
 class TestUserValidation(unittest.TestCase):
-    @patch("join_github_app.main.routes.auth.user_email_allowed", return_value=True)
+    @patch("app.main.routes.auth.user_email_allowed", return_value=True)
     def test_user_is_valid_matching_emails(self, mock_user_email_allowed):
         self.assertTrue(user_is_valid("test@example.com", "test@example.com"))
 
-    @patch("join_github_app.main.routes.auth.user_email_allowed", return_value=False)
+    @patch("app.main.routes.auth.user_email_allowed", return_value=False)
     def test_user_is_valid_non_matching_emails(self, mock_user_email_allowed):
         self.assertFalse(user_is_valid("test@example.com", "other@example.com"))
 
 
 class TestEmailAllowed(unittest.TestCase):
-    @patch("join_github_app.main.routes.auth.app_config.github.allowed_email_domains", new=["example.com"])
+    @patch("app.main.routes.auth.app_config.github.allowed_email_domains", new=["example.com"])
     def test_user_email_allowed(self):
         self.assertTrue(user_email_allowed("user@example.com"))
         self.assertFalse(user_email_allowed("user@notallowed.com"))

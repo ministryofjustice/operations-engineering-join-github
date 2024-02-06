@@ -1,6 +1,6 @@
 import pytest
 
-from join_github_app.main.validators.index import is_valid_email_pattern
+from app.main.validators.index import is_valid_email_pattern
 
 
 class TestUtils:
