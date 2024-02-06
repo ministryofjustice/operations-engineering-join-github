@@ -30,7 +30,7 @@ def create_app(
     if app_config.sentry.dsn_key and app_config.sentry.environment:
         sentry_sdk.init(
             dsn=app_config.sentry.dsn_key,
-            environment=app_config.sentry.dsn_environment,
+            environment=app_config.sentry.environment,
             integrations=[FlaskIntegration()],
             enable_tracing=True,
             traces_sample_rate=0.1,
