@@ -59,14 +59,18 @@ class TestAuthRoutes(unittest.TestCase):
         mock_get_token.return_value = {'userinfo': {'email': 'test@example.com'}}
         mock_invitation_sent.return_value = Response(status=302)
 
-        response = self.client.get("/auth/callback")
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess["org_selection"] = ["some-org"]
+
+            response = self.client.get("/auth/callback")
+
         self.assertEqual(response.status_code, 302)
         self.assertIn('join/invitation-sent', response.headers['Location'])
         mock_get_token.assert_called_once()
         mock_process_user_session.assert_called_once()
         mock_send_github_invitation.assert_called_once()
 
-    # @patch("join_github_app.main.routes.auth.server_error", return_value=Response(status=500))
     @patch("join_github_app.main.routes.auth.get_token")
     def test_callback_route_token_failure(self, mock_get_token):
         mock_get_token.side_effect = AuthTokenError("Token error")

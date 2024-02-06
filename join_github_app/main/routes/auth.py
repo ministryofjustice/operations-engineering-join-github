@@ -63,9 +63,10 @@ def callback():
         logger.debug("User session processing failed")
         return redirect("/auth/server-error")
 
-    org_selection = session.get("org_selection", [])
-    # user_input_email = session.get("user_input_email")
-    auth0_email = session["user"].get("userinfo", {}).get("email")
+    org_selection = session["org_selection"]
+    auth0_email = session["user"]["userinfo"]["email"]
+    # org_selection = session.get("org_selection", [])
+    # auth0_email = session["user"].get("userinfo", {}).get("email")
 
     if not send_github_invitation(auth0_email, org_selection):
         return redirect("/auth/server-error")
