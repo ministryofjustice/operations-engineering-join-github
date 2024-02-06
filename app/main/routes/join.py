@@ -1,8 +1,8 @@
 from flask import (Blueprint, flash, redirect, render_template,
                    request, session)
 
-from join_github_app.app_config import app_config
-from join_github_app.main.validators.index import is_valid_email_pattern
+from app.app_config import app_config
+from app.main.validators.index import is_valid_email_pattern
 
 join_route = Blueprint('join_route', __name__)
 

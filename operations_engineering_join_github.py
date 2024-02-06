@@ -1,4 +1,4 @@
-from join_github_app import create_app
+from app import create_app
 
 
 # Gunicorn entry point, return the object without running it

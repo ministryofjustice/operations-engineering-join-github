@@ -5,6 +5,7 @@ LABEL maintainer="operations-engineering <operations-engineering@digital.justice
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup -u 1051
 
 RUN apk add --no-cache --no-progress \
+  libffi-dev \
   build-base \
   curl \
   && apk update \
@@ -13,7 +14,7 @@ RUN apk add --no-cache --no-progress \
 WORKDIR /home/operations-engineering-join-github
 
 COPY requirements.txt requirements.txt
-COPY join_github_app join_github_app
+COPY app app
 COPY operations_engineering_join_github.py operations_engineering_join_github.py
 
 RUN pip3 install --no-cache-dir -r requirements.txt
@@ -27,4 +28,4 @@ EXPOSE 4567
 
 HEALTHCHECK --interval=60s --timeout=30s CMD curl -I -XGET http://localhost:4567 || exit 1
 
-ENTRYPOINT ["gunicorn", "--bind=0.0.0.0:4567", "operations_engineering_join_github:app()"]
+ENTRYPOINT ["gunicorn", "--bind=0.0.0.0:4567", "app:app()"]

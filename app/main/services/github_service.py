@@ -3,7 +3,7 @@ import logging
 import requests
 from github import Github
 
-from join_github_app.app_config import app_config
+from app.app_config import app_config
 
 logger = logging.getLogger(__name__)
 

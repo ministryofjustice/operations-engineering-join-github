@@ -8,16 +8,16 @@ from flask_limiter.util import get_remote_address
 from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
 from sentry_sdk.integrations.flask import FlaskIntegration
 
-from join_github_app.app_config import app_config
-from join_github_app.main.middleware.error_handler import (
+from app.app_config import app_config
+from app.main.middleware.error_handler import (
     page_not_found,
     server_forbidden,
     unknown_server_error,
 )
-from join_github_app.main.routes.auth import auth_route
-from join_github_app.main.routes.join import join_route
-from join_github_app.main.routes.main import main
-from join_github_app.main.services.github_service import GithubService
+from app.main.routes.auth import auth_route
+from app.main.routes.join import join_route
+from app.main.routes.main import main
+from app.main.services.github_service import GithubService
 
 
 def create_app(
@@ -59,7 +59,7 @@ def create_app(
 
     app.jinja_loader = ChoiceLoader(
         [
-            PackageLoader("join_github_app"),
+            PackageLoader("app"),
             PrefixLoader(
                 {"govuk_frontend_jinja": PackageLoader("govuk_frontend_jinja")}
             ),

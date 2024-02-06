@@ -4,8 +4,8 @@ from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
 from flask import Blueprint, current_app, redirect, render_template, session, url_for
 
-from join_github_app.app_config import app_config
-from join_github_app.main.middleware.error_handler import AuthTokenError
+from app.app_config import app_config
+from app.main.middleware.error_handler import AuthTokenError
 
 logger = logging.getLogger(__name__)
 

@@ -1,6 +1,6 @@
 .ONESHELL:
 
-PYTHON_SOURCE_FILES = ./tests operations_engineering_join_github.py ./join_github_app
+PYTHON_SOURCE_FILES = ./tests operations_engineering_join_github.py ./app
 # Default values for variables (can be overridden by passing arguments to `make`)
 RELEASE_NAME ?= default-release-name
 AUTH0_CLIENT_ID ?= default-auth0-client-id
