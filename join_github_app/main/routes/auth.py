@@ -1,11 +1,8 @@
 import logging
-import os
-from os import environ as env
 from urllib.parse import quote_plus, urlencode
 
 from authlib.integrations.flask_client import OAuth
-from flask import (Blueprint, current_app, redirect, render_template, session,
-                   url_for)
+from flask import Blueprint, current_app, redirect, render_template, session, url_for
 
 from join_github_app.app_config import app_config
 from join_github_app.main.middleware.error_handler import AuthTokenError
@@ -18,12 +15,12 @@ join_route = Blueprint('join_route', __name__)
 oauth = OAuth(current_app)
 oauth.register(
     "auth0",
-    client_id=env.get("AUTH0_CLIENT_ID"),
-    client_secret=env.get("AUTH0_CLIENT_SECRET"),
+    client_id=app_config.auth0.client_id,
+    client_secret=app_config.auth0.client_id,
     client_kwargs={
         "scope": "openid profile email",
     },
-    server_metadata_url=f'https://{env.get("AUTH0_DOMAIN")}/.well-known/openid-configuration'
+    server_metadata_url=f"https://{app_config.auth0.domain}/.well-known/openid-configuration",
 )
 
 
@@ -39,12 +36,12 @@ def logout():
     session.clear()
     return redirect(
         "https://"
-        + os.getenv("AUTH0_DOMAIN")
+        + app_config.auth0.domain
         + "/v2/logout?"
         + urlencode(
             {
                 "returnTo": url_for("main.index", _external=True),
-                "client_id": os.getenv("AUTH0_CLIENT_ID"),
+                "client_id": app_config.auth0.client_id,
             },
             quote_via=quote_plus,
         )
@@ -140,7 +137,7 @@ def user_is_valid(auth0_email, user_input_email) -> bool:
 
 
 def user_email_allowed(email) -> bool:
-    domain = email[email.index("@") + 1:]
+    domain = email[email.index("@") + 1 :]
     if domain in app_config.github.allowed_email_domains:
         return True
     return False

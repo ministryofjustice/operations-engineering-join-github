@@ -19,11 +19,17 @@ def __get_env_var_as_boolean(name: str) -> bool | None:
 
 
 app_config = SimpleNamespace(
+    auth0=SimpleNamespace(
+        domain=__get_env_var("AUTH0_DOMAIN"),
+        client_id=__get_env_var("AUTH0_CLIENT_ID"),
+        client_secret=__get_env_var("AUTH0_CLIENT_SECRET")
+    ),
     flask=SimpleNamespace(
         app_secret_key=__get_env_var("APP_SECRET_KEY")
     ),
     github=SimpleNamespace(
         send_email_invites_is_enabled=__get_env_var_as_boolean("SEND_EMAIL_INVITES"),
+        token=__get_env_var("ADMIN_GITHUB_TOKEN"),
         allowed_email_domains=[
             "digital.justice.gov.uk",
             "justice.gov.uk",
@@ -34,7 +40,7 @@ app_config = SimpleNamespace(
             "judiciary.uk",
             "ppo.gov.uk",
             "sentencingcouncil.gov.uk",
-            "yjb.gov.uk",
+            "yjb.gov.uk"
         ],
         organisations=[
             SimpleNamespace(
@@ -51,8 +57,12 @@ app_config = SimpleNamespace(
                 name="ministryofjustice-test",
                 enabled=__get_env_var_as_boolean("MOJ_TEST_ORG_ENABLED"),
                 display_text="Ministry of Justice Test Organisation"
-            ),
+            )
         ]
     ),
-    phase_banner_text=__get_env_var("PHASE_BANNER_TEXT")
+    phase_banner_text=__get_env_var("PHASE_BANNER_TEXT"),
+    sentry=SimpleNamespace(
+        dsn_key=__get_env_var("SENTRY_DSN_KEY"),
+        environment=__get_env_var("SENTRY_ENV")
+    )
 )
