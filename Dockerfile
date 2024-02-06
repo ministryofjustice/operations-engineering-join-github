@@ -28,4 +28,4 @@ EXPOSE 4567
 
 HEALTHCHECK --interval=60s --timeout=30s CMD curl -I -XGET http://localhost:4567 || exit 1
 
-ENTRYPOINT ["gunicorn", "--bind=0.0.0.0:4567", "app:app()"]
+ENTRYPOINT ["gunicorn", "--bind=0.0.0.0:4567", "operations_engineering_join_github:app()"]
