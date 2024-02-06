@@ -58,7 +58,7 @@ class TestViews(unittest.TestCase):
     def test_join_selection_digital_justice_user(self):
         with self.app.test_client() as client:
             with client.session_transaction() as sess:
-                sess["email"] = "user@digital.justice.gov.uk"
+                sess["user_input_email"] = "user@digital.justice.gov.uk"
                 sess["org_selection"] = ["ministryofjustice"]
 
             response = client.get("/join/selection")
@@ -68,7 +68,7 @@ class TestViews(unittest.TestCase):
     def test_join_selection_justice_user(self):
         with self.app.test_client() as client:
             with client.session_transaction() as sess:
-                sess["email"] = "user@justice.gov.uk"
+                sess["user_input_email"] = "user@justice.gov.uk"
                 sess["org_selection"] = ["ministryofjustice"]
 
             response = client.get("/join/selection")
@@ -79,7 +79,7 @@ class TestViews(unittest.TestCase):
     def test_select_organisations_digital_justice_user(self):
         with self.app.test_client() as client:
             with client.session_transaction() as sess:
-                sess["email"] = "user@digital.justice.gov.uk"
+                sess["user_input_email"] = "user@digital.justice.gov.uk"
             response = client.get("/join/select-organisations")
             self.assertEqual(response.status_code, 200)
             self.assertIn("MoJ Analytical Services", str(response.data))
