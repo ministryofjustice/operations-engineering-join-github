@@ -6,19 +6,19 @@ from flask import Flask
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from github import GithubException
 from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
 from sentry_sdk.integrations.flask import FlaskIntegration
 
+from join_github_app.app_config import app_config
 from join_github_app.main.middleware.error_handler import (
-    handle_github_exception, page_not_found, server_forbidden,
-    unknown_server_error)
+    page_not_found,
+    server_forbidden,
+    unknown_server_error,
+)
 from join_github_app.main.routes.auth import auth_route
-from join_github_app.main.routes.error import error_route
 from join_github_app.main.routes.join import join_route
 from join_github_app.main.routes.main import main
 from join_github_app.main.services.github_service import GithubService
-from join_github_app.app_config import app_config
 
 
 def create_app(github_service: GithubService, rate_limit: bool = True) -> Flask:
@@ -32,7 +32,7 @@ def create_app(github_service: GithubService, rate_limit: bool = True) -> Flask:
             environment=os.environ.get("SENTRY_ENV"),
             integrations=[FlaskIntegration()],
             enable_tracing=True,
-            traces_sample_rate=0.1
+            traces_sample_rate=0.1,
         )
 
     app = Flask(__name__, instance_relative_config=True)
@@ -52,9 +52,8 @@ def create_app(github_service: GithubService, rate_limit: bool = True) -> Flask:
 
     app.secret_key = app_config.flask.app_secret_key
 
-    app.register_blueprint(auth_route, url_prefix='/auth')
-    app.register_blueprint(join_route, url_prefix='/join')
-    app.register_blueprint(error_route, url_prefix='/error')
+    app.register_blueprint(auth_route, url_prefix="/auth")
+    app.register_blueprint(join_route, url_prefix="/join")
     app.register_blueprint(main)
 
     app.jinja_loader = ChoiceLoader(
@@ -72,7 +71,6 @@ def create_app(github_service: GithubService, rate_limit: bool = True) -> Flask:
     app.register_error_handler(403, server_forbidden)
     app.register_error_handler(404, page_not_found)
     app.register_error_handler(500, unknown_server_error)
-    app.register_error_handler(GithubException, handle_github_exception)
 
     CORS(app, resources={r"/*": {"origins": "*", "send_wildcard": "False"}})
 
