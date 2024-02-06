@@ -16,7 +16,7 @@ oauth = OAuth(current_app)
 oauth.register(
     "auth0",
     client_id=app_config.auth0.client_id,
-    client_secret=app_config.auth0.client_id,
+    client_secret=app_config.auth0.client_secret,
     client_kwargs={
         "scope": "openid profile email",
     },
