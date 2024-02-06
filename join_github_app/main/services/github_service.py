@@ -28,4 +28,4 @@ class GithubService:
                 else:
                     logger.info("Not sending invitation for organisation [ %s ] as SEND_EMAIL_INVITES is [ %s ]", organisation, app_config.github.send_email_invites_is_enabled)
             else:
-                logger.info("Not sending invitation for organisation [ %s ] as selected organization is invalid", organisation)
+                logger.info("Not sending invitation for organisation [ %s ] as selected organisation is invalid", organisation)
