@@ -45,7 +45,8 @@ def select_organisations():
     } for org in enabled_organisations]
 
     if request.method == "POST":
-        session["org_selection"] = [ org for org in request.form.getlist("organisation_selection") if org in enabled_organisations ]
+        valid_orgs = [ org.name for org in enabled_organisations ]
+        session["org_selection"] = [ org for org in request.form.getlist("organisation_selection") if org in valid_orgs ]
 
         if not session["org_selection"]:
             flash("Please select at least one organisation.")
