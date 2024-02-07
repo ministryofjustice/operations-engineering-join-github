@@ -131,10 +131,10 @@ def send_invitation():
     org_selection = sanitise_org_selection(session["org_selection"])
 
     if user_input_email.lower() != auth0_email.lower():
-        abort(400, "Users initial email does not match authenticated email")
+        abort(400, "Initial email does not match authenticated email")
 
     if not is_pre_approved_email_domain(auth0_email):
-        abort(400, "Users email domain is not pre-approved")
+        abort(400, "Email domain is not pre-approved")
 
     current_app.github_service.send_invites_to_user_email(auth0_email, org_selection)
 
