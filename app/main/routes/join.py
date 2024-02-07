@@ -1,10 +1,22 @@
-from flask import (Blueprint, flash, redirect, render_template,
-                   request, session)
+import logging
+
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 
 from app.app_config import app_config
+from app.main.middleware.auth import requires_auth
 from app.main.validators.index import is_valid_email_pattern
 
-join_route = Blueprint('join_route', __name__)
+logger = logging.getLogger(__name__)
+join_route = Blueprint("join_route", __name__)
 
 
 @join_route.route("/submit-email", methods=["GET", "POST"])
@@ -14,7 +26,7 @@ def submit_email():
         if not is_valid_email_pattern(user_input_email):
             flash("Please enter a valid email address.")
             return render_template("pages/submit-email.html")
-        session['user_input_email'] = user_input_email
+        session["user_input_email"] = user_input_email
         domain = session["user_input_email"].split("@")[1]
         if domain in set(app_config.github.allowed_email_domains):
             return redirect("/join/select-organisations")
@@ -34,19 +46,24 @@ def outside_collaborator():
 @join_route.route("/select-organisations", methods=["GET", "POST"])
 def select_organisations():
     user_input_email = session.get("user_input_email", "").lower()
-    domain = user_input_email[user_input_email.index("@") + 1:]
+    domain = user_input_email[user_input_email.index("@") + 1 :]
     is_digital_justice_user = is_digital_justice_email(domain)
-    enabled_organisations = [organisation for organisation in app_config.github.organisations if organisation.enabled]
 
-    checkboxes_items = [{
-        "value": org.name,
-        "text": org.display_text,
-        "disabled": True if org.name == "moj-analytical-services" and is_digital_justice_user else False
-    } for org in enabled_organisations]
+    checkboxes_items = [
+        {
+            "value": org.name,
+            "text": org.display_text,
+            "disabled": True
+            if org.name == "moj-analytical-services" and is_digital_justice_user
+            else False,
+        }
+        for org in get_enabled_organisations()
+    ]
 
     if request.method == "POST":
-        valid_orgs = [ org.name for org in enabled_organisations ]
-        session["org_selection"] = [ org for org in request.form.getlist("organisation_selection") if org in valid_orgs ]
+        session["org_selection"] = sanitize_org_selection(
+            request.form.getlist("organisation_selection")
+        )
 
         if not session["org_selection"]:
             flash("Please select at least one organisation.")
@@ -67,7 +84,7 @@ def select_organisations():
 @join_route.route("/selection")
 def join_selection():
     user_input_email = session.get("user_input_email", "").lower()
-    domain = user_input_email[user_input_email.index("@") + 1:]
+    domain = user_input_email[user_input_email.index("@") + 1 :]
     org_selection = session.get("org_selection", [])
 
     if is_justice_email(domain):
@@ -77,32 +94,80 @@ def join_selection():
     else:
         template = "pages/join-selection.html"
     return render_template(
-        template,
-        org_selection=org_selection,
-        email=user_input_email
+        template, org_selection=org_selection, email=user_input_email
     )
 
 
+@requires_auth
 @join_route.route("/invitation-sent")
 def invitation_sent():
-    auth0_email = session["user"].get("userinfo", {}).get("email").lower()
-    org_selection = session.get("org_selection", [])
+    auth0_email = session["user"]["userinfo"]["email"].lower()
+    org_selection = sanitize_org_selection(session["org_selection"])
     if len(org_selection) == 1:
         org_selection_string = org_selection[0]
         template = "pages/invitation-sent.html"
     else:
-        org_selection_string = f"{', '.join(org_selection[:-1])} and {org_selection[-1]}"
+        org_selection_string = (
+            f"{', '.join(org_selection[:-1])} and {org_selection[-1]}"
+        )
         template = "pages/multiple-invitations-sent.html"
     return render_template(
-        template,
-        org_selection_string=org_selection_string,
-        email=auth0_email
+        template, org_selection_string=org_selection_string, email=auth0_email
     )
 
 
-@join_route.route("/submitted")
-def submitted():
-    return render_template("pages/thank-you.html")
+@requires_auth
+@join_route.route("/send-invitation")
+def send_invitation():
+    auth0_email = session["user"]["userinfo"]["email"]
+    user_input_email = session["user_input_email"]
+    org_selection = sanitize_org_selection(session["org_selection"])
+
+    if user_input_email.lower() != auth0_email.lower():
+        raise ValueError("Users initial email does not match authenticated email")
+
+    if not is_pre_approved_email_domain(auth0_email):
+        raise ValueError("Users email domain is not pre-approved")
+
+    current_app.github_service.send_invites_to_user_email(auth0_email, org_selection)
+
+    return redirect(url_for("join_route.invitation_sent"))
+
+
+def get_enabled_organisations():
+    return [
+        organisation
+        for organisation in app_config.github.organisations
+        if organisation.enabled
+    ]
+
+
+def get_enabled_organisations_names():
+    return [
+        organisation.name
+        for organisation in app_config.github.organisations
+        if organisation.enabled
+    ]
+
+
+def sanitize_org_selection(org_selection: list[str]):
+    enabled_organisation_names = get_enabled_organisations_names()
+
+    sanitised_org_selection = []
+    for org_name in org_selection:
+        if org_name in enabled_organisation_names:
+            sanitised_org_selection.append(org_name)
+        else:
+            raise ValueError(
+                f"Organisation of [ {org_name} ] is not enabled for selection"
+            )
+
+    return sanitised_org_selection
+
+
+def is_pre_approved_email_domain(email) -> bool:
+    domain = email[email.index("@") + 1 :]
+    return True if domain in app_config.github.allowed_email_domains else False
 
 
 def is_digital_justice_email(domain):
