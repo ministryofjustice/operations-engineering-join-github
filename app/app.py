@@ -10,6 +10,7 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 
 from app.app_config import app_config
 from app.main.middleware.error_handler import (
+    client_error,
     page_not_found,
     server_forbidden,
     unknown_server_error,
@@ -18,6 +19,7 @@ from app.main.routes.auth import auth_route
 from app.main.routes.join import join_route
 from app.main.routes.main import main
 from app.main.routes.robots import robot_route
+from app.main.services.auth0_service import Auth0_Service
 from app.main.services.github_service import GithubService
 
 
@@ -71,6 +73,7 @@ def create_app(
     app.jinja_env.lstrip_blocks = True
     app.jinja_env.globals["phase_banner_text"] = app_config.phase_banner_text
 
+    app.register_error_handler(400, client_error)
     app.register_error_handler(403, server_forbidden)
     app.register_error_handler(404, page_not_found)
     app.register_error_handler(500, unknown_server_error)
@@ -78,6 +81,12 @@ def create_app(
     CORS(app, resources={r"/*": {"origins": "*", "send_wildcard": "False"}})
 
     app.github_service = github_service
+    app.auth0_service = Auth0_Service(
+        app,
+        app_config.auth0.client_id,
+        app_config.auth0.client_secret,
+        app_config.auth0.domain,
+    )
 
     app.logger.info("App Setup complete, running App...")
     return app

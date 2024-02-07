@@ -5,6 +5,11 @@ from flask import render_template
 logger = logging.getLogger(__name__)
 
 
+def client_error(err: Exception):
+    logger.error("There was an error with the client request %s", err)
+    return render_template("pages/errors/400.html", error_message=str(err)), 400
+
+
 def page_not_found(err: Exception):
     logger.error("A request was made to a page that doesn't exist %s", err)
     return render_template("pages/errors/404.html"), 404

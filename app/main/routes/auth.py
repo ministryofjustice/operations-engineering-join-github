@@ -25,7 +25,7 @@ def login():
 @auth_route.route("/logout", methods=["GET", "POST"])
 def logout():
     session.clear()
-    auth0_service.logout(url_for("main.index", _external=True))
+    return auth0_service.logout(url_for("main.index", _external=True))
 
 
 @auth_route.route("/callback", methods=["GET", "POST"])
