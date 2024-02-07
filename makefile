@@ -50,7 +50,7 @@ clean-test:
 	rm -fr htmlcov/
 
 local: venv
-	venv/bin/python3 -m operations_engineering_join_github
+	venv/bin/python3 -m app.run
 
 # Assumes you've already built the image locally
 docker-up:

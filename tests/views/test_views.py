@@ -4,14 +4,14 @@ from unittest.mock import MagicMock, patch
 
 from flask import get_flashed_messages
 
-import app
+from app.app import create_app
 from app.main.services.github_service import GithubService
 
 
 class TestViews(unittest.TestCase):
     def setUp(self):
         self.github_service = MagicMock(GithubService)
-        self.app = app.create_app(self.github_service, False)
+        self.app = create_app(self.github_service, False)
         self.app.config["SECRET_KEY"] = "test_flask"
 
     def test_default(self):
@@ -134,7 +134,7 @@ class TestCompletedRateLimit(unittest.TestCase):
 
         self.org = "some-org"
         self.github_service = MagicMock(GithubService)
-        self.app = app.create_app(self.github_service, True)
+        self.app = create_app(self.github_service, True)
 
     def test_rate_limit(self):
         # Send requests until you receive a 429 response
