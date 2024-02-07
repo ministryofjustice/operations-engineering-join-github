@@ -131,10 +131,12 @@ def send_invitation():
     org_selection = sanitise_org_selection(session["org_selection"])
 
     if user_input_email.lower() != auth0_email.lower():
-        abort(400, "Initial email does not match authenticated email")
+        logger.error("Initial email does not match authenticated email")
+        abort(400, f"Initial email {user_input_email} does not match authenticated email {auth0_email}")
 
     if not is_pre_approved_email_domain(auth0_email):
-        abort(400, "Email domain is not pre-approved")
+        logger.error("Email domain is not pre-approved")
+        abort(400, "Email {auth0_email} is not pre-approved")
 
     current_app.github_service.send_invites_to_user_email(auth0_email, org_selection)
 
@@ -166,7 +168,7 @@ def sanitise_org_selection(org_selection: list[str]) -> list[str]:
             sanitised_org_selection.append(org_name)
         else:
             logger.warn(
-                f"Organisation [ {org_name} ] is not enabled for selection and has been filtered out"
+                f"Filtering out [ {org_name} ] from user input because it is not enabled for selection"
             )
 
     return sanitised_org_selection
