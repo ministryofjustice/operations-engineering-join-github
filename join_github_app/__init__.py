@@ -17,6 +17,7 @@ from join_github_app.main.middleware.error_handler import (
 from join_github_app.main.routes.auth import auth_route
 from join_github_app.main.routes.join import join_route
 from join_github_app.main.routes.main import main
+from join_github_app.main.routes.robots import robot_route
 from join_github_app.main.services.github_service import GithubService
 
 
@@ -56,6 +57,7 @@ def create_app(
     app.register_blueprint(auth_route, url_prefix="/auth")
     app.register_blueprint(join_route, url_prefix="/join")
     app.register_blueprint(main)
+    app.register_blueprint(robot_route)
 
     app.jinja_loader = ChoiceLoader(
         [
