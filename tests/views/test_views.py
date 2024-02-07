@@ -19,6 +19,11 @@ class TestViews(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/")
 
+    def test_robots(self):
+        response = self.app.test_client().get("/robots.txt")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.request.path, "/robots.txt")
+
     def test_join_github_info_page(self):
         response = self.app.test_client().get("/join/submit-email")
         self.assertEqual(response.status_code, 200)
