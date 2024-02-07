@@ -26,15 +26,23 @@ To develop, deploy or run this app, you will need to install the following:
 
 ### Environment setup
 
-Set up the necessary environment variables. Refer to the .env.example file for the required format and variables. Create a .env file in the project root with the necessary configurations:
+Refer to the `.env.example` file for the required variables. Create a `.env` file from this in the project root. Note that `.env` is included in `.gitignore` so it is not tracked. 
 
 ```bash
 cp .env.example .env
-# Edit .env to add the required configurations
+```
+
+To enable the auth0 authentication to run locally requires the actual `AUTH0_CLIENT_ID` and `AUTH0_CLIENT_SECRET` (by default set to `dev`). To access these login to auth0 and go to the operations-engineering tenant then,
+
+Applications -> Applications -> `ops-eng-test-azure-ad` 
+
+Copy the Client ID and the Client Secret into your `.env`. Then source the `.env` and proceed.
+
+```bash
 source .env
 ```
 
-### Run application within Terminal
+### Run application from Terminal
 
 Run the application locally from the terminal.
 
