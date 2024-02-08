@@ -2,7 +2,7 @@ import logging
 
 from flask import Blueprint, current_app, redirect, session, url_for
 
-from app.app_config import app_config
+from app.main.config.app_config import app_config
 from app.main.services.auth0_service import Auth0_Service
 
 logger = logging.getLogger(__name__)

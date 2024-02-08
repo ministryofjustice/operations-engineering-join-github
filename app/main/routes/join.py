@@ -13,7 +13,7 @@ from flask import (
     url_for,
 )
 
-from app.app_config import app_config
+from app.main.config.app_config import app_config
 from app.main.middleware.auth import requires_auth
 from app.main.validators.index import is_valid_email_pattern
 
