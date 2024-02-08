@@ -27,5 +27,6 @@ services:
       MOJ_TEST_ORG_ENABLED: true
       SEND_EMAIL_INVITES: true
       PHASE_BANNER_TEXT: "LOCAL DEV"
+      LOGGING_LEVEL: "DEBUG"
     ports:
       - "4567:4567"

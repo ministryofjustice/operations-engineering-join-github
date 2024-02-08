@@ -22,10 +22,10 @@ app_config = SimpleNamespace(
     auth0=SimpleNamespace(
         domain=__get_env_var("AUTH0_DOMAIN"),
         client_id=__get_env_var("AUTH0_CLIENT_ID"),
-        client_secret=__get_env_var("AUTH0_CLIENT_SECRET")
+        client_secret=__get_env_var("AUTH0_CLIENT_SECRET"),
     ),
     flask=SimpleNamespace(
-        app_secret_key=__get_env_var("APP_SECRET_KEY")
+        app_secret_key=__get_env_var("APP_SECRET_KEY"),
     ),
     github=SimpleNamespace(
         send_email_invites_is_enabled=__get_env_var_as_boolean("SEND_EMAIL_INVITES"),
@@ -40,29 +40,29 @@ app_config = SimpleNamespace(
             "judiciary.uk",
             "ppo.gov.uk",
             "sentencingcouncil.gov.uk",
-            "yjb.gov.uk"
+            "yjb.gov.uk",
         ],
         organisations=[
             SimpleNamespace(
                 name="ministryofjustice",
                 enabled=__get_env_var_as_boolean("MOJ_ORG_ENABLED"),
-                display_text="Ministry of Justice"
+                display_text="Ministry of Justice",
             ),
             SimpleNamespace(
                 name="moj-analytical-services",
                 enabled=__get_env_var_as_boolean("MOJ_AS_ORG_ENABLED"),
-                display_text="MoJ Analytical Services"
+                display_text="MoJ Analytical Services",
             ),
             SimpleNamespace(
                 name="ministryofjustice-test",
                 enabled=__get_env_var_as_boolean("MOJ_TEST_ORG_ENABLED"),
-                display_text="Ministry of Justice Test Organisation"
-            )
-        ]
+                display_text="Ministry of Justice Test Organisation",
+            ),
+        ],
     ),
+    logging_level=__get_env_var("LOGGING_LEVEL"),
     phase_banner_text=__get_env_var("PHASE_BANNER_TEXT"),
     sentry=SimpleNamespace(
-        dsn_key=__get_env_var("SENTRY_DSN_KEY"),
-        environment=__get_env_var("SENTRY_ENV")
-    )
+        dsn_key=__get_env_var("SENTRY_DSN_KEY"), environment=__get_env_var("SENTRY_ENV")
+    ),
 )

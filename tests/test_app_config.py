@@ -1,7 +1,7 @@
 import os
 import unittest
 from unittest.mock import patch
-from app.app_config import __get_env_var_as_boolean as get_env_var_as_boolean
+from app.main.config.app_config import __get_env_var_as_boolean as get_env_var_as_boolean
 
 
 class TestGetEnvVarAsBoolean(unittest.TestCase):
