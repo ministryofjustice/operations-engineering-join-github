@@ -4,7 +4,6 @@ from unittest.mock import MagicMock, patch
 from flask import Response
 
 from app.app import create_app
-from app.main.middleware.error_handler import AuthTokenError
 from app.main.services.github_service import GithubService
 
 
