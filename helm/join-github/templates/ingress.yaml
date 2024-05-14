@@ -15,6 +15,7 @@ spec:
   tls:
     - hosts:
         - {{ .Values.app.ingress.host }}
+        secretName: "ssl-certificate"
   rules:
     - host: {{ .Values.app.ingress.host }}
       http:
@@ -26,4 +27,3 @@ spec:
                 name: {{ $fullName }}
                 port:
                   number: 80
-
