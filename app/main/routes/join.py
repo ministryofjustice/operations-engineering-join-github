@@ -90,8 +90,10 @@ def join_selection():
     user_input_email = session.get("user_input_email", "").lower()
     domain = user_input_email[user_input_email.index("@") + 1 :]
     org_selection = session.get("org_selection", [])
+    is_digital_justice_user = is_digital_justice_email(domain)
+    allowed_email_domains = set(app_config.github.allowed_email_domains)
 
-    if is_justice_email(domain):
+    if domain in allowed_email_domains and not is_digital_justice_user:
         template = "pages/justice-user.html"
     elif is_digital_justice_email(domain):
         template = "pages/digital-justice-user.html"
@@ -99,6 +101,15 @@ def join_selection():
         template = "pages/join-selection.html"
     return render_template(
         template, org_selection=org_selection, email=user_input_email
+
+    # if is_justice_email(domain):
+    #     template = "pages/justice-user.html"
+    # elif is_digital_justice_email(domain):
+    #     template = "pages/digital-justice-user.html"
+    # else:
+    #     template = "pages/join-selection.html"
+    # return render_template(
+    #     template, org_selection=org_selection, email=user_input_email
     )
 
 
