@@ -44,13 +44,22 @@ source .env
 
 ### Run application from Terminal
 
-Run the application locally from the terminal.
+To run the application locally from the terminal use:
 
 ```bash
 make local
 ```
 
-Open a browser to http://127.0.0.1:4567
+Then open a browser to `http://127.0.0.1:4567`.
+
+To use Docker run the following command and open a browser to `http://0.0.0.0:4567`:
+
+```bash
+make docker-up
+```
+ 
+
+
 
 ### Linting
 
