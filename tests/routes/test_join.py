@@ -119,6 +119,15 @@ class TestSelection(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Azure", str(response.data))
 
+    def test_join_selection_other_user(self):
+        with self.client.session_transaction() as sess:
+            sess["user_input_email"] = "user@ppo.gov.uk"
+            sess["org_selection"] = ["ministryofjustice"]
+
+        response = self.client.get("/join/selection")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Azure", str(response.data))
 
 class TestInvitationSent(unittest.TestCase):
     def setUp(self):
