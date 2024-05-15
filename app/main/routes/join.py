@@ -165,8 +165,9 @@ def sanitise_org_selection(org_selection: list[str]) -> list[str]:
         if org_name in enabled_organisation_names:
             sanitised_org_selection.append(org_name)
         else:
-            logger.warn(
-                f"Filtering out [ {org_name} ] from user input because it is not enabled for selection"
+            logger.warning(
+                "Filtering out [%s] from user input as it is disabled for selection",
+                org_name
             )
 
     return sanitised_org_selection
@@ -174,7 +175,7 @@ def sanitise_org_selection(org_selection: list[str]) -> list[str]:
 
 def is_pre_approved_email_domain(email: str) -> bool:
     domain = email[email.index("@") + 1 :]
-    return True if domain in app_config.github.allowed_email_domains else False
+    return domain in app_config.github.allowed_email_domains
 
 def is_digital_justice_email(email: str) -> bool:
     domain = email[email.index("@") + 1 :]
