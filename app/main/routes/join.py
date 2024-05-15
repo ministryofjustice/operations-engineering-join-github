@@ -174,9 +174,10 @@ def sanitise_org_selection(org_selection: list[str]) -> list[str]:
 
 
 def is_pre_approved_email_domain(email: str) -> bool:
-    domain = email[email.index("@") + 1 :]
+    domain = email[email.index("@")+1:]
     return domain in app_config.github.allowed_email_domains
 
+
 def is_digital_justice_email(email: str) -> bool:
-    domain = email[email.index("@") + 1 :]
+    domain = email[email.index("@")+1:]
     return "digital.justice.gov.uk" == domain.lower()

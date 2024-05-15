@@ -129,6 +129,7 @@ class TestSelection(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Azure", str(response.data))
 
+
 class TestInvitationSent(unittest.TestCase):
     def setUp(self):
         self.github_service = MagicMock(GithubService)
