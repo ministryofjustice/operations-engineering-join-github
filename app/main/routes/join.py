@@ -29,11 +29,9 @@ def submit_email():
             flash("Please enter a valid email address.")
             return render_template("pages/submit-email.html")
         session["user_input_email"] = user_input_email
-        domain = session["user_input_email"].split("@")[1]
-        if domain in set(app_config.github.allowed_email_domains):
+        if is_pre_approved_email_domain(user_input_email):
             return redirect("/join/select-organisations")
-        else:
-            return redirect("/join/outside-collaborator")
+        return redirect("/join/outside-collaborator")
     return render_template("pages/submit-email.html")
 
 
@@ -48,16 +46,14 @@ def outside_collaborator():
 @join_route.route("/select-organisations", methods=["GET", "POST"])
 def select_organisations():
     user_input_email = session.get("user_input_email", "").lower()
-    domain = user_input_email[user_input_email.index("@") + 1 :]
-    is_digital_justice_user = is_digital_justice_email(domain)
+    is_digital_justice_user = is_digital_justice_email(user_input_email)
 
     checkboxes_items = [
         {
             "value": org.name,
             "text": org.display_text,
-            "disabled": True
-            if org.name == "moj-analytical-services" and is_digital_justice_user
-            else False,
+            "disabled":
+            org.name == "moj-analytical-services" and is_digital_justice_user,
         }
         for org in get_enabled_organisations()
     ]
@@ -88,17 +84,19 @@ def select_organisations():
 @join_route.route("/selection")
 def join_selection():
     user_input_email = session.get("user_input_email", "").lower()
-    domain = user_input_email[user_input_email.index("@") + 1 :]
     org_selection = session.get("org_selection", [])
 
-    if is_justice_email(domain):
-        template = "pages/justice-user.html"
-    elif is_digital_justice_email(domain):
-        template = "pages/digital-justice-user.html"
-    else:
-        template = "pages/join-selection.html"
+    if is_digital_justice_email(user_input_email):
+        return render_template(
+            "pages/digital-justice-user.html",
+            org_selection=org_selection,
+            email=user_input_email
+        )
+
     return render_template(
-        template, org_selection=org_selection, email=user_input_email
+        "pages/justice-and-other-user.html",
+        org_selection=org_selection,
+        email=user_input_email
     )
 
 
@@ -167,21 +165,19 @@ def sanitise_org_selection(org_selection: list[str]) -> list[str]:
         if org_name in enabled_organisation_names:
             sanitised_org_selection.append(org_name)
         else:
-            logger.warn(
-                f"Filtering out [ {org_name} ] from user input because it is not enabled for selection"
+            logger.warning(
+                "Filtering out [%s] from user input as it is disabled for selection",
+                org_name
             )
 
     return sanitised_org_selection
 
 
 def is_pre_approved_email_domain(email: str) -> bool:
-    domain = email[email.index("@") + 1 :]
-    return True if domain in app_config.github.allowed_email_domains else False
+    domain = email[email.index("@")+1:]
+    return domain in app_config.github.allowed_email_domains
 
 
-def is_digital_justice_email(domain: str) -> bool:
+def is_digital_justice_email(email: str) -> bool:
+    domain = email[email.index("@")+1:]
     return "digital.justice.gov.uk" == domain.lower()
-
-
-def is_justice_email(domain: str) -> bool:
-    return "justice.gov.uk" == domain.lower()
