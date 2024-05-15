@@ -31,8 +31,7 @@ def submit_email():
         session["user_input_email"] = user_input_email
         if is_pre_approved_email_domain(user_input_email):
             return redirect("/join/select-organisations")
-        else:
-            return redirect("/join/outside-collaborator")
+        return redirect("/join/outside-collaborator")
     return render_template("pages/submit-email.html")
 
 
@@ -53,9 +52,8 @@ def select_organisations():
         {
             "value": org.name,
             "text": org.display_text,
-            "disabled": True
-            if org.name == "moj-analytical-services" and is_digital_justice_user
-            else False,
+            "disabled":
+            org.name == "moj-analytical-services" and is_digital_justice_user,
         }
         for org in get_enabled_organisations()
     ]
