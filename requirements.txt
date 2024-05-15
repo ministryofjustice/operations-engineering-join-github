@@ -4,7 +4,7 @@ email-validator==2.1.0.post1
 flask==3.0.0
 flask-cors==4.0.1
 Flask-Limiter==3.5.0
-govuk-frontend-jinja==3.0.0
+govuk-frontend-jinja==2.7.0
 gunicorn==22.0.0
 PyGithub==2.1.1
 requests==2.31.0
