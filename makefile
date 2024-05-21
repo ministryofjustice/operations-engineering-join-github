@@ -1,6 +1,6 @@
 .ONESHELL:
 
-PYTHON_SOURCE_FILES = ./tests operations_engineering_join_github.py ./join_github_app
+PYTHON_SOURCE_FILES = ./tests operations_engineering_join_github.py ./app
 # Default values for variables (can be overridden by passing arguments to `make`)
 RELEASE_NAME ?= default-release-name
 AUTH0_CLIENT_ID ?= default-auth0-client-id
@@ -50,7 +50,7 @@ clean-test:
 	rm -fr htmlcov/
 
 local: venv
-	venv/bin/python3 -m operations_engineering_join_github
+	venv/bin/python3 -m app.run
 
 # Assumes you've already built the image locally
 docker-up:

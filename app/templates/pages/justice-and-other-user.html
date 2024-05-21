@@ -1,0 +1,40 @@
+{% extends "components/base.html" %}
+
+{% block pageTitle %}
+GitHub Access Invitation
+{% endblock %}
+
+{% block beforeContent %}
+{{ super() }}
+{{ govukBackLink ({
+'text': 'Back',
+'href': '/join/select-organisations'
+}) }}
+{% endblock %}
+
+{% block content %}
+<h1 class="govuk-heading-l">Verify your work email address</h1>
+
+<p class="govuk-body">
+  This secure step is essential to confirm your identity and initiate the process of joining our GitHub organisations.
+</p>
+
+<p class="govuk-body">
+  By clicking the button below, you will be redirected to a secure sign-on page where you will be asked to confirm your Office 365 login details.
+</p>
+
+<p class="govuk-body">
+  After successfully authenticating with your @justice.gov.uk credentials, GitHub will send an invitation to your work email address.
+  
+</p>
+
+<form action="/auth/login" method="get">
+  <button type="submit" class="govuk-button">verify </button>
+</form>
+
+<p class="govuk-body">
+  If you require further assistance or have any questions, feel free to contact our Operations Engineering team via the
+  Slack channel <a href="https://mojdt.slack.com/archives/C01BUKJSZD4"
+    class="govuk-link">#ask-operations-engineering</a>.
+</p>
+{% endblock %}

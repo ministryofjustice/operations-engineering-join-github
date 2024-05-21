@@ -1,20 +1,20 @@
 import unittest
 from unittest.mock import MagicMock
 
-import join_github_app
-from join_github_app import GithubService
-from join_github_app.main.middleware.error_handler import (
+from app.app import create_app
+from app.main.middleware.error_handler import (
     gateway_timeout,
     page_not_found,
     server_forbidden,
     unknown_server_error,
 )
+from app.main.services.github_service import GithubService
 
 
 class TestErrorHandler(unittest.TestCase):
     def setUp(self):
         self.github_service = MagicMock(GithubService)
-        self.app = join_github_app.create_app(self.github_service, False)
+        self.app = create_app(self.github_service, False)
 
     def test_page_not_found(self):
         with self.app.test_request_context():
