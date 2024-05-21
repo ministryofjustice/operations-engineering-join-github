@@ -117,7 +117,7 @@ class TestSelection(unittest.TestCase):
         response = self.client.get("/join/selection")
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Azure", str(response.data))
+        self.assertIn("Office 365", str(response.data))
 
     def test_join_selection_other_user(self):
         with self.client.session_transaction() as sess:
@@ -127,7 +127,7 @@ class TestSelection(unittest.TestCase):
         response = self.client.get("/join/selection")
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Azure", str(response.data))
+        self.assertIn("Office 365", str(response.data))
 
 
 class TestInvitationSent(unittest.TestCase):
