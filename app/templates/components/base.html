@@ -11,9 +11,22 @@
 
 {% extends 'govuk_frontend_jinja/template.html' %}
 
+{% block head %}
+    <title>Join a Ministry of Justice GitHub Organisation</title>
+    <!-- Manually set the govuk frontend version in line below and bottom of this file -->
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('static', filename='stylesheets/moj-frontend.min.css') }}"/>
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('static', filename='stylesheets/govuk-frontend-5.1.0.min.css') }}"/>
+    <link rel="canonical" href="https://operations-engineering-join-github-dev.cloud-platform.service.justice.gov.uk/">
+    <meta property="og:site_name" content="Join a Ministry of Justice GitHub Organisation"/>
+    <meta property="og:title" content="Join a Ministry of Justice GitHub Organisation"/>
+    <meta property="og:type" content="object"/>
+    <meta property="og:url"
+          content="https://operations-engineering-join-github-dev.cloud-platform.service.justice.gov.uk/"/>
+{% endblock head %}
+
 {% block header %}
-  <link rel="stylesheet" type="text/css"
-        href="{{ url_for('static', filename='stylesheets/moj-frontend.min.css') }}"/>
   <header class="moj-header" role="banner">
     <div class="moj-header__container">
       <div class="moj-header__logo">
@@ -30,7 +43,7 @@
 
 
 {% block beforeContent %}
-  {% if phase_banner_text %}
+   {% if phase_banner_text %}
     {{ govukPhaseBanner({
       'tag': {
         'text': phase_banner_text
@@ -45,22 +58,11 @@
     Join a Ministry of Justice GitHub Organisation
 {% endblock %}
 
-{% block head %}
-    <title>Join a Ministry of Justice GitHub Organisation</title>
-    <!-- Manually set the govuk frontend version in line below and bottom of this file -->
-    <link rel="stylesheet" type="text/css"
-          href="{{ url_for('static', filename='stylesheets/govuk-frontend-4.3.0.min.css') }}"/>
-    <link rel="canonical" href="https://operations-engineering-join-github-dev.cloud-platform.service.justice.gov.uk/">
-    <meta property="og:site_name" content="Join a Ministry of Justice GitHub Organisation"/>
-    <meta property="og:title" content="Join a Ministry of Justice GitHub Organisation"/>
-    <meta property="og:type" content="object"/>
-    <meta property="og:url"
-          content="https://operations-engineering-join-github-dev.cloud-platform.service.justice.gov.uk/"/>
-{% endblock head %}
+
 
 {% block bodyEnd %}
     <!-- Manually set the govuk frontend version in the line below -->
-    <script src="{{ url_for('static', filename='javascript/govuk-frontend-4.3.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascript/govuk-frontend-5.1.0.min.js') }}"></script>
     <script>window.GOVUKFrontend.initAll()</script>
 {% endblock bodyEnd %}
 

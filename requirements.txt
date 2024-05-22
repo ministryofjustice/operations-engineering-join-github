@@ -1,10 +1,10 @@
 # Production
 authlib==1.2.1
 email-validator==2.1.0.post1
-flask==3.0.0
+flask==3.0.2
 flask-cors==4.0.1
 Flask-Limiter==3.5.0
-govuk-frontend-jinja==2.7.0
+govuk-frontend-jinja==3.0.0
 gunicorn==22.0.0
 PyGithub==2.1.1
 requests==2.32.0

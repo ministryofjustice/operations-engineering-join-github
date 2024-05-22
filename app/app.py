@@ -23,7 +23,7 @@ def create_app(
 
     logger.info("Starting app...")
 
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder="static", static_url_path="/assets")
 
     app.secret_key = app_config.flask.app_secret_key
 
