@@ -121,7 +121,7 @@ To deploy the latest tag push to GitHub in the production environment, follow th
 
 The Cloud Platform namespace for this project is called `operations-engineering-join-github-dev`.
 
-You can see the development app running at: https://join-github-dev.cloud-platform.service.justice.gov.uk/
+You can see the development app running at: https://dev.join-github.service.justice.gov.uk/
 
 And access Cloud Platform's namespace using:
 
@@ -133,7 +133,7 @@ kubectl get pods -n operations-engineering-join-github-dev
 
 The Cloud Platform namespace for the production environment is `operations-engineering-join-github-prod`.
 
-You can see the production app running at: https://join-github.cloud-platform.service.justice.gov.uk/
+You can see the production app running at: https://join-github.service.justice.gov.uk/
 
 To interact with the production environment, use kubectl commands. For example:
 
