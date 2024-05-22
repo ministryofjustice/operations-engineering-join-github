@@ -124,11 +124,11 @@ def invitation_sent():
 @requires_auth
 @join_route.route("/send-invitation")
 def send_invitation():
-    auth0_email = session["user"]["userinfo"]["email"]
-    user_input_email = session["user_input_email"]
+    auth0_email = session["user"]["userinfo"]["email"].lower()
+    user_input_email = session["user_input_email"].lower()
     org_selection = sanitise_org_selection(session["org_selection"])
 
-    if user_input_email.lower() != auth0_email.lower():
+    if user_input_email != auth0_email:
         logger.error("Initial email does not match authenticated email")
         abort(400, f"Initial email {user_input_email} does not match authenticated email {auth0_email}")
 
