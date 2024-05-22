@@ -11,5 +11,5 @@ app:
       MOJ_ORG_ENABLED: true
       MOJ_AS_ORG_ENABLED: true
       MOJ_TEST_ORG_ENABLED: false
-      SEND_EMAIL_INVITES: false
+      SEND_EMAIL_INVITES: true
       PHASE_BANNER_TEXT: "PRIVATE BETA"
