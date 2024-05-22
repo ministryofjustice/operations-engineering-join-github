@@ -1,5 +1,5 @@
 # Production
-authlib==1.2.1
+authlib==1.3.0
 email-validator==2.1.0.post1
 flask==3.0.2
 flask-cors==4.0.1
