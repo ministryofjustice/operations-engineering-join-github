@@ -20,16 +20,18 @@ GitHub Access Invitation
 </p>
 
 <p class="govuk-body">
-  By clicking the button below, you will be redirected to a secure sign-on page where you will be asked to confirm your Office 365 login details.
+  Click the button below to be redirected to a secure sign-on page where you will be asked to enter your Office 365 login details.
 </p>
 
 <p class="govuk-body">
-  After successfully authenticating with your @justice.gov.uk credentials, GitHub will send an invitation to your work email address.
+  After successfully authenticating with your Office 365 credentials, GitHub will send an invitation to the work email address provided.
   
 </p>
 
 <form action="/auth/login" method="get">
-  <button type="submit" class="govuk-button">verify </button>
+    {{ govukButton({
+        'text': 'Verify'
+        }) }}
 </form>
 
 <p class="govuk-body">
