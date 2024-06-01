@@ -11,4 +11,4 @@ requests==2.32.0
 sentry-sdk==1.39.2
 
 # Development
-freezegun==1.2.2
+freezegun==1.5.1
