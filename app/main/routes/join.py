@@ -1,17 +1,9 @@
 import logging
 from typing import Any
 
-from flask import (
-    Blueprint,
-    abort,
-    current_app,
-    flash,
-    redirect,
-    render_template,
-    request,
-    session,
-    url_for,
-)
+from flask import (Blueprint, abort, current_app, flash, redirect,
+                   render_template, request, session, url_for)
+from github import GithubException
 
 from app.main.config.app_config import app_config
 from app.main.middleware.auth import requires_auth
@@ -130,13 +122,26 @@ def send_invitation():
 
     if user_input_email != auth0_email:
         logger.error("Initial email does not match authenticated email")
-        abort(400, f"Initial email {user_input_email} does not match authenticated email {auth0_email}")
+        abort(400, f"Initial email {
+              user_input_email} does not match authenticated email {auth0_email}")
 
     if not is_pre_approved_email_domain(auth0_email):
         logger.error("Email domain is not pre-approved")
         abort(400, f"Email {auth0_email} is not pre-approved")
 
-    current_app.github_service.send_invites_to_user_email(auth0_email, org_selection)
+    try:
+        current_app.github_service.send_invites_to_user_email(
+            auth0_email, org_selection)
+    except GithubException as e:
+        if "A user with this email address is already a part of this organization" in str(e):
+            logger.error(
+                "User %s is already a member of the organization.", auth0_email)
+            return "User is already a member of the organization", 200
+        # re-raise the exception if it's a different error
+        logger.error("An unexpected GithubException occurred: %s", str(e))
+        raise e
+    except ValueError:
+        current_app.logger.error(f"Invalid email address: {auth0_email}")
 
     return redirect(url_for("join_route.invitation_sent"))
 
