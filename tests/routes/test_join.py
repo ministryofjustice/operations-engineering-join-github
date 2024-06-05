@@ -141,21 +141,26 @@ class TestSendInvitations(unittest.TestCase):
         self.app.config["SECRET_KEY"] = "test_flask"
         self.client = self.app.test_client()
 
-    @patch(
-        "app.main.routes.join.app_config",
-        new=SimpleNamespace(
+    @patch("app.main.routes.join.app_config", new_callable=MagicMock)
+    @patch('app.main.routes.join.is_pre_approved_email_domain', return_value=True)
+    def test_when_user_is_already_member_of_an_org(self, mock_app_config, mock_is_pre_approved_email_domain):
+
+        mock_app_config.return_value = SimpleNamespace(
             github=SimpleNamespace(
+                send_email_invites_is_enabled=True,
+                token="mock_token",
+                allowed_email_domains=[
+                    "justice.gov.uk"
+                ],
                 organisations=[
                     SimpleNamespace(
                         name="ministryofjustice",
                         enabled=True,
-                        display_text="Ministry of Justice",
+                        display_test="Mock"
                     )
                 ]
             )
-        ),
-    )
-    def test_when_user_is_already_member_of_an_org(self):
+        )
 
         self.github_service.send_invites_to_user_email.side_effect = GithubException(
             status=422,
@@ -179,7 +184,7 @@ class TestSendInvitations(unittest.TestCase):
             sess["org_selection"] = ["ministryofjustice"]
 
         response = self.client.get("/join/send-invitation")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertIn(
             "User test@justice.gov.uk is already a member of the organization.", response.data.decode())
 
