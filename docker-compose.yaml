@@ -15,17 +15,17 @@ services:
 
       # Flask
       APP_SECRET_KEY: dev
-      FLASK_DEBUG: true
+      FLASK_DEBUG: "true"
 
       # Sentry
-      # SENTRY_DSN_KEY: 
+      # SENTRY_DSN_KEY:
       SENTRY_ENV: local
 
       # App
-      MOJ_ORG_ENABLED: true
-      MOJ_AS_ORG_ENABLED: true
-      MOJ_TEST_ORG_ENABLED: true
-      SEND_EMAIL_INVITES: false
+      MOJ_ORG_ENABLED: "true"
+      MOJ_AS_ORG_ENABLED: "true"
+      MOJ_TEST_ORG_ENABLED: "true"
+      SEND_EMAIL_INVITES: "true"
       PHASE_BANNER_TEXT: "LOCAL DEV"
       LOGGING_LEVEL: "DEBUG"
     ports:
