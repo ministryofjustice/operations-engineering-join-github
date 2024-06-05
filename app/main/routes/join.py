@@ -127,7 +127,8 @@ def send_invitation():
 
     if not is_pre_approved_email_domain(auth0_email):
         logger.error("Email domain is not pre-approved")
-        abort(400, f"Email {auth0_email} is not pre-approved")
+        abort(400, f"Email {
+              auth0_email} is not pre-approved")
 
     try:
         current_app.github_service.send_invites_to_user_email(
@@ -136,12 +137,13 @@ def send_invitation():
         if "A user with this email address is already a part of this organization" in str(e):
             logger.error(
                 "User %s is already a member of the organization.", auth0_email)
-            return "User is already a member of the organization", 200
+            abort(400,
+                  f"User {auth0_email} is already a member of the organization.")
         # re-raise the exception if it's a different error
         logger.error("An unexpected GithubException occurred: %s", str(e))
         raise e
     except ValueError:
-        current_app.logger.error(f"Invalid email address: {auth0_email}")
+        logger.error("Invalid email address: %s", auth0_email)
 
     return redirect(url_for("join_route.invitation_sent"))
 
@@ -179,7 +181,7 @@ def sanitise_org_selection(org_selection: list[str]) -> list[str]:
 
 
 def is_pre_approved_email_domain(email: str) -> bool:
-    domain = email[email.index("@")+1:]
+    domain = email[email.index("@") + 1:]
     return domain in app_config.github.allowed_email_domains
 
 
