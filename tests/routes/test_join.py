@@ -184,9 +184,11 @@ class TestSendInvitations(unittest.TestCase):
             sess["org_selection"] = ["ministryofjustice"]
 
         response = self.client.get("/join/send-invitation")
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.request.path, "/join/send-invitation")
         self.assertIn(
-            "User test@justice.gov.uk is already a member of the organization.", response.data.decode())
+            "It appears you are already a member", str(
+                response.data))
 
 
 class TestInvitationSent(unittest.TestCase):
@@ -196,7 +198,7 @@ class TestInvitationSent(unittest.TestCase):
         self.app.config["SECRET_KEY"] = "test_flask"
         self.client = self.app.test_client()
 
-    @patch(
+    @ patch(
         "app.main.routes.join.app_config",
         new=SimpleNamespace(
             github=SimpleNamespace(
@@ -221,7 +223,7 @@ class TestInvitationSent(unittest.TestCase):
         self.assertEqual(response.request.path, "/join/invitation-sent")
         self.assertIn("ministryofjustice", str(response.data))
 
-    @patch(
+    @ patch(
         "app.main.routes.join.app_config",
         new=SimpleNamespace(
             github=SimpleNamespace(

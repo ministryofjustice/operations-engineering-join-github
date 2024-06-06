@@ -137,13 +137,13 @@ def send_invitation():
         if "A user with this email address is already a part of this organization" in str(e):
             logger.error(
                 "User %s is already a member of the organization.", auth0_email)
-            abort(400,
-                  f"User {auth0_email} is already a member of the organization.")
+            return render_template(
+                "pages/already-a-member.html",
+                email=auth0_email,
+            )
         # re-raise the exception if it's a different error
         logger.error("An unexpected GithubException occurred: %s", str(e))
         raise e
-    except ValueError:
-        logger.error("Invalid email address: %s", auth0_email)
 
     return redirect(url_for("join_route.invitation_sent"))
 
