@@ -32,8 +32,7 @@ class TestSubmitEmail(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/join/submit-email")
-        self.assertEqual(flashed_message.get(
-            "message"), expected_flashed_message)
+        self.assertEqual(flashed_message.get("message"), expected_flashed_message)
 
     def test_redirects_to_select_organisation_when_email_is_pre_approved(self):
         form_data = {"emailAddress": "email@digital.justice.gov.uk"}
@@ -44,8 +43,7 @@ class TestSubmitEmail(unittest.TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.request.path, "/join/submit-email")
-        self.assertEqual(
-            response.headers["Location"], "/join/select-organisations")
+        self.assertEqual(response.headers["Location"], "/join/select-organisations")
         self.assertEqual(flashed_message.get("message"), None)
 
     def test_redirects_to_outside_collaborators_when_email_is_not_pre_approved(self):
@@ -57,8 +55,7 @@ class TestSubmitEmail(unittest.TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.request.path, "/join/submit-email")
-        self.assertEqual(
-            response.headers["Location"], "/join/outside-collaborator")
+        self.assertEqual(response.headers["Location"], "/join/outside-collaborator")
         self.assertEqual(flashed_message.get("message"), None)
 
 
@@ -253,9 +250,7 @@ class TestInvitationSent(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request.path, "/join/invitation-sent")
         self.assertIn("Invitations sent to", str(response.data))
-        self.assertIn(
-            "ministryofjustice and moj-analytical-services", str(response.data)
-        )
+        self.assertIn("ministryofjustice and moj-analytical-services", str(response.data))
 
 
 if __name__ == "__main__":

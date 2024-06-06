@@ -122,8 +122,7 @@ def send_invitation():
 
     if user_input_email != auth0_email:
         logger.error("Initial email does not match authenticated email")
-        abort(400,
-              f"Initial email {user_input_email} does not match authenticated email {auth0_email}")
+        abort(400,f"Initial email {user_input_email} does not match authenticated email {auth0_email}")
 
     if not is_pre_approved_email_domain(auth0_email):
         logger.error("Email domain is not pre-approved")
