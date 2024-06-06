@@ -25,7 +25,7 @@ services:
       MOJ_ORG_ENABLED: "true"
       MOJ_AS_ORG_ENABLED: "true"
       MOJ_TEST_ORG_ENABLED: "true"
-      SEND_EMAIL_INVITES: "true"
+      SEND_EMAIL_INVITES: "false"
       PHASE_BANNER_TEXT: "LOCAL DEV"
       LOGGING_LEVEL: "DEBUG"
     ports:
