@@ -1,0 +1,28 @@
+{% extends "components/base.html" %}
+
+{% block pageTitle %}
+Already a Member
+{% endblock %}
+
+{% block beforeContent %}
+{{ super() }}
+{{ govukBackLink ({
+'text': 'Back',
+'href': '/'
+}) }}
+{% endblock %}
+
+{% block content %}
+
+{{ govukPanel({
+'titleText': 'It appears you are already a member of the MoJ GitHub Organisation. Please sign in to GitHub and check
+your organisation memberships. If you are still experiencing issues, please contact the Operations Engineering team.',
+'html': email
+}) }}
+
+<p class="govuk-body">
+  If you require further assistance contact us on the Operations Engineering team Slack channel <a
+    href="https://mojdt.slack.com/archives/C01BUKJSZD4" class="govuk-link">#ask-operations-engineering</a>.
+</p>
+
+{% endblock %}
