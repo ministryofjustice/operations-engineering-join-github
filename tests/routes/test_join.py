@@ -198,7 +198,7 @@ class TestInvitationSent(unittest.TestCase):
         self.app.config["SECRET_KEY"] = "test_flask"
         self.client = self.app.test_client()
 
-    @ patch(
+    @patch(
         "app.main.routes.join.app_config",
         new=SimpleNamespace(
             github=SimpleNamespace(
@@ -223,7 +223,7 @@ class TestInvitationSent(unittest.TestCase):
         self.assertEqual(response.request.path, "/join/invitation-sent")
         self.assertIn("ministryofjustice", str(response.data))
 
-    @ patch(
+    @patch(
         "app.main.routes.join.app_config",
         new=SimpleNamespace(
             github=SimpleNamespace(

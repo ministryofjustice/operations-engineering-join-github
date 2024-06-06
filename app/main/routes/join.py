@@ -127,8 +127,7 @@ def send_invitation():
 
     if not is_pre_approved_email_domain(auth0_email):
         logger.error("Email domain is not pre-approved")
-        abort(400, f"Email {
-              auth0_email} is not pre-approved")
+        abort(400, f"Email {auth0_email} is not pre-approved")
 
     try:
         current_app.github_service.send_invites_to_user_email(
