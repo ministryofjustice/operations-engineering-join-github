@@ -127,23 +127,22 @@ def send_invitation():
     if not is_pre_approved_email_domain(auth0_email):
         logger.error("Email domain is not pre-approved")
         abort(400, f"Email {auth0_email} is not pre-approved")
-
     try:
         current_app.github_service.send_invites_to_user_email(
             auth0_email, org_selection)
-    except GithubException as e:
-        if "A user with this email address is already a part of this organization" in str(e):
-            logger.error(
-                "User %s is already a member of the organization.", auth0_email)
-            return render_template(
-                "pages/already-a-member.html",
-                email=auth0_email,
-            )
-        # re-raise the exception if it's a different error
-        logger.error("An unexpected GithubException occurred: %s", str(e))
-        raise e
     except Exception as e:
-        logger.error("An unexpected error occurred: %s", str(e))
+        # Print out the exception type and details for debugging
+        logger.error("An unexpected exception occurred: %s (%s)", type(e).__name__, str(e))
+        if isinstance(e, GithubException):
+            if "A user with this email address is already a part of this organization" in str(e):
+                logger.error(
+                    "User %s is already a member of the organization.", auth0_email)
+                return render_template(
+                    "pages/already-a-member.html",
+                    email=auth0_email,
+                )
+        # re-raise the exception if it's a different error
+        raise e
 
     return redirect(url_for("join_route.invitation_sent"))
 
