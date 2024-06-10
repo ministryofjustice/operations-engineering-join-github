@@ -43,9 +43,6 @@ class TestGithubServiceInvites(unittest.TestCase):
         self.assertEqual(github_service.send_invites_to_user_email(
             self.valid_email, self.valid_orgs), None)
 
-    def test_test(self):
-        pass
-
     @patch.dict(os.environ, {"SEND_EMAIL_INVITES": "True"}, clear=True)
     def test_send_email_invites_on(self, mock_github_client_rest_api):
         github_service = GithubService("test")
