@@ -132,7 +132,9 @@ def send_invitation():
         current_app.github_service.send_invites_to_user_email(
             auth0_email, org_selection)
     except GithubException as e:
-        if "A user with this email address is already a part of this organization" in str(e):
+        error_message = str(e)
+        logger.error("GithubException occurred: %s", error_message)
+        if "already a part of this organization" in error_message:
             logger.error(
                 "User %s is already a member of the organization.", auth0_email)
             return render_template(
@@ -140,7 +142,10 @@ def send_invitation():
                 email=auth0_email,
             )
         # re-raise the exception if it's a different error
-        logger.error("An unexpected GithubException occurred: %s", str(e))
+        logger.error("An unexpected GithubException occurred: %s", error_message)
+        raise e
+    except Exception as e:
+        logger.error("An unexpected exception occurred: %s", str(e))
         raise e
 
     return redirect(url_for("join_route.invitation_sent"))

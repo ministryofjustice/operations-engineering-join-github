@@ -72,4 +72,4 @@ jobs:
             --set app.deployment.env.ADMIN_GITHUB_TOKEN=${ADMIN_GITHUB_TOKEN} \
             --set app.deployment.env.SENTRY_DSN_KEY=${SENTRY_DSN_KEY} \
             --set app.deployment.image.repository=${ECR_REGISTRY}/${ECR_REPOSITORY} \
-            --set app.deployment.image.tag=${IMAGE_TAG} 
+            --set app.deployment.image.tag=${IMAGE_TAG}
