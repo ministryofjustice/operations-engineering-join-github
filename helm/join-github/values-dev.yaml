@@ -1,6 +1,6 @@
 app:
   ingress:
-    host: "jason-test.cloud-platform.service.justice.gov.uk"
+    host: "dev.join-github.service.justice.gov.uk"
 
   deployment:
     replicaCount: 1
@@ -10,6 +10,6 @@ app:
       FLASK_DEBUG: true
       MOJ_ORG_ENABLED: true
       MOJ_AS_ORG_ENABLED: true
-      MOJ_TEST_ORG_ENABLED: true
+      MOJ_TEST_ORG_ENABLED: false
       SEND_EMAIL_INVITES: true
       PHASE_BANNER_TEXT: "DEV"
