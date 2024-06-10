@@ -26,7 +26,7 @@ To develop, deploy or run this app, you will need to install the following:
 
 ### Environment setup
 
-Refer to the `.env.example` file for the required variables. Create a `.env` file from this in the project root. Note that `.env` is included in `.gitignore` so it is not tracked. 
+Refer to the `.env.example` file for the required variables. Create a `.env` file from this in the project root. Note that `.env` is included in `.gitignore` so it is not tracked.
 
 ```bash
 cp .env.example .env
@@ -34,7 +34,7 @@ cp .env.example .env
 
 To enable the auth0 authentication to run locally requires the actual `AUTH0_CLIENT_ID` and `AUTH0_CLIENT_SECRET` (by default set to `dev`). To access these login to auth0 and go to the operations-engineering tenant then,
 
-Applications -> Applications -> `ops-eng-test-azure-ad` 
+Applications -> Applications -> `ops-eng-test-azure-ad`
 
 Copy the Client ID and the Client Secret into your `.env`. Then source the `.env` and proceed.
 
@@ -57,7 +57,7 @@ To use Docker run the following command and open a browser to `http://0.0.0.0:45
 ```bash
 make docker-up
 ```
- 
+
 
 
 
@@ -127,6 +127,12 @@ And access Cloud Platform's namespace using:
 
 ```bash
 kubectl get pods -n operations-engineering-join-github-dev
+```
+
+If you need to enable sending requests to GitHub (i.e. to add users to an MoJ GitHub organisation), you will need to enable the environment variable `SEND_EMAIL_INVITES` in the namespace. This is disabled by default.
+
+```bash
+kubectl -n operations-engineering-join-github-dev set env deploy/join-github SEND_EMAIL_INVITES=true
 ```
 
 ### Production environment
