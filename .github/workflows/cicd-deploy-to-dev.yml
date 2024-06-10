@@ -3,14 +3,14 @@ name: "♻️ Deploy to Development Namespace"
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [fix-broken-try-catch]
 env:
   KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
   KUBE_NAMESPACE: ${{ secrets.DEV_KUBE_NAMESPACE }}
   KUBE_CERT: ${{ secrets.DEV_KUBE_CERT }}
   KUBE_TOKEN: ${{ secrets.DEV_KUBE_TOKEN }}
 
-  IMAGE_TAG: ${{ github.sha }}
+  IMAGE_TAG: jason-test-${{ github.sha }}
   ECR_REGISTRY: ${{ vars.DEV_ECR_REGISTRY }}
   ECR_REPOSITORY: ${{ vars.DEV_ECR_REPOSITORY }}
   ADMIN_GITHUB_TOKEN: ${{ secrets.DEV_ADMIN_GITHUB_TOKEN }}
@@ -58,7 +58,7 @@ jobs:
 
       - name: Deploy helm chart to dev
         run: |
-          helm upgrade join-github \
+          helm upgrade jason-join-github \
             helm/join-github \
             --install \
             --force \
@@ -72,4 +72,4 @@ jobs:
             --set app.deployment.env.ADMIN_GITHUB_TOKEN=${ADMIN_GITHUB_TOKEN} \
             --set app.deployment.env.SENTRY_DSN_KEY=${SENTRY_DSN_KEY} \
             --set app.deployment.image.repository=${ECR_REGISTRY}/${ECR_REPOSITORY} \
-            --set app.deployment.image.tag=${IMAGE_TAG} 
+            --set app.deployment.image.tag=${IMAGE_TAG}
