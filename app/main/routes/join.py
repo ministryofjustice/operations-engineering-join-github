@@ -142,6 +142,8 @@ def send_invitation():
         # re-raise the exception if it's a different error
         logger.error("An unexpected GithubException occurred: %s", str(e))
         raise e
+    except Exception as e:
+        logger.error("An unexpected error occurred: %s", str(e))
 
     return redirect(url_for("join_route.invitation_sent"))
 
