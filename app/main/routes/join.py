@@ -139,7 +139,6 @@ def send_invitation():
                 "User %s is already a member of the organization.", auth0_email)
             return render_template(
                 "pages/already-a-member.html",
-                email=auth0_email,
             )
         # re-raise the exception if it's a different error
         logger.error("An unexpected GithubException occurred: %s", error_message)
