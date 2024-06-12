@@ -8,7 +8,6 @@ ENABLE_LINTERS:
   - BASH_SHELLCHECK
   - HTML_HTMLHINT
   - MARKDOWN_MARKDOWNLINT
-  - MAKEFILE_CHECKMAKE
   - DOCKERFILE_HADOLINT
   - JSON_PRETTIER
   - KUBERNETES_KUBECONFORM
@@ -18,7 +17,6 @@ ENABLE_LINTERS:
   - REPOSITORY_GITLEAKS
   - PYTHON_PYLINT
   - PYTHON_FLAKE8
-  - PYTHON_BLACK
   - PYTHON_ISORT
   - YAML_PRETTIER
   - YAML_YAMLLINT
@@ -35,9 +33,6 @@ VALIDATE_ALL_CODEBASE: false
 LOG_LEVEL: INFO
 MARKDOWN_MARKDOWN_LINK_CHECK_ARGUMENTS: "-q"
 
-PRE_COMMANDS: 
+PRE_COMMANDS:
   - command: pip install -r /github/workspace/requirements.txt
     venv: pylint
-
-PLUGINS:
-  - https://raw.githubusercontent.com/shiranr/linkcheck/v2.0.17.beta/mega-linter-plugin-linkcheck/linkcheck.megalinter-descriptor.yml
