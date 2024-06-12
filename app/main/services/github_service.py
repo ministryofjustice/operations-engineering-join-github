@@ -20,7 +20,7 @@ class GithubService:
         )
 
     def send_invites_to_user_email(self, email: str, organisations: list) -> None:
-        valid_orgs = [ organisation.name for organisation in app_config.github.organisations if organisation.enabled ]
+        valid_orgs = [organisation.name for organisation in app_config.github.organisations if organisation.enabled]
         for organisation in organisations:
             if organisation in valid_orgs and app_config.github.send_email_invites_is_enabled:
                 self.github_client_core_api.get_organization(organisation.lower()).invite_user(email=email)
