@@ -1,15 +1,6 @@
 .ONESHELL:
 
 PYTHON_SOURCE_FILES = ./tests operations_engineering_join_github.py ./app
-# Default values for variables (can be overridden by passing arguments to `make`)
-RELEASE_NAME ?= default-release-name
-AUTH0_CLIENT_ID ?= default-auth0-client-id
-AUTH0_CLIENT_SECRET ?= default-auth0-client-secret
-APP_SECRET_KEY ?= default-app-secret-key
-API_KEY ?= default-api-key
-HOST_NAME?= default-host-suffix
-IMAGE ?= default-image
-REGISTRY ?= default-registry
 
 help:
 	@echo "Available commands:"
