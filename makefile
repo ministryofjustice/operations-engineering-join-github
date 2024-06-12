@@ -56,6 +56,11 @@ local: venv
 docker-up:
 	docker-compose -f docker-compose.yaml up -d
 
+trivy-scan:
+	@echo "Running Trivy scan..."
+	docker build -t localbuild/testimage:latest .
+	trivy image --severity HIGH,CRITICAL localbuild/testimage:latest
+
 all:
 
-.PHONY: venv lint test format local clean-test report all
+.PHONY: trivy-scan venv lint test format local clean-test report all
