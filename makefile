@@ -40,6 +40,10 @@ test: venv
 report:
 	venv/bin/coverage html && open htmlcov/index.html
 
+flake8: venv
+	venv/bin/pip3 install flake8
+	venv/bin/flake8 --config=./.flake8 --exclude=venv,__pycache__,.pytest_cache,.venv .
+
 clean-test:
 	rm -fr venv
 	rm -fr .venv
