@@ -33,7 +33,7 @@ jobs:
       # MegaLinter
       - name: MegaLinter
         id: ml
-        uses: oxsecurity/megalinter@v7
+        uses: oxsecurity/megalinter-python:v7.12.0
         env:
           # All available variables are described in documentation
           # https://megalinter.io/latest/configuration/
@@ -47,3 +47,4 @@ jobs:
           path: |
             megalinter-reports
             mega-linter.log
+
