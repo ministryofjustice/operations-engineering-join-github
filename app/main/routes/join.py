@@ -1,8 +1,17 @@
 import logging
 from typing import Any
 
-from flask import (Blueprint, abort, current_app, flash, redirect,
-                   render_template, request, session, url_for)
+from flask import (
+    Blueprint,
+    abort,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from github import GithubException
 
 from app.main.config.app_config import app_config
@@ -44,8 +53,8 @@ def select_organisations():
         {
             "value": org.name,
             "text": org.display_text,
-            "disabled":
-            org.name == "moj-analytical-services" and is_digital_justice_user,
+            "disabled": org.name == "moj-analytical-services"
+            and is_digital_justice_user,
         }
         for org in get_enabled_organisations()
     ]
@@ -82,13 +91,13 @@ def join_selection():
         return render_template(
             "pages/digital-justice-user.html",
             org_selection=org_selection,
-            email=user_input_email
+            email=user_input_email,
         )
 
     return render_template(
         "pages/justice-and-other-user.html",
         org_selection=org_selection,
-        email=user_input_email
+        email=user_input_email,
     )
 
 
@@ -122,31 +131,24 @@ def send_invitation():
 
     if user_input_email != auth0_email:
         logger.error("Initial email does not match authenticated email")
-        abort(400, f"Initial email {user_input_email} does not match \
-        authenticated email {auth0_email}")
+        abort(
+            400,
+            f"Initial email {user_input_email} does not match \
+        authenticated email {auth0_email}",
+        )
 
     if not is_pre_approved_email_domain(auth0_email):
         logger.error("Email domain is not pre-approved")
         abort(400, f"Email {auth0_email} is not pre-approved")
 
-    try:
-        current_app.github_service.send_invites_to_user_email(
-            auth0_email, org_selection)
-    except GithubException as e:
-        error_message = str(e)
-        logger.error("GithubException occurred: %s", error_message)
-        if "already a part of this organization" in error_message:
-            logger.error(
-                "User %s is already a member of the organization.", auth0_email)
-            return render_template(
-                "pages/already-a-member.html",
-            )
-        # re-raise the exception if it's a different error
-        logger.error("An unexpected GithubException occurred: %s", error_message)
-        raise e
-    except Exception as e:
-        logger.error("An unexpected exception occurred: %s", str(e))
-        raise e
+    failed_orgs = current_app.github_service.send_invites_to_user_email(
+        auth0_email, org_selection
+    )
+    if failed_orgs:
+        return render_template(
+            "pages/already-a-member.html",
+            failed_orgs=failed_orgs,
+        )
 
     return redirect(url_for("join_route.invitation_sent"))
 
@@ -177,17 +179,17 @@ def sanitise_org_selection(org_selection: list[str]) -> list[str]:
         else:
             logger.warning(
                 "Filtering out [%s] from user input as it is disabled for selection",
-                org_name
+                org_name,
             )
 
     return sanitised_org_selection
 
 
 def is_pre_approved_email_domain(email: str) -> bool:
-    domain = email[email.index("@") + 1:]
+    domain = email[email.index("@") + 1 :]
     return domain in app_config.github.allowed_email_domains
 
 
 def is_digital_justice_email(email: str) -> bool:
-    domain = email[email.index("@")+1:]
+    domain = email[email.index("@") + 1 :]
     return "digital.justice.gov.uk" == domain.lower()
