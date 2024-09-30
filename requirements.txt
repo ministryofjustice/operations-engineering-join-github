@@ -9,6 +9,7 @@ gunicorn==22.0.0
 PyGithub==2.1.1
 requests==2.32.0
 sentry-sdk==2.8.0
+setuptools==70.0.0
 
 # Development
 freezegun==1.5.1
